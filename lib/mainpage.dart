@@ -25,7 +25,7 @@ class _MyMainPageState extends State<MyMainPage> {
     double minHeight = 600.0;
     double minEdge = 9.0;
     double maxEdge = 18.0;
-    double innerEdge = 5.0;
+    double innerEdge = 0.2;
     double gridRatio = 2.5;
     int minGridCount = 1;
     double searchBarHeight = 45.0;
@@ -159,8 +159,6 @@ class _MyMainPageState extends State<MyMainPage> {
         ),
       );
     }
-
-    Widget myList = ListView();
 
     Widget myGrid = GridView.count(
       //controller: scrollController,

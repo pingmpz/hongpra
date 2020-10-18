@@ -24,6 +24,7 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
     double boxEdgeWidth = 15.0;
     double boxEdgeHeight = 5.0;
     double boxCurve = 18.0;
+    double leadingIconPaddingTop = 6.0;
 
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
@@ -34,15 +35,30 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
 
     //------------------ Custom Widgets ------------------
     Widget myAppBar = AppBar(
+      elevation: 0.0,
       backgroundColor: MyConfig.themeColor1,
-      leading: IconButton(
-        icon: const Icon(Icons.arrow_back_rounded),
-        color: MyConfig.whiteColor,
-        onPressed: () {
-          Navigator.pop(context);
-        },
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Container(
+              padding: EdgeInsets.only(top: leadingIconPaddingTop),
+              child: IconButton(
+                icon: Icon(Icons.arrow_back_rounded),
+                color: MyConfig.whiteColor,
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ),
+          ),
+          Text('สมัครสมาชิก', style: MyConfig.appBarTitleText)
+        ],
       ),
-      title: Text('สมัครสมาชิก', style: MyConfig.appBarTitleText),
+      titleSpacing: 0.0,
+      automaticallyImplyLeading: false,
     );
 
     Widget emailLabel = Text('อีเมล', style: MyConfig.normalText1);

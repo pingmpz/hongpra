@@ -28,7 +28,7 @@ class MyConfig {
   static TextStyle linkText = TextStyle(fontFamily: fontFamily1, fontSize: 16, color: blackColor, fontWeight: bold);
 
   static TextStyle largeHeaderText = TextStyle(fontFamily: fontFamily2, fontSize: 86, color: whiteColor, fontWeight: bold);
-  static TextStyle appBarTitleText = TextStyle(fontFamily: fontFamily2, fontSize: 24, color: whiteColor, fontWeight: bold);
+  static TextStyle appBarTitleText = TextStyle(fontFamily: fontFamily1, fontSize: 24, color: whiteColor, fontWeight: bold);
 
   static TextStyle titleText = TextStyle(fontFamily: fontFamily1, fontSize: 24, color: blackColor, fontWeight: bold);
 

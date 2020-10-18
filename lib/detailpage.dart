@@ -40,11 +40,12 @@ class _MyDetailPageState extends State<MyDetailPage> {
         : min(screenWidth - minWidth, maxEdge);
 
     List<Image> photos = [
-      Image(image: AssetImage("assets/images/logo.png")),
-      Image(image: AssetImage("assets/images/logo.png")),
-      Image(image: AssetImage("assets/images/logo.png")),
-      Image(image: AssetImage("assets/images/logo.png")),
-      Image(image: AssetImage("assets/images/logo.png")),
+      Image(image: AssetImage("assets/images/lg.jpg")),
+      Image(image: AssetImage("assets/images/lg.jpg")),
+      Image(image: AssetImage("assets/images/lg.jpg")),
+      Image(image: AssetImage("assets/images/lg.jpg")),
+      Image(image: AssetImage("assets/images/lg.jpg")),
+      Image(image: AssetImage("assets/images/lg.jpg")),
     ];
 
     //------------------ Custom Widgets ------------------
@@ -190,7 +191,7 @@ class _MyDetailPageState extends State<MyDetailPage> {
     );
 
     return Scaffold(
-      backgroundColor: MyConfig.whiteColor,
+      backgroundColor: MyConfig.greyColor,
       appBar: myAppBar,
       body: SingleChildScrollView(
         child: Container(
