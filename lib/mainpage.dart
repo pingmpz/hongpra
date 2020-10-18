@@ -2,14 +2,13 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hongpra/myconfig.dart';
 import 'package:hongpra/detailpage.dart';
 import 'package:hongpra/longinpage.dart';
-import 'package:scroll_app_bar/scroll_app_bar.dart';
 
 class MyMainPage extends StatefulWidget {
-
   final FirebaseUser user;
   final FirebaseAuth _auth;
 
@@ -42,7 +41,7 @@ class _MyMainPageState extends State<MyMainPage> {
     double minHeight = 600.0;
     double minEdge = 9.0;
     double maxEdge = 18.0;
-    double innerEdge = 0.2;
+    double innerEdge = 2.5;
     double gridRatio = 2.5;
     int minGridCount = 1;
     double searchBarHeight = 45.0;
@@ -116,9 +115,9 @@ class _MyMainPageState extends State<MyMainPage> {
                     ),
                     decoration: InputDecoration(
                       prefixIcon:
-                          Icon(Icons.search, color: MyConfig.whiteColor),
+                          Icon(Icons.search, color: MyConfig.blackColor),
                       hintText: "ค้นหา",
-                      hintStyle: MyConfig.normalText2,
+                      hintStyle: MyConfig.normalText1,
                     ),
                   );
                 } else {
@@ -133,46 +132,89 @@ class _MyMainPageState extends State<MyMainPage> {
       ),
     );
 
+    Widget mySearchBar2 = PreferredSize(
+      preferredSize: Size.fromHeight(searchBarHeight),
+      child: AppBar(
+        //elevation: 0.0,
+        backgroundColor: MyConfig.whiteColor,
+        automaticallyImplyLeading: false,
+        title: searchTitle,
+        actions: <Widget>[
+          IconButton(
+            icon: searchIcon,
+            onPressed: () {
+              setState(() {
+                if (this.searchIcon.icon == Icons.search) {
+                  this.searchIcon = Icon(
+                    Icons.close,
+                    color: MyConfig.blackColor,
+                  );
+                  this.searchTitle = TextField(
+                    controller: searchController,
+                    style: TextStyle(
+                      color: MyConfig.blackColor,
+                    ),
+                    decoration: InputDecoration(
+                      prefixIcon:
+                          Icon(Icons.search, color: MyConfig.blackColor),
+                      hintText: "ค้นหา",
+                      hintStyle: MyConfig.normalText1,
+                    ),
+                  );
+                } else {
+                  this.searchIcon =
+                      Icon(Icons.search, color: MyConfig.blackColor);
+                  this.searchTitle = Text("", style: MyConfig.normalText1);
+                }
+              });
+            },
+          ),
+        ],
+      ),
+    );
+
     Widget buildCard(String path, List<String> texts) {
       return Container(
         margin: EdgeInsets.all(innerEdge),
-        decoration: BoxDecoration(
-          color: MyConfig.whiteColor,
-//          borderRadius: BorderRadius.circular(boxCurve),
-        ),
         child: Card(
-          elevation: 0.0,
+          color: MyConfig.whiteColor,
           child: InkWell(
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                  flex: 3,
-                  child: Container(
-                    margin: EdgeInsets.all(innerEdge),
-                    child: Image(image: AssetImage(path))),
-                ),
-                Expanded(
-                  flex: 6,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(texts[0], style: MyConfig.largeText1),
-                      Text(texts[1], style: MyConfig.smallText1),
-                      Text(texts[2], style: MyConfig.smallText1),
-                      Text(texts[3], style: MyConfig.smallText1),
-                      Text(texts[4], style: MyConfig.smallText1),
-                      Text(texts[5], style: MyConfig.smallText1),
-                    ],
+            child: Padding(
+              padding: EdgeInsets.all(innerEdge + 5.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    flex: 3,
+                    child: Container(
+                        margin: EdgeInsets.all(innerEdge),
+                        child: Image(image: AssetImage(path))),
                   ),
-                ),
-              ],
+                  Expanded(
+                    flex: 6,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(texts[0], style: MyConfig.largeText1),
+                        Text(""),
+                        Text(texts[1], style: MyConfig.smallText1),
+                        Text(texts[2], style: MyConfig.smallText1),
+                        Text(texts[3], style: MyConfig.smallText1),
+                        Text(texts[4], style: MyConfig.smallText1),
+                        Text(texts[5], style: MyConfig.smallText1),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
             onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => MyDetailPage(123456)));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => MyDetailPage(123456)));
             },
           ),
         ),
@@ -191,6 +233,7 @@ class _MyMainPageState extends State<MyMainPage> {
     Widget myBottomNavBar = BottomNavigationBar(
       backgroundColor: MyConfig.themeColor1,
       selectedItemColor: MyConfig.whiteColor,
+      unselectedItemColor:  MyConfig.whiteColor.withOpacity(0.5),
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           icon: Icon(Icons.home),
@@ -215,7 +258,7 @@ class _MyMainPageState extends State<MyMainPage> {
         appBar: myAppBar,
         backgroundColor: MyConfig.themeColor1,
         body: Scaffold(
-          backgroundColor: MyConfig.greyColor,
+          backgroundColor: MyConfig.themeColor2,
           appBar: mySearchBar,
           body: Container(
             child: myGrid,
