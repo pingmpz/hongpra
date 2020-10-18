@@ -37,16 +37,12 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
       backgroundColor: MyConfig.themeColor1,
       leading: IconButton(
         icon: const Icon(Icons.arrow_back_rounded),
-        color: MyConfig.themeColor2,
+        color: MyConfig.whiteColor,
         onPressed: () {
           Navigator.pop(context);
         },
       ),
       title: Text('สมัครสมาชิก', style: MyConfig.appBarTitleText),
-    );
-
-    Widget titleLabel = Center(
-      child: Text('สมัครสมาชิก', style: MyConfig.mediumTitleText),
     );
 
     Widget emailLabel = Text('อีเมล', style: MyConfig.normalText1);
@@ -142,7 +138,6 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
     return Scaffold(
       backgroundColor: MyConfig.themeColor1,
       resizeToAvoidBottomInset: false,
-      //extendBodyBehindAppBar: true,
       appBar: myAppBar,
       body: Center(
         child: Container(

@@ -52,12 +52,12 @@ class _MyDetailPageState extends State<MyDetailPage> {
       backgroundColor: MyConfig.themeColor1,
       leading: IconButton(
         icon: const Icon(Icons.arrow_back_rounded),
-        color: MyConfig.themeColor2,
+        color: MyConfig.whiteColor,
         onPressed: () {
           Navigator.pop(context);
         },
       ),
-      title: Text('ห้องพระ', style: MyConfig.smallTitleText),
+      title: Text('ห้องพระ', style: MyConfig.appBarTitleText),
       centerTitle: true,
     );
 
@@ -81,7 +81,7 @@ class _MyDetailPageState extends State<MyDetailPage> {
     );
 
     Widget amuletDetailBox = Container(
-      color: MyConfig.themeColor5,
+      color: MyConfig.whiteColor,
       padding: EdgeInsets.all(innerEdge),
       child: Column(
         children: [
@@ -136,7 +136,7 @@ class _MyDetailPageState extends State<MyDetailPage> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(buttonCurve),
             ),
-            color: MyConfig.themeColor2,
+            color: MyConfig.themeColor1,
             child: Text('ดูใบรับรอง', style: MyConfig.buttonText),
           ),
         ),
@@ -144,7 +144,7 @@ class _MyDetailPageState extends State<MyDetailPage> {
     );
 
     Widget certificateDetailBox = Container(
-      color: MyConfig.themeColor5,
+      color: MyConfig.whiteColor,
       padding: EdgeInsets.all(innerEdge),
       child: Column(
         children: [
@@ -183,14 +183,14 @@ class _MyDetailPageState extends State<MyDetailPage> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(buttonCurve),
           ),
-          color: MyConfig.themeColor3,
+          color: MyConfig.themeColor1,
           child: Text('ส่งมอบ', style: MyConfig.buttonText),
         ),
       ),
     );
 
     return Scaffold(
-      backgroundColor: MyConfig.themeColor1,
+      backgroundColor: MyConfig.whiteColor,
       appBar: myAppBar,
       body: SingleChildScrollView(
         child: Container(

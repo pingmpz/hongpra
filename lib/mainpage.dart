@@ -13,11 +13,10 @@ class MyMainPage extends StatefulWidget {
 }
 
 class _MyMainPageState extends State<MyMainPage> {
-  final scrollController = ScrollController();
   final searchController = new TextEditingController();
 
-  Widget searchTitle = Text("");
-  Icon searchIcon = new Icon(Icons.search, color: MyConfig.blackColor);
+  Widget searchTitle = Text("", style: MyConfig.normalText2);
+  Icon searchIcon = new Icon(Icons.search, color: MyConfig.whiteColor);
 
   @override
   Widget build(BuildContext context) {
@@ -27,9 +26,11 @@ class _MyMainPageState extends State<MyMainPage> {
     double minEdge = 9.0;
     double maxEdge = 18.0;
     double innerEdge = 5.0;
-    int minGridCount = 2;
+    double gridRatio = 2.5;
+    int minGridCount = 1;
     double searchBarHeight = 45.0;
     double cardTextWidth = double.infinity; // max width of card
+    double boxCurve = 18.0;
 
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
@@ -44,16 +45,25 @@ class _MyMainPageState extends State<MyMainPage> {
             ? 0
             : ((screenWidth - minWidth) / (minWidth / minGridCount)).floor());
 
+    List<String> sampleTexts = [
+      'พระกริ่งชัย-วัฒน์ทั่วไป',
+      'ชื่อพระ : พระชัยวัฒน์',
+      'พิมพ์พระ : พิมพ์อุดมีกริ่ง',
+      'เนื้อพระ : ทองเหลือง',
+      'สถานที่ : วัดชนะสงคราม พ.ศ. 2484',
+      'วันที่รับรอง : 8 พฤศจิกายน 2562'
+    ];
+
     //------------------ Custom Widgets ------------------
     Widget myAppBar = AppBar(
       backgroundColor: MyConfig.themeColor1,
-      elevation: 0,
+      elevation: 0.0,
       leading: IconButton(
         icon: Icon(Icons.account_circle),
         color: MyConfig.whiteColor,
         onPressed: () {},
       ),
-      title: Text('ห้องพระ', style: MyConfig.smallTitleText),
+      title: Text('ห้องพระ', style: MyConfig.appBarTitleText),
       centerTitle: true,
       actions: [
         IconButton(
@@ -65,10 +75,10 @@ class _MyMainPageState extends State<MyMainPage> {
 
     Widget mySearchBar = PreferredSize(
       preferredSize: Size.fromHeight(searchBarHeight),
-      child: ScrollAppBar(
-        backgroundColor: MyConfig.whiteColor,
+      child: AppBar(
+        elevation: 0.0,
+        backgroundColor: MyConfig.themeColor1,
         automaticallyImplyLeading: false,
-        controller: scrollController,
         title: searchTitle,
         actions: <Widget>[
           IconButton(
@@ -78,24 +88,24 @@ class _MyMainPageState extends State<MyMainPage> {
                 if (this.searchIcon.icon == Icons.search) {
                   this.searchIcon = Icon(
                     Icons.close,
-                    color: MyConfig.blackColor,
+                    color: MyConfig.whiteColor,
                   );
                   this.searchTitle = TextField(
                     controller: searchController,
                     style: TextStyle(
-                      color: MyConfig.blackColor,
+                      color: MyConfig.whiteColor,
                     ),
                     decoration: InputDecoration(
                       prefixIcon:
-                          Icon(Icons.search, color: MyConfig.blackColor),
+                          Icon(Icons.search, color: MyConfig.whiteColor),
                       hintText: "ค้นหา",
-                      hintStyle: MyConfig.normalText1,
+                      hintStyle: MyConfig.normalText2,
                     ),
                   );
                 } else {
                   this.searchIcon =
-                      Icon(Icons.search, color: MyConfig.blackColor);
-                  this.searchTitle = Text("");
+                      Icon(Icons.search, color: MyConfig.whiteColor);
+                  this.searchTitle = Text("", style: MyConfig.normalText2);
                 }
               });
             },
@@ -104,88 +114,48 @@ class _MyMainPageState extends State<MyMainPage> {
       ),
     );
 
-    Widget buildCard(String path, String text) {
-      return Card(
-        elevation: 2.0,
-        color: MyConfig.themeColor5,
-        child: InkWell(
-          child: Container(
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: MyConfig.blackColor,
-              ),
-            ),
-            child: Stack(
-              children: <Widget>[
-                Container(
-                    margin: EdgeInsets.only(top: innerEdge),
-                    child: Image(image: AssetImage(path))),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Container(
-                      width: cardTextWidth,
-                      color: MyConfig.blackColor.withOpacity(0.5),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(text, style: MyConfig.normalText1),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          onTap: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => MyDetailPage(123456)));
-          },
+    Widget buildCard(String path, List<String> texts) {
+      return Container(
+        margin: EdgeInsets.all(innerEdge),
+        decoration: BoxDecoration(
+          color: MyConfig.whiteColor,
+//          borderRadius: BorderRadius.circular(boxCurve),
         ),
-      );
-    }
-
-    Widget buildCard2(String path, String text) {
-      return Card(
-        elevation: 2.0,
-        color: MyConfig.themeColor5,
-        child: InkWell(
-          child: Container(
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: MyConfig.blackColor,
-              ),
-            ),
-            child: Stack(
-              children: <Widget>[
-                Container(
-                    margin: EdgeInsets.only(top: innerEdge),
+        child: Card(
+          elevation: 0.0,
+          child: InkWell(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  flex: 3,
+                  child: Container(
+                    margin: EdgeInsets.all(innerEdge),
                     child: Image(image: AssetImage(path))),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Container(
-                      width: cardTextWidth,
-                      color: MyConfig.blackColor.withOpacity(0.5),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(text, style: MyConfig.normalText1),
-                        ],
-                      ),
-                    ),
-                  ],
+                ),
+                Expanded(
+                  flex: 6,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(texts[0], style: MyConfig.largeText1),
+                      Text(texts[1], style: MyConfig.smallText1),
+                      Text(texts[2], style: MyConfig.smallText1),
+                      Text(texts[3], style: MyConfig.smallText1),
+                      Text(texts[4], style: MyConfig.smallText1),
+                      Text(texts[5], style: MyConfig.smallText1),
+                    ],
+                  ),
                 ),
               ],
             ),
+            onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => MyDetailPage(123456)));
+            },
           ),
-          onTap: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => MyDetailPage(123456)));
-          },
         ),
       );
     }
@@ -195,9 +165,9 @@ class _MyMainPageState extends State<MyMainPage> {
     Widget myGrid = GridView.count(
       //controller: scrollController,
       crossAxisCount: gridCount,
-      childAspectRatio: 0.75,
-      children: List.generate(0, (index) {
-        return buildCard('assets/images/lg.jpg', 'พระเครื่องบูชา');
+      childAspectRatio: gridRatio,
+      children: List.generate(7, (index) {
+        return buildCard('assets/images/lg.jpg', sampleTexts);
       }),
     );
 
@@ -226,8 +196,9 @@ class _MyMainPageState extends State<MyMainPage> {
       },
       child: Scaffold(
         appBar: myAppBar,
+        backgroundColor: MyConfig.themeColor1,
         body: Scaffold(
-          backgroundColor: MyConfig.whiteColor,
+          backgroundColor: MyConfig.greyColor,
           appBar: mySearchBar,
           body: Container(
             child: myGrid,
