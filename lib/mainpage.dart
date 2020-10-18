@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hongpra/myconfig.dart';
 import 'package:hongpra/detailpage.dart';
@@ -8,6 +9,12 @@ import 'package:hongpra/longinpage.dart';
 import 'package:scroll_app_bar/scroll_app_bar.dart';
 
 class MyMainPage extends StatefulWidget {
+
+  final FirebaseUser user;
+
+
+  MyMainPage(this.user, {Key key}) : super(key: key);
+
   @override
   _MyMainPageState createState() => _MyMainPageState();
 }

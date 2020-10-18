@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hongpra/myconfig.dart';
@@ -12,6 +13,46 @@ class MyLoginPage extends StatefulWidget {
 }
 
 class _MyLoginPageState extends State<MyLoginPage> {
+
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    checkAuth(context);
+  }
+
+
+  // Log-in
+  Future<FirebaseUser> signIn() async {
+    final FirebaseUser user = await _auth.signInWithEmailAndPassword(
+      email: emailController.text.trim(),
+      password: passwordController.text.trim(),
+    ).then((user) {
+      print("signed in ${user.email}");
+      checkAuth(context);  // add here
+    }).catchError((error) {
+      print(error);
+    });
+  }
+
+
+
+  // Check user log-in
+  Future checkAuth(BuildContext context) async {
+    FirebaseUser user = await _auth.currentUser();
+
+    if (user != null) {
+      print("Already singed-in with");
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => MyMainPage(user)));
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     //------------------ Custom Variables ------------------
@@ -45,6 +86,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
     Widget emailLabel = Text('อีเมล', style: MyConfig.normalText1);
 
     Widget emailTextField = TextField(
+      controller: emailController,
       obscureText: false,
       style: MyConfig.normalText1,
       decoration: InputDecoration(
@@ -60,6 +102,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
     Widget passwordLabel = Text('รหัสผ่าน', style: MyConfig.normalText1);
 
     Widget passwordTextField = TextField(
+      controller: passwordController,
       obscureText: true,
       style: MyConfig.normalText1,
       decoration: InputDecoration(
@@ -78,12 +121,13 @@ class _MyLoginPageState extends State<MyLoginPage> {
         height: loginButtonHeight,
         child: RaisedButton(
           onPressed: () => {
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => MyMainPage()))
+            signIn()
           },
           color: MyConfig.blackColor,
           child: Text('เข้าสู่ระบบ', style: MyConfig.buttonText),
+
         ),
+
       ),
     );
 
