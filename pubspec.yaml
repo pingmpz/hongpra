@@ -1,0 +1,42 @@
+name: hongpra
+description: A new Flutter application.
+
+publish_to:
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^0.1.3
+  device_preview:
+  scroll_app_bar:
+  carousel_slider:
+  carousel_pro:
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+
+  uses-material-design: true
+
+  assets:
+     - assets/images/logo.png
+     - assets/images/background.jpg
+     - assets/images/lg.jpg
+
+  fonts:
+     - family: Srisakdi
+       fonts:
+         - asset: fonts/Srisakdi-Regular.ttf
+         - asset: fonts/Srisakdi-Bold.ttf
+     - family: EkkamaiNew
+       fonts:
+         - asset: fonts/EkkamaiNew-Regular.ttf
+
