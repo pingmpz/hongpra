@@ -11,9 +11,9 @@ import 'package:scroll_app_bar/scroll_app_bar.dart';
 class MyMainPage extends StatefulWidget {
 
   final FirebaseUser user;
+  final FirebaseAuth _auth;
 
-
-  MyMainPage(this.user, {Key key}) : super(key: key);
+  MyMainPage(this.user, this._auth, {Key key}) : super(key: key);
 
   @override
   _MyMainPageState createState() => _MyMainPageState();
@@ -24,6 +24,16 @@ class _MyMainPageState extends State<MyMainPage> {
 
   Widget searchTitle = Text("", style: MyConfig.normalText2);
   Icon searchIcon = new Icon(Icons.search, color: MyConfig.whiteColor);
+
+  //------------------ Custom Methods ------------------
+
+  void signOut(BuildContext context) {
+    widget._auth.signOut();
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => MyLoginPage()),
+        ModalRoute.withName('/'));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +85,9 @@ class _MyMainPageState extends State<MyMainPage> {
       actions: [
         IconButton(
           icon: Icon(Icons.notifications),
-          onPressed: () {},
+          onPressed: () {
+            signOut(context);
+          },
         ),
       ],
     );

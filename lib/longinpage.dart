@@ -14,17 +14,17 @@ class MyLoginPage extends StatefulWidget {
 
 class _MyLoginPageState extends State<MyLoginPage> {
 
-
   final FirebaseAuth _auth = FirebaseAuth.instance;
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
+
+  //------------------ Custom Methods ------------------
   @override
   void initState() {
     super.initState();
     checkAuth(context);
   }
-
 
   // Log-in
   Future<FirebaseUser> signIn() async {
@@ -39,8 +39,6 @@ class _MyLoginPageState extends State<MyLoginPage> {
     });
   }
 
-
-
   // Check user log-in
   Future checkAuth(BuildContext context) async {
     FirebaseUser user = await _auth.currentUser();
@@ -48,7 +46,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
     if (user != null) {
       print("Already singed-in with");
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => MyMainPage(user)));
+          context, MaterialPageRoute(builder: (context) => MyMainPage(user, _auth)));
     }
   }
 
