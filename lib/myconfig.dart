@@ -28,17 +28,12 @@ class MyConfig {
 
   static TextStyle largeText1 = TextStyle(fontFamily: fontFamily1, fontSize: 16, color: blackColor, fontWeight: bold);
 
+  static TextStyle buttonText = TextStyle(fontFamily: fontFamily1, fontSize: 16, color: whiteColor, fontWeight: bold);
   static TextStyle linkText = TextStyle(fontFamily: fontFamily1, fontSize: 16, color: blackColor, fontWeight: bold);
 
   static TextStyle largeHeaderText = TextStyle(fontFamily: fontFamily2, fontSize: 86, color: whiteColor, fontWeight: bold);
   static TextStyle appBarTitleText = TextStyle(fontFamily: fontFamily1, fontSize: 24, color: whiteColor, fontWeight: bold);
 
   static TextStyle titleText = TextStyle(fontFamily: fontFamily1, fontSize: 24, color: blackColor, fontWeight: bold);
-
-
-  static TextStyle headerText = TextStyle(fontFamily: fontFamily1, fontSize: 16, color: blackColor, fontWeight: bold);
-  static TextStyle headerText2 = TextStyle(fontFamily: fontFamily1, fontSize: 24, color: blackColor, fontWeight: bold);
-  static TextStyle buttonText = TextStyle(fontFamily: fontFamily1, fontSize: 16, color: whiteColor, fontWeight: bold);
-  static TextStyle amuletTitleText = TextStyle(fontFamily: fontFamily1, fontSize: 24, color: whiteColor, fontWeight: bold);
 
 }

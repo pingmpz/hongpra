@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:hongpra/myconfig.dart';
 import 'package:hongpra/detailpage.dart';
 import 'package:hongpra/longinpage.dart';
+import 'package:page_transition/page_transition.dart';
 
 class MyMainPage extends StatefulWidget {
   final FirebaseUser user;
@@ -21,7 +22,7 @@ class MyMainPage extends StatefulWidget {
 class _MyMainPageState extends State<MyMainPage> {
   final searchController = new TextEditingController();
 
-  Widget searchTitle = Text("", style: MyConfig.normalText2);
+  Widget searchTitle = Text("", style: MyConfig.normalText1);
   Icon searchIcon = new Icon(Icons.search, color: MyConfig.whiteColor);
 
   //------------------ Custom Methods ------------------
@@ -45,7 +46,6 @@ class _MyMainPageState extends State<MyMainPage> {
     double gridRatio = 2.5;
     int minGridCount = 1;
     double searchBarHeight = 45.0;
-    double cardTextWidth = double.infinity; // max width of card
     double boxCurve = 18.0;
 
     double screenWidth = MediaQuery.of(context).size.width;
@@ -108,62 +108,33 @@ class _MyMainPageState extends State<MyMainPage> {
                     Icons.close,
                     color: MyConfig.whiteColor,
                   );
-                  this.searchTitle = TextField(
-                    controller: searchController,
-                    style: TextStyle(
-                      color: MyConfig.whiteColor,
-                    ),
-                    decoration: InputDecoration(
-                      prefixIcon:
-                          Icon(Icons.search, color: MyConfig.blackColor),
-                      hintText: "ค้นหา",
-                      hintStyle: MyConfig.normalText1,
+                  this.searchTitle = Container(
+                    height: searchBarHeight - (innerEdge * 3),
+                    child: TextField(
+                      controller: searchController,
+                      style: TextStyle(
+                        color: MyConfig.whiteColor,
+                      ),
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: MyConfig.whiteColor,
+                        contentPadding: EdgeInsets.only(
+                            bottom: (searchBarHeight - (innerEdge * 3)) / 2),
+                        border: OutlineInputBorder(
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(boxCurve)),
+                          borderSide: BorderSide.none,
+                        ),
+                        prefixIcon:
+                            Icon(Icons.search, color: MyConfig.blackColor),
+                        hintText: "ค้นหา",
+                        hintStyle: MyConfig.normalText1,
+                      ),
                     ),
                   );
                 } else {
                   this.searchIcon =
                       Icon(Icons.search, color: MyConfig.whiteColor);
-                  this.searchTitle = Text("", style: MyConfig.normalText2);
-                }
-              });
-            },
-          ),
-        ],
-      ),
-    );
-
-    Widget mySearchBar2 = PreferredSize(
-      preferredSize: Size.fromHeight(searchBarHeight),
-      child: AppBar(
-        //elevation: 0.0,
-        backgroundColor: MyConfig.whiteColor,
-        automaticallyImplyLeading: false,
-        title: searchTitle,
-        actions: <Widget>[
-          IconButton(
-            icon: searchIcon,
-            onPressed: () {
-              setState(() {
-                if (this.searchIcon.icon == Icons.search) {
-                  this.searchIcon = Icon(
-                    Icons.close,
-                    color: MyConfig.blackColor,
-                  );
-                  this.searchTitle = TextField(
-                    controller: searchController,
-                    style: TextStyle(
-                      color: MyConfig.blackColor,
-                    ),
-                    decoration: InputDecoration(
-                      prefixIcon:
-                          Icon(Icons.search, color: MyConfig.blackColor),
-                      hintText: "ค้นหา",
-                      hintStyle: MyConfig.normalText1,
-                    ),
-                  );
-                } else {
-                  this.searchIcon =
-                      Icon(Icons.search, color: MyConfig.blackColor);
                   this.searchTitle = Text("", style: MyConfig.normalText1);
                 }
               });
@@ -173,49 +144,49 @@ class _MyMainPageState extends State<MyMainPage> {
       ),
     );
 
-    Widget buildCard(String path, List<String> texts) {
-      return Container(
-        margin: EdgeInsets.all(innerEdge),
-        child: Card(
-          color: MyConfig.whiteColor,
-          child: InkWell(
-            child: Padding(
-              padding: EdgeInsets.all(innerEdge + 5.0),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    flex: 3,
-                    child: Container(
-                        margin: EdgeInsets.all(innerEdge),
-                        child: Image(image: AssetImage(path))),
-                  ),
-                  Expanded(
-                    flex: 6,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text(texts[0], style: MyConfig.largeText1),
-                        Text(""),
-                        Text(texts[1], style: MyConfig.smallText1),
-                        Text(texts[2], style: MyConfig.smallText1),
-                        Text(texts[3], style: MyConfig.smallText1),
-                        Text(texts[4], style: MyConfig.smallText1),
-                        Text(texts[5], style: MyConfig.smallText1),
-                      ],
+    Widget buildCard(String path, List<String> texts, int index) {
+      return Hero(tag: 'hero' + index.toString(),
+        child: Container(
+          margin: EdgeInsets.all(innerEdge),
+          child: Card(
+            color: MyConfig.whiteColor,
+            child: InkWell(
+              child: Padding(
+                padding: EdgeInsets.all(innerEdge + 5.0),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      flex: 3,
+                      child: Container(
+                          margin: EdgeInsets.all(innerEdge),
+                          child: Image(image: AssetImage(path))),
                     ),
-                  ),
-                ],
+                    Expanded(
+                      flex: 6,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(texts[0], style: MyConfig.largeText1),
+                          Text(""),
+                          Text(texts[1], style: MyConfig.smallText1),
+                          Text(texts[2], style: MyConfig.smallText1),
+                          Text(texts[3], style: MyConfig.smallText1),
+                          Text(texts[4], style: MyConfig.smallText1),
+                          Text(texts[5], style: MyConfig.smallText1),
+                        ],
+                      ),
+                      ),
+                  ],
+                ),
               ),
+              onTap: () {
+                Navigator.push(context, PageTransition(type: PageTransitionType.fade, child: MyDetailPage(index)));
+                //Navigator.push(context, MaterialPageRoute(builder: (context) => MyDetailPage(index)));
+              },
             ),
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => MyDetailPage(123456)));
-            },
           ),
         ),
       );
@@ -226,14 +197,14 @@ class _MyMainPageState extends State<MyMainPage> {
       crossAxisCount: gridCount,
       childAspectRatio: gridRatio,
       children: List.generate(7, (index) {
-        return buildCard('assets/images/lg.jpg', sampleTexts);
+        return buildCard('assets/images/lg.jpg', sampleTexts, index);
       }),
     );
 
     Widget myBottomNavBar = BottomNavigationBar(
       backgroundColor: MyConfig.themeColor1,
       selectedItemColor: MyConfig.whiteColor,
-      unselectedItemColor:  MyConfig.whiteColor.withOpacity(0.5),
+      unselectedItemColor: MyConfig.whiteColor.withOpacity(0.5),
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           icon: Icon(Icons.home),

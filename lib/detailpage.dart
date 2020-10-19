@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:hongpra/myconfig.dart';
 
 class MyDetailPage extends StatefulWidget {
-  final int id;
-  const MyDetailPage(this.id);
+  final int index;
+  const MyDetailPage(this.index);
 
   @override
   _MyDetailPageState createState() => _MyDetailPageState();
@@ -39,13 +39,14 @@ class _MyDetailPageState extends State<MyDetailPage> {
         ? minEdge
         : min(screenWidth - minWidth, maxEdge);
 
-    List<Image> photos = [
-      Image(image: AssetImage("assets/images/lg.jpg")),
-      Image(image: AssetImage("assets/images/lg.jpg")),
-      Image(image: AssetImage("assets/images/lg.jpg")),
-      Image(image: AssetImage("assets/images/lg.jpg")),
-      Image(image: AssetImage("assets/images/lg.jpg")),
-      Image(image: AssetImage("assets/images/lg.jpg")),
+    String path = "assets/images/lg.jpg";
+    List<String> texts = [
+      'พระกริ่งชัย-วัฒน์ทั่วไป',
+      'ชื่อพระ : พระชัยวัฒน์',
+      'พิมพ์พระ : พิมพ์อุดมีกริ่ง',
+      'เนื้อพระ : ทองเหลือง',
+      'สถานที่ : วัดชนะสงคราม พ.ศ. 2484',
+      'วันที่รับรอง : 8 พฤศจิกายน 2562'
     ];
 
     //------------------ Custom Widgets ------------------
@@ -62,154 +63,30 @@ class _MyDetailPageState extends State<MyDetailPage> {
       centerTitle: true,
     );
 
-    Widget titleText = Container(
-      margin: EdgeInsets.all(innerEdge),
-      child: Center(
-          child: Text('พระเครื่องบูชา', style: MyConfig.amuletTitleText)),
-    );
-
-    Widget myCorousel = Container(
-      height: screenHeight * imageRatio,
-      child: Carousel(
-        images: photos,
-        dotSize: dotSize,
-        dotSpacing: dotSpace,
-        dotColor: MyConfig.whiteColor,
-        dotBgColor: Colors.transparent,
-        indicatorBgPadding: innerEdge,
-        //borderRadius: true,
-      ),
-    );
-
-    Widget amuletDetailBox = Container(
-      color: MyConfig.whiteColor,
-      padding: EdgeInsets.all(innerEdge),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text('คำอธิบาย', style: MyConfig.headerText),
-              Text('พระพุทธรูป', style: MyConfig.normalText1),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text('ประเภท', style: MyConfig.headerText),
-              Text('ทองคำแท้', style: MyConfig.normalText1),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text('รุ่น', style: MyConfig.headerText),
-              Text('2020', style: MyConfig.normalText1),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text('สร้างโดย', style: MyConfig.headerText),
-              Text('อาจารย์ เคน', style: MyConfig.normalText1),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text('ครอบครองโดย', style: MyConfig.headerText),
-              Text('บุรินทร์', style: MyConfig.normalText1),
-            ],
-          ),
-        ],
-      ),
-    );
-
-    Widget certificateButton = Align(
-      alignment: Alignment.centerLeft,
-      child: Container(
-        margin: EdgeInsets.only(left: innerEdge),
-        child: ButtonTheme(
-          minWidth: certificateButtonWidth,
-          height: certificateButtonHeight,
-          child: RaisedButton(
-            onPressed: () => {},
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(buttonCurve),
-            ),
-            color: MyConfig.themeColor1,
-            child: Text('ดูใบรับรอง', style: MyConfig.buttonText),
-          ),
-        ),
-      ),
-    );
-
-    Widget certificateDetailBox = Container(
-      color: MyConfig.whiteColor,
-      padding: EdgeInsets.all(innerEdge),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text('รหัสใบรับรอง', style: MyConfig.headerText),
-              Text('10110012', style: MyConfig.normalText1),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text('ออกโดย', style: MyConfig.headerText),
-              Text('หัวหน้าสมาคมพระเครื่องไทย', style: MyConfig.normalText1),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text('ออกวันที่', style: MyConfig.headerText),
-              Text('16 ตุลาคม 2563', style: MyConfig.normalText1),
-            ],
-          ),
-        ],
-      ),
-    );
-
-    Widget handinButton = Container(
-      margin: EdgeInsets.only(left: innerEdge),
-      child: ButtonTheme(
-        minWidth: handinButtonWidth,
-        height: handinButtonHeight,
-        child: RaisedButton(
-          onPressed: () => {},
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(buttonCurve),
-          ),
-          color: MyConfig.themeColor1,
-          child: Text('ส่งมอบ', style: MyConfig.buttonText),
-        ),
-      ),
-    );
-
     return Scaffold(
-      backgroundColor: MyConfig.greyColor,
+      backgroundColor: MyConfig.themeColor2,
       appBar: myAppBar,
       body: SingleChildScrollView(
         child: Container(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              titleText,
+              Center(child: Hero(tag: 'hero' + widget.index.toString(), child: Image(image: AssetImage(path)))),
               SizedBox(height: desireHeight * 0.01),
-              myCorousel,
-              SizedBox(height: desireHeight * 0.01),
-              amuletDetailBox,
-              SizedBox(height: desireHeight * 0.01),
-              certificateButton,
-              SizedBox(height: desireHeight * 0.01),
-              certificateDetailBox,
-              SizedBox(height: desireHeight * 0.01),
-              handinButton,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(texts[0], style: MyConfig.largeText1),
+                  Text(""),
+                  Text(texts[1], style: MyConfig.smallText1),
+                  Text(texts[2], style: MyConfig.smallText1),
+                  Text(texts[3], style: MyConfig.smallText1),
+                  Text(texts[4], style: MyConfig.smallText1),
+                  Text(texts[5], style: MyConfig.smallText1),
+                ],
+              ),
             ],
           ),
         ),

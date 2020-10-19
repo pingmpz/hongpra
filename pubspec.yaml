@@ -19,6 +19,7 @@ dependencies:
   scroll_app_bar:
   carousel_slider:
   carousel_pro:
+  page_transition:
 
 dev_dependencies:
   flutter_test:
