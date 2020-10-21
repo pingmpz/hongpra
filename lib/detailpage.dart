@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
 import 'package:hongpra/myconfig.dart';
 
@@ -18,17 +17,8 @@ class _MyDetailPageState extends State<MyDetailPage> {
     //------------------ Custom Variables ------------------
     double minWidth = 360.0;
     double minHeight = 600.0;
-    double minEdge = 9.0;
-    double maxEdge = 18.0;
-    double innerEdge = 5.0;
-    double imageRatio = 0.33; // 33%
-    double dotSize = 5.0;
-    double dotSpace = dotSize * 2.5;
-    double certificateButtonWidth = 100;
-    double certificateButtonHeight = 40;
-    double handinButtonWidth = 100;
-    double handinButtonHeight = 40;
-    double buttonCurve = 12.0;
+    double screenMinEdge = 9.0;
+    double screenMaxEdge = 18.0;
 
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
@@ -36,8 +26,8 @@ class _MyDetailPageState extends State<MyDetailPage> {
     double desireWidth = (screenWidth < minWidth) ? screenWidth : minWidth;
     double desireHeight = (screenHeight < minHeight) ? screenHeight : minHeight;
     double screenEdge = (screenWidth < minWidth)
-        ? minEdge
-        : min(screenWidth - minWidth, maxEdge);
+        ? screenMinEdge
+        : min(screenWidth - minWidth, screenMaxEdge);
 
     String path = "assets/images/lg.jpg";
     List<String> texts = [
@@ -68,17 +58,18 @@ class _MyDetailPageState extends State<MyDetailPage> {
       appBar: myAppBar,
       body: SingleChildScrollView(
         child: Container(
+          margin: EdgeInsets.all(screenEdge),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Center(child: Hero(tag: 'hero' + widget.index.toString(), child: Image(image: AssetImage(path)))),
+              Center(child: Image(image: AssetImage(path))),
               SizedBox(height: desireHeight * 0.01),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Text(texts[0], style: MyConfig.largeText1),
+                  Text(texts[0], style: MyConfig.normalBoldText1),
                   Text(""),
                   Text(texts[1], style: MyConfig.smallText1),
                   Text(texts[2], style: MyConfig.smallText1),

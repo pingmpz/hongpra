@@ -37,9 +37,13 @@ flutter:
   fonts:
     - family: Srisakdi
       fonts:
-        - asset: fonts/Srisakdi-Regular.ttf
-        - asset: fonts/Srisakdi-Bold.ttf
+      - asset: fonts/Srisakdi/Srisakdi-Regular.ttf
+      - asset: fonts/Srisakdi/Srisakdi-Bold.ttf
     - family: EkkamaiNew
       fonts:
-        - asset: fonts/EkkamaiNew-Regular.ttf
+      - asset: fonts/EkkamaiNew/EkkamaiNew-Regular.ttf
+    - family: Prompt
+      fonts:
+      - asset: fonts/Prompt/Prompt-Regular.ttf
+      - asset: fonts/Prompt/Prompt-Bold.ttf
 
