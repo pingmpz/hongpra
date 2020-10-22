@@ -47,6 +47,8 @@ class _MyMainPageState extends State<MyMainPage> {
             ? 0
             : ((screenWidth - minWidth) / (minWidth / minGridCount)).floor());
 
+    String path = 'assets/images/amulet1.jpg';
+
     List<String> sampleTexts = [
       'พระกริ่งชัย-วัฒน์ทั่วไป',
       'ชื่อพระ : พระชัยวัฒน์',
@@ -175,7 +177,6 @@ class _MyMainPageState extends State<MyMainPage> {
             ),
             onTap: () {
               Navigator.push(context, PageTransition(type: PageTransitionType.fade, child: MyDetailPage(index)));
-              //Navigator.push(context, MaterialPageRoute(builder: (context) => MyDetailPage(index)));
             },
           ),
         ),
@@ -187,7 +188,7 @@ class _MyMainPageState extends State<MyMainPage> {
       crossAxisCount: gridCount,
       childAspectRatio: gridRatio,
       children: List.generate(7, (index) {
-        return buildCard('assets/images/lg.jpg', sampleTexts, index);
+        return buildCard(path, sampleTexts, index);
       }),
     );
 

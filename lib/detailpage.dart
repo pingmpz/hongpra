@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:hongpra/myconfig.dart';
 import 'package:carousel_pro/carousel_pro.dart';
+import 'package:hongpra/registerpage.dart';
 import 'package:photo_view/photo_view.dart';
 
 class MyDetailPage extends StatefulWidget {
@@ -14,6 +15,9 @@ class MyDetailPage extends StatefulWidget {
 }
 
 class _MyDetailPageState extends State<MyDetailPage> {
+  bool _isImageShown = false;
+  String currentPath = "";
+
   @override
   Widget build(BuildContext context) {
     //------------------ Custom Variables ------------------
@@ -34,13 +38,24 @@ class _MyDetailPageState extends State<MyDetailPage> {
     double screenEdge = (screenWidth < minWidth)
         ? screenMinEdge
         : min(screenWidth - minWidth, screenMaxEdge);
-    double imageHeight = screenHeight * imageHeightRatio;
+    double carouselHeight = screenHeight * imageHeightRatio;
+    double carouselWidth = screenWidth;
     double buttonWidth = screenWidth - (screenEdge * 4);
     double buttonHeight = 40.0;
 
-    String path = "assets/images/lg.jpg";
+    String certificatePath = "assets/images/certificate1.jpg";
+
+    List<String> paths = [
+      "assets/images/amulet1.jpg",
+      "assets/images/amulet1.jpg",
+      "assets/images/amulet1.jpg",
+      "assets/images/amulet1.jpg",
+      "assets/images/amulet1.jpg",
+    ];
+
+    String amuletName = 'พระกริ่งชัย-วัฒน์ทั่วไป';
+
     List<String> headers = [
-      '',
       'ชื่อพระ',
       'พิมพ์พระ',
       'เนื้อพระ',
@@ -51,7 +66,6 @@ class _MyDetailPageState extends State<MyDetailPage> {
     ];
 
     List<String> texts = [
-      'พระกริ่งชัย-วัฒน์ทั่วไป',
       'พระชัยวัฒน์',
       'พิมพ์อุดมีกริ่ง',
       'ทองเหลือง',
@@ -91,30 +105,77 @@ class _MyDetailPageState extends State<MyDetailPage> {
     );
 
     Widget amuletTitleText =
-        Center(child: Text(texts[0], style: MyConfig.largeBoldText));
+        Center(child: Text(amuletName, style: MyConfig.largeBoldText));
+
+    List<Widget> buildImages(List<String> paths) {
+      return List<Widget>.generate(
+        paths.length,
+        (index) => GestureDetector(
+          child: Image(image: AssetImage(paths[index])),
+          onDoubleTap: () {
+            setState(() {
+              currentPath = paths[index];
+              _isImageShown = true;
+            });
+          },
+        ),
+      );
+    }
 
     Widget myCarousel = Container(
-      width: screenWidth,
-      height: imageHeight,
-      child: Card(
-        child: Padding(
-          padding: EdgeInsets.all(cardPadding),
-          child: Carousel(
-            dotSize: dotSize,
-            dotSpacing: dotSize * 3,
-            indicatorBgPadding: dotSize,
-            autoplay: false,
-            images: [
-              PhotoView(imageProvider: AssetImage(path)),
-              PhotoView(imageProvider: AssetImage(path)),
-              PhotoView(imageProvider: AssetImage(path)),
-              PhotoView(imageProvider: AssetImage(path)),
-              PhotoView(imageProvider: AssetImage(path)),
-            ],
+      width: carouselWidth,
+      height: carouselHeight,
+      child: GestureDetector(
+        child: Card(
+          child: Padding(
+            padding: EdgeInsets.all(cardPadding),
+            child: Carousel(
+              dotSize: dotSize,
+              dotSpacing: dotSize * 3,
+              indicatorBgPadding: dotSize,
+              autoplay: false,
+              images: buildImages(paths),
+            ),
           ),
         ),
       ),
     );
+
+    Widget buildFullScreenImage(String path) {
+      return Container(
+        color: MyConfig.greyColor.withOpacity(0.5),
+        child: Stack(
+          alignment: Alignment.topRight,
+          children: [
+            PhotoView(
+              imageProvider: AssetImage(path),
+            ),
+            Padding(
+              padding: EdgeInsets.all(screenEdge),
+              child: Material(
+                color: MyConfig.transparentColor,
+                child: Ink(
+                  // decoration: ShapeDecoration(
+                  //   color: MyConfig.themeColor1,
+                  //   shape: CircleBorder(),
+                  // ),
+                  child: IconButton(
+                    icon: Icon(Icons.clear),
+                    color: Colors.white,
+                    onPressed: () {
+                      setState(() {
+                        currentPath = "";
+                        _isImageShown = false;
+                      });
+                    },
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
 
     Widget detailBox = Container(
       child: Card(
@@ -126,6 +187,13 @@ class _MyDetailPageState extends State<MyDetailPage> {
             children: [
               Center(child: Text("ข้อมูลพระ", style: MyConfig.normalBoldText4)),
               SizedBox(height: columnSpace),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(headers[0], style: MyConfig.smallBoldText1),
+                  Text(texts[0], style: MyConfig.smallText1),
+                ],
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -145,13 +213,6 @@ class _MyDetailPageState extends State<MyDetailPage> {
                 children: [
                   Text(headers[3], style: MyConfig.smallBoldText1),
                   Text(texts[3], style: MyConfig.smallText1),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(headers[4], style: MyConfig.smallBoldText1),
-                  Text(texts[4], style: MyConfig.smallText1),
                 ],
               ),
             ],
@@ -175,6 +236,13 @@ class _MyDetailPageState extends State<MyDetailPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  Text(headers[4], style: MyConfig.smallBoldText1),
+                  Text(texts[4], style: MyConfig.smallText1),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
                   Text(headers[5], style: MyConfig.smallBoldText1),
                   Text(texts[5], style: MyConfig.smallText1),
                 ],
@@ -186,13 +254,6 @@ class _MyDetailPageState extends State<MyDetailPage> {
                   Text(texts[6], style: MyConfig.smallText1),
                 ],
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(headers[7], style: MyConfig.smallBoldText1),
-                  Text(texts[7], style: MyConfig.smallText1),
-                ],
-              ),
               SizedBox(height: columnSpace),
               Center(
                 child: ButtonTheme(
@@ -201,7 +262,12 @@ class _MyDetailPageState extends State<MyDetailPage> {
                   child: RaisedButton(
                     color: MyConfig.greyColor,
                     child: Text('ดูใบรับรอง', style: MyConfig.buttonText),
-                    onPressed: () => {},
+                    onPressed: () {
+                      setState(() {
+                        currentPath = certificatePath;
+                        _isImageShown = true;
+                      });
+                    },
                   ),
                 ),
               ),
@@ -223,29 +289,34 @@ class _MyDetailPageState extends State<MyDetailPage> {
       ),
     );
 
-    return Scaffold(
-      backgroundColor: MyConfig.themeColor2,
-      appBar: myAppBar,
-      body: SingleChildScrollView(
-        child: Container(
-          margin: EdgeInsets.all(screenEdge),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              amuletTitleText,
-              SizedBox(height: desireHeight * 0.01),
-              myCarousel,
-              SizedBox(height: desireHeight * 0.01),
-              detailBox,
-              SizedBox(height: desireHeight * 0.01),
-              detailBox2,
-              SizedBox(height: desireHeight * 0.01),
-              buttonBox,
-            ],
+    return Stack(
+      children: [
+        Scaffold(
+          backgroundColor: MyConfig.themeColor2,
+          appBar: myAppBar,
+          body: SingleChildScrollView(
+            child: Container(
+              margin: EdgeInsets.all(screenEdge),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  amuletTitleText,
+                  SizedBox(height: desireHeight * 0.01),
+                  myCarousel,
+                  SizedBox(height: desireHeight * 0.01),
+                  detailBox,
+                  SizedBox(height: desireHeight * 0.01),
+                  detailBox2,
+                  SizedBox(height: desireHeight * 0.01),
+                  buttonBox,
+                ],
+              ),
+            ),
           ),
         ),
-      ),
+        if (_isImageShown) buildFullScreenImage(currentPath),
+      ],
     );
   }
 }
