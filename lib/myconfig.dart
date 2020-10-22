@@ -12,6 +12,7 @@ class MyConfig {
   static Color greyColor = Colors.grey;
   static Color redColor = Color(0xffF53232);
   static Color greenColor = Colors.green;
+  static Color transparentColor = Colors.transparent;
 
   static String fontFamily1 = 'Prompt';
   // EkkamaiNew , Prompt
@@ -28,9 +29,14 @@ class MyConfig {
   static TextStyle normalText3 = TextStyle(fontFamily: fontFamily1, fontSize: normalSize, color: redColor);
 
   static TextStyle normalBoldText1 = TextStyle(fontFamily: fontFamily1, fontSize: normalSize, color: blackColor, fontWeight: bold);
+  static TextStyle normalBoldText2 = TextStyle(fontFamily: fontFamily1, fontSize: normalSize, color: whiteColor, fontWeight: bold);
+  static TextStyle normalBoldText3 = TextStyle(fontFamily: fontFamily1, fontSize: normalSize, color: redColor, fontWeight: bold);
+  static TextStyle normalBoldText4 = TextStyle(fontFamily: fontFamily1, fontSize: normalSize, color: themeColor1, fontWeight: bold);
 
   static TextStyle smallText1 = TextStyle(fontFamily: fontFamily1, fontSize: smallSize, color: blackColor);
   static TextStyle smallText2 = TextStyle(fontFamily: fontFamily1, fontSize: smallSize, color: greyColor);
+
+  static TextStyle smallBoldText1 = TextStyle(fontFamily: fontFamily1, fontSize: smallSize, color: blackColor, fontWeight: bold);
 
   static TextStyle largeBoldText = TextStyle(fontFamily: fontFamily1, fontSize: largeSize, color: blackColor, fontWeight: bold);
 

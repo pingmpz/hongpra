@@ -57,7 +57,6 @@ class _MyMainPageState extends State<MyMainPage> {
     ];
 
     //------------------ Custom Methods ------------------
-
     void signOut(BuildContext context) {
       widget._auth.signOut();
       Navigator.pushAndRemoveUntil(
@@ -99,6 +98,7 @@ class _MyMainPageState extends State<MyMainPage> {
             icon: searchIcon,
             onPressed: () {
               setState(() {
+                searchController.clear();
                 if (this.searchIcon.icon == Icons.search) {
                   this.searchIcon = Icon(
                     Icons.close,
@@ -127,8 +127,7 @@ class _MyMainPageState extends State<MyMainPage> {
                     ),
                   );
                 } else {
-                  this.searchIcon =
-                      Icon(Icons.search, color: MyConfig.whiteColor);
+                  this.searchIcon = Icon(Icons.search, color: MyConfig.whiteColor);
                   this.searchTitle = Text("", style: MyConfig.normalText1);
                 }
               });
