@@ -5,7 +5,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hongpra/myconfig.dart';
-import 'package:hongpra/loginpage.dart';
 
 class MyRegisterPage extends StatefulWidget {
 
@@ -40,9 +39,7 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
         print("Registation Success");
         print(user.user.uid);
         Firestore.instance.collection('users').doc().set({'userid': user.user.uid, 'firstname': firstname, 'lastname': lastname});
-
-
-
+        // NAVIGATE
       }).catchError((error) {
         print(error.message);
       });
@@ -50,12 +47,7 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
       print("Password and Confirm-password is not match.");
     }
 
-
-
   }
-
-
-
 
   @override
   Widget build(BuildContext context) {

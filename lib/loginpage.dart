@@ -14,7 +14,7 @@ class MyLoginPage extends StatefulWidget {
 
 class _MyLoginPageState extends State<MyLoginPage> {
 
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final _auth = FirebaseAuth.instance;
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
@@ -23,21 +23,21 @@ class _MyLoginPageState extends State<MyLoginPage> {
   @override
   void initState() {
     super.initState();
-    checkAuth(context);
   }
 
   // Log-in
-  Future<FirebaseUser> signIn() async {
-    final FirebaseUser user = await _auth.signInWithEmailAndPassword(
-      email: emailController.text.trim(),
-      password: passwordController.text.trim(),
-    ).then((user) {
-      print("signed in " + user.user.email);
-      checkAuth(context);  // add here
-    }).catchError((e) {
-      print(e);
+  Future<User> signIn() async {
+    try {
+      final user = await _auth.signInWithEmailAndPassword(
+          email: emailController.text.trim(),
+          password: passwordController.text.trim());
+      if (user != null) {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyMainPage()));
+      }
+    } catch (e) {
+      print(e.code);
       switch (e.code) {
-        case "ERROR_WRONG_PASSWORD":
+        case "wrong-password": // "ERROR_WRONG_PASSWORD":
           print("Wrong Password! Try again.");
           break;
         case "ERROR_INVALID_EMAIL":
@@ -45,15 +45,11 @@ class _MyLoginPageState extends State<MyLoginPage> {
           break;
         case "ERROR_USER_NOT_FOUND":
           print("User not found! Register first!");
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => MyRegisterPage()),
-          );
           break;
         case "ERROR_USER_DISABLED":
           print("User has been disabled!, Try again");
           break;
-        case "ERROR_TOO_MANY_REQUESTS":
+        case "too-many-requests": //"ERROR_TOO_MANY_REQUESTS":
           print(
               "Sign in disabled due to too many requests from this user!, Try again");
           break;
@@ -64,18 +60,6 @@ class _MyLoginPageState extends State<MyLoginPage> {
         default:
           print("Unknown error");
       }
-      return false;
-    });
-  }
-
-  // Check user log-in
-  Future checkAuth(BuildContext context) async {
-    FirebaseUser user = await _auth.currentUser();
-
-    if (user != null) {
-      print("Already singed-in with");
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => MyMainPage(user, _auth)));
     }
   }
 
@@ -107,8 +91,8 @@ class _MyLoginPageState extends State<MyLoginPage> {
 
     //------------------ Custom Widgets ------------------
 
-    Widget headerText = Center(child: Text('ห้องพระ', style: MyConfig.largeHeaderText));
-    Widget titleText = Center(child: Text('ยินดีต้อนรับสู่ ห้องพระ', style: MyConfig.titleText));
+    Widget headerText = Center(child: Text('ห้องพระ', style: MyConfig.logoText));
+    Widget titleText = Center(child: Text('ยินดีต้อนรับสู่ ห้องพระ', style: MyConfig.largeBoldText));
     Widget subtitleText = Center(child: Text('เข้าสู่ระบบเพื่อใช้งาน', style: MyConfig.smallText2));
     Widget emailLabel = Text('อีเมล', style: MyConfig.normalText1);
 
