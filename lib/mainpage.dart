@@ -8,20 +8,53 @@ import 'package:hongpra/loginpage.dart';
 import 'package:page_transition/page_transition.dart';
 
 class MyMainPage extends StatefulWidget {
-  final FirebaseUser user;
-  final FirebaseAuth _auth;
-
-  MyMainPage(this.user, this._auth, {Key key}) : super(key: key);
+  // final FirebaseAuth _auth;
+  // MyMainPage(this._auth, {Key key}) : super(key: key);
 
   @override
   _MyMainPageState createState() => _MyMainPageState();
 }
 
 class _MyMainPageState extends State<MyMainPage> {
+  User loginUser;
+  List<String> items;
+
   final searchController = new TextEditingController();
 
   Widget searchTitle = Text("", style: MyConfig.normalText1);
   Icon searchIcon = new Icon(Icons.search, color: MyConfig.whiteColor);
+
+  @override
+  void initState() {
+    super.initState();
+    getCurrentUser();
+  }
+
+  //------------------ Custom Methods ------------------
+  void getCurrentUser() async{
+    try {
+      final user = await FirebaseAuth.instance.currentUser;
+      if(user != null){
+        loginUser = user;
+        // --> generate list
+      } else {
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => MyLoginPage()),
+            ModalRoute.withName('/'));
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  void signOut(BuildContext context) {
+    FirebaseAuth.instance.signOut();
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => MyLoginPage()),
+        ModalRoute.withName('/'));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,15 +90,6 @@ class _MyMainPageState extends State<MyMainPage> {
       'สถานที่ : วัดชนะสงคราม พ.ศ. 2484',
       'วันที่รับรอง : 8 พฤศจิกายน 2562'
     ];
-
-    //------------------ Custom Methods ------------------
-    void signOut(BuildContext context) {
-      widget._auth.signOut();
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => MyLoginPage()),
-          ModalRoute.withName('/'));
-    }
 
     //------------------ Custom Widgets ------------------
     Widget myAppBar = AppBar(
