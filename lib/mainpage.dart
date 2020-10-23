@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hongpra/myconfig.dart';
 import 'package:hongpra/detailpage.dart';
-import 'package:hongpra/longinpage.dart';
+import 'package:hongpra/loginpage.dart';
 import 'package:page_transition/page_transition.dart';
 
 class MyMainPage extends StatefulWidget {
