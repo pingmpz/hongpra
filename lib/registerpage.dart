@@ -1,15 +1,63 @@
 import 'dart:math';
 
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hongpra/myconfig.dart';
 
+import 'longinpage.dart';
+
 class MyRegisterPage extends StatefulWidget {
+
   @override
   _MyRegisterPageState createState() => _MyRegisterPageState();
 }
 
 class _MyRegisterPageState extends State<MyRegisterPage> {
+
+  FirebaseAuth _auth = FirebaseAuth.instance;
+
+
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmController = TextEditingController();
+  TextEditingController firstnameController = TextEditingController();
+  TextEditingController lastnameController = TextEditingController();
+
+
+  void signUp() {
+
+    String email = emailController.text.trim();
+    String password = passwordController.text.trim();
+    String confirmPassword = confirmController.text.trim();
+    String firstname = firstnameController.text.trim();
+    String lastname = lastnameController.text.trim();
+
+    if (password == confirmPassword && password.length >= 6) {
+      _auth
+          .createUserWithEmailAndPassword(email: email, password: password)
+          .then((user) {
+        print("Registation Success");
+        print(user.user.uid);
+        Firestore.instance.collection('users').doc().set({'userid': user.user.uid, 'firstname': firstname, 'lastname': lastname});
+
+
+
+      }).catchError((error) {
+        print(error.message);
+      });
+    } else {
+      print("Password and Confirm-password is not match.");
+    }
+
+
+
+  }
+
+
+
+
   @override
   Widget build(BuildContext context) {
     //------------------ Custom Variables ------------------
@@ -64,6 +112,7 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
     Widget emailLabel = Text('อีเมล', style: MyConfig.normalText1);
 
     Widget emailField = TextField(
+      controller: emailController,
       obscureText: false,
       style: MyConfig.normalText1,
       decoration: InputDecoration(
@@ -78,6 +127,7 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
     Widget passwordLabel = Text('รหัสผ่าน', style: MyConfig.normalText1);
 
     Widget passwordField = TextField(
+      controller: passwordController,
       obscureText: true,
       style: MyConfig.normalText1,
       decoration: InputDecoration(
@@ -92,6 +142,7 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
     Widget rePasswordLabel = Text('ยืนยันรหัสผ่าน', style: MyConfig.normalText1);
 
     Widget rePasswordField = TextField(
+      controller: confirmController,
       obscureText: true,
       style: MyConfig.normalText1,
       decoration: InputDecoration(
@@ -103,9 +154,10 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
           border: OutlineInputBorder()),
     );
 
-    Widget surnameLabel = Text('ชื่อ', style: MyConfig.normalText1);
+    Widget firstnameLabel = Text('ชื่อ', style: MyConfig.normalText1);
 
-    Widget surnameField = TextField(
+    Widget firstnameField = TextField(
+      controller: firstnameController,
       obscureText: false,
       style: MyConfig.normalText1,
       decoration: InputDecoration(
@@ -120,6 +172,7 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
     Widget lastnameLabel = Text('นามสกุล', style: MyConfig.normalText1);
 
     Widget lastnameField = TextField(
+      controller: lastnameController,
       obscureText: false,
       style: MyConfig.normalText1,
       decoration: InputDecoration(
@@ -136,7 +189,7 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
         minWidth: registerButtonWidth,
         height: registerButtonHeight,
         child: RaisedButton(
-          onPressed: () => {},
+          onPressed: () => { signUp() },
           color: MyConfig.blackColor,
           child: Text('สมัครสมาชิก', style: MyConfig.buttonText),
         ),
@@ -181,9 +234,9 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
               SizedBox(height: desireHeight * 0.005),
               rePasswordField,
               SizedBox(height: desireHeight * 0.01),
-              surnameLabel,
+              firstnameLabel,
               SizedBox(height: desireHeight * 0.005),
-              surnameField,
+              firstnameField,
               SizedBox(height: desireHeight * 0.01),
               lastnameLabel,
               SizedBox(height: desireHeight * 0.005),
