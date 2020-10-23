@@ -23,32 +23,13 @@ class _MyLoginPageState extends State<MyLoginPage> {
   @override
   void initState() {
     super.initState();
-    checkAuth(context);
   }
 
   // Log-in
-  Future<FirebaseUser> signIn() async {
-    final user = await _auth.signInWithEmailAndPassword(
-      email: emailController.text.trim(),
-      password: passwordController.text.trim(),
-    ).then((user) {
-      print("signed in " + user.user.email);
-      checkAuth(context);  // add here
-    }).catchError((error) {
-      print(error);
-    });
-  }
 
-  // Check user log-in
-  Future checkAuth(BuildContext context) async {
-    FirebaseUser user = await _auth.currentUser;
 
-    if (user != null) {
-      print("Already singed-in with");
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => MyMainPage(user, _auth)));
-    }
-  }
+
+
 
 
   @override
