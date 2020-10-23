@@ -7,10 +7,7 @@ import 'package:hongpra/myconfig.dart';
 import 'package:hongpra/mainpage.dart';
 import 'package:hongpra/registerpage.dart';
 
-
 class MyLoginPage extends StatefulWidget {
-
-  
   @override
   _MyLoginPageState createState() => _MyLoginPageState();
 }
@@ -30,13 +27,12 @@ class _MyLoginPageState extends State<MyLoginPage> {
   }
 
   // Log-in
-  // ignore: missing_return
   Future<FirebaseUser> signIn() async {
     final FirebaseUser user = await _auth.signInWithEmailAndPassword(
       email: emailController.text.trim(),
       password: passwordController.text.trim(),
     ).then((user) {
-      print("signed in " + user.user.uid);
+      print("signed in ${user.email}");
       checkAuth(context);  // add here
     }).catchError((error) {
       print(error);
@@ -45,7 +41,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
 
   // Check user log-in
   Future checkAuth(BuildContext context) async {
-    FirebaseUser user = await _auth.currentUser;
+    FirebaseUser user = await _auth.currentUser();
 
     if (user != null) {
       print("Already singed-in with");

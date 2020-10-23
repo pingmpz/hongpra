@@ -12,28 +12,38 @@ class MyConfig {
   static Color greyColor = Colors.grey;
   static Color redColor = Color(0xffF53232);
   static Color greenColor = Colors.green;
+  static Color transparentColor = Colors.transparent;
 
-  static String fontFamily1 = 'Roboto';
-  // EkkamaiNew
+  static String fontFamily1 = 'Prompt';
+  // EkkamaiNew , Prompt
   static String fontFamily2 = 'Srisakdi';
 
   static FontWeight bold = FontWeight.bold;
 
-  static TextStyle normalText1 = TextStyle(fontFamily: fontFamily1, fontSize: 16, color: blackColor);
-  static TextStyle normalText2 = TextStyle(fontFamily: fontFamily1, fontSize: 16, color: whiteColor);
-  static TextStyle normalText3 = TextStyle(fontFamily: fontFamily1, fontSize: 16, color: redColor);
+  static double normalSize = 14;
+  static double smallSize = 12;
+  static double largeSize = 24;
 
-  static TextStyle smallText1 = TextStyle(fontFamily: fontFamily1, fontSize: 12, color: blackColor);
-  static TextStyle smallText2 = TextStyle(fontFamily: fontFamily1, fontSize: 12, color: greyColor);
+  static TextStyle normalText1 = TextStyle(fontFamily: fontFamily1, fontSize: normalSize, color: blackColor);
+  static TextStyle normalText2 = TextStyle(fontFamily: fontFamily1, fontSize: normalSize, color: whiteColor);
+  static TextStyle normalText3 = TextStyle(fontFamily: fontFamily1, fontSize: normalSize, color: redColor);
 
-  static TextStyle largeText1 = TextStyle(fontFamily: fontFamily1, fontSize: 16, color: blackColor, fontWeight: bold);
+  static TextStyle normalBoldText1 = TextStyle(fontFamily: fontFamily1, fontSize: normalSize, color: blackColor, fontWeight: bold);
+  static TextStyle normalBoldText2 = TextStyle(fontFamily: fontFamily1, fontSize: normalSize, color: whiteColor, fontWeight: bold);
+  static TextStyle normalBoldText3 = TextStyle(fontFamily: fontFamily1, fontSize: normalSize, color: redColor, fontWeight: bold);
+  static TextStyle normalBoldText4 = TextStyle(fontFamily: fontFamily1, fontSize: normalSize, color: themeColor1, fontWeight: bold);
 
-  static TextStyle buttonText = TextStyle(fontFamily: fontFamily1, fontSize: 16, color: whiteColor, fontWeight: bold);
-  static TextStyle linkText = TextStyle(fontFamily: fontFamily1, fontSize: 16, color: blackColor, fontWeight: bold);
+  static TextStyle smallText1 = TextStyle(fontFamily: fontFamily1, fontSize: smallSize, color: blackColor);
+  static TextStyle smallText2 = TextStyle(fontFamily: fontFamily1, fontSize: smallSize, color: greyColor);
 
-  static TextStyle largeHeaderText = TextStyle(fontFamily: fontFamily2, fontSize: 86, color: whiteColor, fontWeight: bold);
-  static TextStyle appBarTitleText = TextStyle(fontFamily: fontFamily1, fontSize: 24, color: whiteColor, fontWeight: bold);
+  static TextStyle smallBoldText1 = TextStyle(fontFamily: fontFamily1, fontSize: smallSize, color: blackColor, fontWeight: bold);
 
-  static TextStyle titleText = TextStyle(fontFamily: fontFamily1, fontSize: 24, color: blackColor, fontWeight: bold);
+  static TextStyle largeBoldText = TextStyle(fontFamily: fontFamily1, fontSize: largeSize, color: blackColor, fontWeight: bold);
+
+  static TextStyle buttonText = TextStyle(fontFamily: fontFamily1, fontSize: normalSize, color: whiteColor, fontWeight: bold);
+  static TextStyle linkText = TextStyle(fontFamily: fontFamily1, fontSize: normalSize, color: blackColor, fontWeight: bold);
+
+  static TextStyle logoText = TextStyle(fontFamily: fontFamily2, fontSize: 86, color: whiteColor, fontWeight: bold);
+  static TextStyle appBarTitleText = TextStyle(fontFamily: fontFamily1, fontSize: largeSize, color: whiteColor, fontWeight: bold);
 
 }

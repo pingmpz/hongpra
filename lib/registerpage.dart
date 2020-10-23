@@ -63,22 +63,21 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
     //------------------ Custom Variables ------------------
     double minWidth = 360.0;
     double minHeight = 600.0;
-    double minEdge = 9.0;
-    double maxEdge = 18.0;
+    double screenMinEdge = 9.0;
+    double screenMaxEdge = 18.0;
+    double boxEdgeWidth = 15.0;
+    double boxEdgeHeight = 5.0;
+    double boxCurve = 18.0;
     double maxTextFieldEdge = 12.0;
     double registerButtonWidth = 200;
     double registerButtonHeight = 40;
     double footerHeight = 30;
-    double boxEdgeWidth = 15.0;
-    double boxEdgeHeight = 5.0;
-    double boxCurve = 18.0;
-    double leadingIconPaddingTop = 6.0;
 
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     double desireWidth = (screenWidth < minWidth) ? screenWidth : minWidth;
     double desireHeight = (screenHeight < minHeight) ? screenHeight : minHeight;
-    double screenEdge = (screenWidth <= minWidth) ? minEdge : min(screenWidth - minWidth, maxEdge);
+    double screenEdge = (screenWidth <= minWidth) ? screenMinEdge : min(screenWidth - minWidth, screenMaxEdge);
     double textFieldEdge = (screenWidth < minWidth) ? screenWidth/minWidth * maxTextFieldEdge : maxTextFieldEdge;
 
     //------------------ Custom Widgets ------------------
@@ -92,7 +91,6 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
           Align(
             alignment: Alignment.centerLeft,
             child: Container(
-              padding: EdgeInsets.only(top: leadingIconPaddingTop),
               child: IconButton(
                 icon: Icon(Icons.arrow_back_rounded),
                 color: MyConfig.whiteColor,
@@ -206,7 +204,7 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
 
     return Scaffold(
       backgroundColor: MyConfig.themeColor1,
-      resizeToAvoidBottomInset: false,
+      //resizeToAvoidBottomInset: false,
       appBar: myAppBar,
       body: Center(
         child: Container(

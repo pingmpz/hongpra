@@ -18,9 +18,11 @@ dependencies:
   cupertino_icons: ^0.1.3
   device_preview:
   scroll_app_bar:
-  carousel_slider:
+#  carousel_slider:
   carousel_pro:
   page_transition:
+  photo_view:
+  full_screen_image:
 
 dev_dependencies:
   flutter_test:
@@ -32,15 +34,19 @@ flutter:
 
   assets:
     - assets/images/logo.png
-    - assets/images/background.jpg
-    - assets/images/lg.jpg
+    - assets/images/amulet1.jpg
+    - assets/images/certificate1.jpg
 
   fonts:
     - family: Srisakdi
       fonts:
-        - asset: fonts/Srisakdi-Regular.ttf
-        - asset: fonts/Srisakdi-Bold.ttf
+      - asset: fonts/Srisakdi/Srisakdi-Regular.ttf
+      - asset: fonts/Srisakdi/Srisakdi-Bold.ttf
     - family: EkkamaiNew
       fonts:
-        - asset: fonts/EkkamaiNew-Regular.ttf
+      - asset: fonts/EkkamaiNew/EkkamaiNew-Regular.ttf
+    - family: Prompt
+      fonts:
+      - asset: fonts/Prompt/Prompt-Regular.ttf
+      - asset: fonts/Prompt/Prompt-Bold.ttf
 
