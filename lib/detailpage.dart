@@ -16,7 +16,73 @@ class MyDetailPage extends StatefulWidget {
 
 class _MyDetailPageState extends State<MyDetailPage> {
   bool _isImageShown = false;
-  String currentPath = "";
+  bool _isArrowLeftShown = false;
+  bool _isArrowRightShown = false;
+  int currentIndex;
+  List<String> currentPaths;
+
+  //------------------ Sample Variables ------------------
+  String certificatePath = "assets/images/certificate1.jpg";
+
+  List<String> amuletPaths = [
+    "assets/images/amulet1.jpg",
+    "assets/images/certificate1.jpg",
+    "assets/images/amulet1.jpg",
+    "assets/images/certificate1.jpg",
+    "assets/images/amulet1.jpg",
+  ];
+
+  String amuletName = 'พระกริ่งชัย-วัฒน์ทั่วไป';
+
+  List<String> headers = [
+    'ชื่อพระ',
+    'พิมพ์พระ',
+    'เนื้อพระ',
+    'รายละเอียด',
+    'รหัสใบรับรอง',
+    'วันที่รับรอง',
+    'รับรองโดย',
+  ];
+
+  List<String> texts = [
+    'พระชัยวัฒน์',
+    'พิมพ์อุดมีกริ่ง',
+    'ทองเหลือง',
+    'วัดชนะสงคราม พ.ศ. 2484',
+    '19945A007',
+    '8 พฤศจิกายน 2562',
+    'หัวหน้าสมาคมพระเครื่องแห่งประเทศไทย',
+  ];
+
+  //------------------ Custom Functions ------------------
+  void enterFullScreenImage(List<String> paths, int index){
+    setState(() {
+      currentPaths = paths;
+      currentIndex = index;
+      _isImageShown = true;
+      _isArrowLeftShown = (index == 0) ? false : true;
+      _isArrowRightShown = (index == paths.length - 1) ? false : true;
+    });
+  }
+  void exitFullScreenImage(){
+    setState(() {
+      _isImageShown = false;
+    });
+  }
+  void nextImage(){
+    setState(() {
+      currentIndex = currentIndex + 1;
+      _isArrowLeftShown = (currentIndex == 0) ? false : true;
+      _isArrowRightShown = (currentIndex == currentPaths.length - 1) ? false : true;
+    });
+  }
+  void previousImage(){
+    setState(() {
+      currentIndex = currentIndex - 1;
+      _isArrowLeftShown = (currentIndex == 0) ? false : true;
+      _isArrowRightShown = (currentIndex == currentPaths.length - 1) ? false : true;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,39 +108,6 @@ class _MyDetailPageState extends State<MyDetailPage> {
     double carouselWidth = screenWidth;
     double buttonWidth = screenWidth - (screenEdge * 4);
     double buttonHeight = 40.0;
-
-    //------------------ Sample Variables ------------------
-    String certificatePath = "assets/images/certificate1.jpg";
-
-    List<String> paths = [
-      "assets/images/amulet1.jpg",
-      "assets/images/amulet1.jpg",
-      "assets/images/amulet1.jpg",
-      "assets/images/amulet1.jpg",
-      "assets/images/amulet1.jpg",
-    ];
-
-    String amuletName = 'พระกริ่งชัย-วัฒน์ทั่วไป';
-
-    List<String> headers = [
-      'ชื่อพระ',
-      'พิมพ์พระ',
-      'เนื้อพระ',
-      'รายละเอียด',
-      'รหัสใบรับรอง',
-      'วันที่รับรอง',
-      'รับรองโดย',
-    ];
-
-    List<String> texts = [
-      'พระชัยวัฒน์',
-      'พิมพ์อุดมีกริ่ง',
-      'ทองเหลือง',
-      'วัดชนะสงคราม พ.ศ. 2484',
-      '19945A007',
-      '8 พฤศจิกายน 2562',
-      'หัวหน้าสมาคมพระเครื่องแห่งประเทศไทย',
-    ];
 
     //------------------ Custom Widgets ------------------
     Widget myAppBar = AppBar(
@@ -111,11 +144,8 @@ class _MyDetailPageState extends State<MyDetailPage> {
         paths.length,
         (index) => GestureDetector(
           child: Image(image: AssetImage(paths[index])),
-          onDoubleTap: () {
-            setState(() {
-              currentPath = paths[index];
-              _isImageShown = true;
-            });
+          onDoubleTap: () => {
+            enterFullScreenImage(paths, index)
           },
         ),
       );
@@ -133,44 +163,75 @@ class _MyDetailPageState extends State<MyDetailPage> {
               dotSpacing: dotSize * 3,
               indicatorBgPadding: dotSize,
               autoplay: false,
-              images: buildImages(paths),
+              images: buildImages(amuletPaths),
             ),
           ),
         ),
       ),
     );
 
-    Widget buildFullScreenImage(String path) {
+    Widget buildFullScreenImage() {
       return Container(
         color: MyConfig.greyColor.withOpacity(0.5),
         child: Stack(
           alignment: Alignment.topRight,
           children: [
             PhotoView(
-              imageProvider: AssetImage(path),
+              imageProvider: AssetImage(currentPaths[currentIndex]),
             ),
             Padding(
               padding: EdgeInsets.all(screenEdge),
               child: Material(
                 color: MyConfig.transparentColor,
                 child: Ink(
-                  // decoration: ShapeDecoration(
-                  //   color: MyConfig.themeColor1,
-                  //   shape: CircleBorder(),
-                  // ),
                   child: IconButton(
                     icon: Icon(Icons.clear),
                     color: Colors.white,
-                    onPressed: () {
-                      setState(() {
-                        currentPath = "";
-                        _isImageShown = false;
-                      });
+                    onPressed: () => {
+                      exitFullScreenImage()
                     },
                   ),
                 ),
               ),
             ),
+            Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  (_isArrowLeftShown) ? Padding(
+                    padding: EdgeInsets.all(screenEdge),
+                    child: Material(
+                      color: MyConfig.transparentColor,
+                      child: Ink(
+                        child: IconButton(
+                          icon: Icon(Icons.chevron_left),
+                          color: Colors.white,
+                          onPressed: () => {
+                            previousImage()
+                          },
+                        ),
+                      ),
+                    ),
+                  ) : SizedBox(),
+                  (_isArrowRightShown) ? Padding(
+                    padding: EdgeInsets.all(screenEdge),
+                    child: Material(
+                      color: MyConfig.transparentColor,
+                      child: Ink(
+                        child: IconButton(
+                          icon: Icon(Icons.chevron_right),
+                          color: Colors.white,
+                          onPressed: () => {
+                            nextImage()
+                          },
+                        ),
+                      ),
+                    ),
+                  ) : SizedBox(),
+                ],
+              ),
+            )
           ],
         ),
       );
@@ -261,11 +322,8 @@ class _MyDetailPageState extends State<MyDetailPage> {
                   child: RaisedButton(
                     color: MyConfig.greyColor,
                     child: Text('ดูใบรับรอง', style: MyConfig.buttonText),
-                    onPressed: () {
-                      setState(() {
-                        currentPath = certificatePath;
-                        _isImageShown = true;
-                      });
+                    onPressed: () => {
+                      enterFullScreenImage([certificatePath], 0)
                     },
                   ),
                 ),
@@ -317,7 +375,7 @@ class _MyDetailPageState extends State<MyDetailPage> {
             ),
           ),
         ),
-        if (_isImageShown) buildFullScreenImage(currentPath),
+        if (_isImageShown) buildFullScreenImage(),
       ],
     );
   }

@@ -24,10 +24,10 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
 
     double desireWidth = (screenWidth < minWidth) ? screenWidth : minWidth;
     double desireHeight = (screenHeight < minHeight) ? screenHeight : minHeight;
-    double screenEdge = (screenWidth < minWidth)
+    double screenEdge = (screenWidth <= minWidth)
         ? screenMinEdge
         : min(screenWidth - minWidth, screenMaxEdge);
-    double buttonWidth = (screenWidth - (screenEdge * 4)) / 2;
+    double buttonWidth = (screenWidth - (screenEdge * 3)) / 2;
     double buttonHeight = 40.0;
 
     //------------------ Sample Variables ------------------
@@ -130,6 +130,7 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
               },
             ),
           ),
+          SizedBox(width: screenEdge),
           ButtonTheme(
             minWidth: buttonWidth,
             height: buttonHeight,

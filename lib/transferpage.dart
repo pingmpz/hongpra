@@ -18,7 +18,7 @@ class _MyTransferPageState extends State<MyTransferPage> {
   //------------------ Custom Functions ------------------
 
   Future scan() async {
-    scanner = await FlutterBarcodeScanner.scanBarcode(
+    scanner = await FlutterBarcodeScanner.scanBarcode("#" +
         MyConfig.colorTheme1, "Cancel", true, ScanMode.BARCODE);
     approve(scanner);
   }
@@ -51,10 +51,10 @@ class _MyTransferPageState extends State<MyTransferPage> {
 
     double desireWidth = (screenWidth < minWidth) ? screenWidth : minWidth;
     double desireHeight = (screenHeight < minHeight) ? screenHeight : minHeight;
-    double screenEdge = (screenWidth < minWidth)
+    double screenEdge = (screenWidth <= minWidth)
         ? screenMinEdge
         : min(screenWidth - minWidth, screenMaxEdge);
-    double buttonWidth = (screenWidth - (screenEdge * 4));
+    double buttonWidth = (screenWidth - (screenEdge * 2));
     double buttonHeight = 40.0;
     double textFieldEdge = (screenWidth < minWidth)
         ? screenWidth / minWidth * maxTextFieldEdge
