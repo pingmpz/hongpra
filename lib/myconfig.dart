@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 class MyConfig {
 
-  static String colorText = 'B22222';
-  static Color themeColor1 = Color(int.parse('0xff' + colorText));
-  static String colorText2 = 'f9f9f9';
-  static Color themeColor2 = Color(int.parse('0xff' + colorText2));
+  static String colorTheme1 = 'B22222';
+  static Color themeColor1 = Color(int.parse('0xff' + colorTheme1));
+  static String colorTheme2 = 'f9f9f9';
+  static Color themeColor2 = Color(int.parse('0xff' + colorTheme2));
 
   static Color blackColor = Colors.black;
   static Color whiteColor = Colors.white;

@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:hongpra/myconfig.dart';
 import 'package:carousel_pro/carousel_pro.dart';
-import 'package:hongpra/registerpage.dart';
+import 'package:hongpra/transferpage.dart';
 import 'package:photo_view/photo_view.dart';
 
 class MyDetailPage extends StatefulWidget {
@@ -43,6 +43,7 @@ class _MyDetailPageState extends State<MyDetailPage> {
     double buttonWidth = screenWidth - (screenEdge * 4);
     double buttonHeight = 40.0;
 
+    //------------------ Sample Variables ------------------
     String certificatePath = "assets/images/certificate1.jpg";
 
     List<String> paths = [
@@ -74,8 +75,6 @@ class _MyDetailPageState extends State<MyDetailPage> {
       '8 พฤศจิกายน 2562',
       'หัวหน้าสมาคมพระเครื่องแห่งประเทศไทย',
     ];
-
-    //------------------ Custom Methods ------------------
 
     //------------------ Custom Widgets ------------------
     Widget myAppBar = AppBar(
@@ -284,7 +283,10 @@ class _MyDetailPageState extends State<MyDetailPage> {
         child: RaisedButton(
           color: MyConfig.themeColor1,
           child: Text('ส่งมอบ', style: MyConfig.buttonText),
-          onPressed: () => {},
+          onPressed: () => {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => MyTransferPage()))
+          },
         ),
       ),
     );

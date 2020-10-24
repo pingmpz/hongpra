@@ -80,6 +80,7 @@ class _MyMainPageState extends State<MyMainPage> {
             ? 0
             : ((screenWidth - minWidth) / (minWidth / minGridCount)).floor());
 
+    //------------------ Sample Variables ------------------
     String path = 'assets/images/amulet1.jpg';
 
     List<String> sampleTexts = [
