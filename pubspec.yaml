@@ -24,6 +24,7 @@ dependencies:
   photo_view:
 #  full_screen_image:
   flutter_barcode_scanner:
+  pull_to_refresh:
 
 
 dev_dependencies:

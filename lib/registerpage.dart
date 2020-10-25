@@ -61,7 +61,6 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
       return null;
   }
 
-
   // Register for new user
   void signUp() {
 

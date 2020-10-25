@@ -7,6 +7,7 @@ import 'package:hongpra/myconfig.dart';
 import 'package:hongpra/detailpage.dart';
 import 'package:hongpra/loginpage.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class MyMainPage extends StatefulWidget {
   @override
@@ -15,9 +16,10 @@ class MyMainPage extends StatefulWidget {
 
 class _MyMainPageState extends State<MyMainPage> {
   User loginUser;
-  List<Data> items = new List<Data>();
+  List<Data> amuletList = new List<Data>();
 
   final searchController = new TextEditingController();
+  RefreshController refreshController = RefreshController(initialRefresh: false);
 
   Widget searchTitle = Text("", style: MyConfig.normalText1);
   Icon searchIcon = new Icon(Icons.search, color: MyConfig.whiteColor);
@@ -28,6 +30,12 @@ class _MyMainPageState extends State<MyMainPage> {
     setState(() {
       getCurrentUser();
     });
+  }
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
   }
 
   //------------------ Custom Functions ------------------
@@ -51,7 +59,7 @@ class _MyMainPageState extends State<MyMainPage> {
 
   void generateItems() async {
     final _firestoreInstance = FirebaseFirestore.instance;
-    items = new List<Data>();
+    amuletList = new List<Data>();
 
     _firestoreInstance.collection("users").get().then((querySnapshot) {
       querySnapshot.docs.forEach((result) {
@@ -63,7 +71,7 @@ class _MyMainPageState extends State<MyMainPage> {
             .then((querySnapshot) {
           querySnapshot.docs.forEach((result) {
             setState(() {
-              items.add(
+              amuletList.add(
                 new Data(
                     result.data()['images'],
                     result.data()['name'],
@@ -84,6 +92,36 @@ class _MyMainPageState extends State<MyMainPage> {
         context,
         MaterialPageRoute(builder: (context) => MyLoginPage()),
         ModalRoute.withName('/'));
+  }
+
+  void search() {
+    setState(() {
+      String result = searchController.text;
+      for(Data item in amuletList){
+        if(item.amuletName.toLowerCase().contains(result.toLowerCase())){
+          item.isActive = true;
+        } else {
+          item.isActive = false;
+        }
+      }
+    });
+  }
+
+  void reset() {
+    setState(() {
+      for(Data item in amuletList){
+        item.isActive = true;
+      }
+    });
+  }
+
+  void refresh() async{
+    setState(() async {
+      generateItems();
+      searchController.clear();
+      await Future.delayed(Duration(milliseconds: 1000));
+      refreshController.refreshCompleted();
+    });
   }
 
   @override
@@ -171,12 +209,14 @@ class _MyMainPageState extends State<MyMainPage> {
                         hintText: "ค้นหา",
                         hintStyle: MyConfig.normalText1,
                       ),
+                      onChanged: (text) => {search()},
                     ),
                   );
                 } else {
                   this.searchIcon =
                       Icon(Icons.search, color: MyConfig.whiteColor);
                   this.searchTitle = Text("", style: MyConfig.normalText1);
+                  reset();
                 }
               });
             },
@@ -202,8 +242,8 @@ class _MyMainPageState extends State<MyMainPage> {
                     flex: 3,
                     child: Container(
                       margin: EdgeInsets.all(cardInnerEdge),
-                      child: Image.network(
-                          image), //child: Image(image: AssetImage(image)),
+                      child: Image.network(image),
+                      //child: Image(image: AssetImage(image)),
                     ),
                   ),
                   Expanded(
@@ -237,20 +277,24 @@ class _MyMainPageState extends State<MyMainPage> {
     }
 
     List<Widget> cardsBuilder() {
-      return List<Widget>.generate(items.length, (index) {
-        return buildCard(
-            items[index].image != null ? items[index].image : "",
-            items[index].amuletName != null ? items[index].amuletName : "",
-            items[index].amuletCategories != null
-                ? items[index].amuletCategories
-                : "",
-            items[index].texture != null ? items[index].texture : "",
-            items[index].info != null ? items[index].info : "");
+      List<Data> showingList = amuletList.where((element) => element.isActive == true).toList();
+      return List<Widget>.generate(showingList.length, (index) {
+          return (showingList[index].isActive == true) ? buildCard(
+              showingList[index].image != null ? showingList[index].image : "",
+              showingList[index].amuletName != null
+                  ? showingList[index].amuletName
+                  : "",
+              showingList[index].amuletCategories != null
+                  ? showingList[index].amuletCategories
+                  : "",
+              showingList[index].texture != null
+                  ? showingList[index].texture
+                  : "",
+              showingList[index].info != null ? showingList[index].info : "") : SizedBox();
       });
     }
 
     Widget myGrid = GridView.count(
-      //controller: scrollController,
       crossAxisCount: gridCount,
       childAspectRatio: gridRatio,
       children: cardsBuilder(),
@@ -288,7 +332,11 @@ class _MyMainPageState extends State<MyMainPage> {
         body: Scaffold(
           backgroundColor: MyConfig.themeColor2,
           appBar: mySearchBar,
-          body: Container(
+          body: SmartRefresher(
+            enablePullDown: true,
+            controller: refreshController,
+            onRefresh: refresh,
+            //header: WaterDropHeader(),
             child: myGrid,
           ),
         ),
@@ -304,6 +352,7 @@ class Data {
   String amuletCategories;
   String texture;
   String info;
+  bool isActive = true;
 
   Data(this.image, this.amuletName, this.amuletCategories, this.texture,
       this.info);
