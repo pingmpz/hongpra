@@ -18,14 +18,12 @@ class _MyLoginPageState extends State<MyLoginPage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
-
-  //------------------ Custom Methods ------------------
   @override
   void initState() {
     super.initState();
   }
 
-  // Log-in
+  //------------------ Custom Functions ------------------
   Future<User> signIn() async {
     try {
       final user = await _auth.signInWithEmailAndPassword(
@@ -37,7 +35,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
     } catch (e) {
       print(e.code);
       switch (e.code) {
-        case "wrong-password": // "ERROR_WRONG_PASSWORD":
+        case "wrong-password":
           print("Wrong Password! Try again.Wrong email/password combination.");
           break;
         case "invalid-email":
@@ -49,7 +47,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
         case "user-disabled":
           print("User has been disabled!, Try again");
           break;
-        case "operation-not-allowed": //"ERROR_TOO_MANY_REQUESTS":
+        case "operation-not-allowed":
           print(
               "Too many requests to log into this account., Try again");
           break;

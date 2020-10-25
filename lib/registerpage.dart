@@ -20,11 +20,21 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
 
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  TextEditingController confirmController = TextEditingController();
-  TextEditingController firstnameController = TextEditingController();
-  TextEditingController lastnameController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
+  TextEditingController firstNameController = TextEditingController();
+  TextEditingController lastNameController = TextEditingController();
 
-  // Regular Expression for Email validation
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    firstNameController.dispose();
+    lastNameController.dispose();
+    super.dispose();
+  }
+
+  //------------------ Custom Functions ------------------
   String validateEmail(String value) {
     Pattern pattern =
         r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
@@ -36,7 +46,6 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
       return null;
   }
 
-  // Regular Expression for Password validation
   String validatePassword(String value) {
     Pattern pattern =
         r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])$';
@@ -52,8 +61,6 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
     }
   }
 
-
-  // Name validation
   String validateName(String value) {
     if (value.length < 3)
       return 'Name must be more than 2 charater';
@@ -61,19 +68,15 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
       return null;
   }
 
-  // Register for new user
   void signUp() {
-
     String email = emailController.text.trim();
     String password = passwordController.text.trim();
-    String confirmPassword = confirmController.text.trim();
-    String firstname = firstnameController.text.trim();
-    String lastname = lastnameController.text.trim();
-
+    String confirmPassword = confirmPasswordController.text.trim();
+    String firstname = firstNameController.text.trim();
+    String lastname = lastNameController.text.trim();
 
     validateEmail(email);
     validatePassword(password);
-
 
     if (password == confirmPassword && password.length >= 6) {
       _auth
@@ -90,7 +93,6 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
     } else {
       print("Password and Confirm-password is not match.");
     }
-
   }
 
   @override
@@ -175,7 +177,7 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
     Widget rePasswordLabel = Text('ยืนยันรหัสผ่าน', style: MyConfig.normalText1);
 
     Widget rePasswordField = TextField(
-      controller: confirmController,
+      controller: confirmPasswordController,
       obscureText: true,
       style: MyConfig.normalText1,
       decoration: InputDecoration(
@@ -190,7 +192,7 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
     Widget firstnameLabel = Text('ชื่อ', style: MyConfig.normalText1);
 
     Widget firstnameField = TextField(
-      controller: firstnameController,
+      controller: firstNameController,
       obscureText: false,
       style: MyConfig.normalText1,
       decoration: InputDecoration(
@@ -205,7 +207,7 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
     Widget lastnameLabel = Text('นามสกุล', style: MyConfig.normalText1);
 
     Widget lastnameField = TextField(
-      controller: lastnameController,
+      controller: lastNameController,
       obscureText: false,
       style: MyConfig.normalText1,
       decoration: InputDecoration(
