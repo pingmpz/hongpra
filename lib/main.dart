@@ -12,7 +12,7 @@ void main() async {
   await Firebase.initializeApp();
 
   //---
-  bool _testing = false;
+  bool _testing = true;
 
   if(_testing) {
     runApp(DevicePreview(

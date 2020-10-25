@@ -7,8 +7,8 @@ import 'package:hongpra/transferpage.dart';
 import 'package:photo_view/photo_view.dart';
 
 class MyDetailPage extends StatefulWidget {
-  final int index;
-  const MyDetailPage(this.index);
+  final String id;
+  const MyDetailPage(this.id);
 
   @override
   _MyDetailPageState createState() => _MyDetailPageState();

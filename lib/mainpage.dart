@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:hongpra/myconfig.dart';
 import 'package:hongpra/detailpage.dart';
 import 'package:hongpra/loginpage.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class MyMainPage extends StatefulWidget {
@@ -73,6 +72,7 @@ class _MyMainPageState extends State<MyMainPage> {
             setState(() {
               amuletList.add(
                 new Data(
+                    result.data()['id'],
                     result.data()['images'],
                     result.data()['name'],
                     result.data()['categories'],
@@ -226,7 +226,7 @@ class _MyMainPageState extends State<MyMainPage> {
     );
 
     Widget buildCard(
-        String image, amuletName, amuletCategories, texture, info) {
+        String id, String image, amuletName, amuletCategories, texture, info) {
       return Container(
         margin: EdgeInsets.all(cardInnerEdge),
         child: Card(
@@ -265,11 +265,8 @@ class _MyMainPageState extends State<MyMainPage> {
                 ],
               ),
             ),
-            onTap: () {
-              Navigator.push(
-                  context,
-                  PageTransition(
-                      type: PageTransitionType.fade, child: MyDetailPage(-1)));
+            onTap: () => {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => MyDetailPage(id)))
             },
           ),
         ),
@@ -279,7 +276,8 @@ class _MyMainPageState extends State<MyMainPage> {
     List<Widget> cardsBuilder() {
       List<Data> showingList = amuletList.where((element) => element.isActive == true).toList();
       return List<Widget>.generate(showingList.length, (index) {
-          return (showingList[index].isActive == true) ? buildCard(
+          return buildCard(
+              showingList[index].id != null ? showingList[index].id : "",
               showingList[index].image != null ? showingList[index].image : "",
               showingList[index].amuletName != null
                   ? showingList[index].amuletName
@@ -290,7 +288,7 @@ class _MyMainPageState extends State<MyMainPage> {
               showingList[index].texture != null
                   ? showingList[index].texture
                   : "",
-              showingList[index].info != null ? showingList[index].info : "") : SizedBox();
+              showingList[index].info != null ? showingList[index].info : "");
       });
     }
 
@@ -347,6 +345,7 @@ class _MyMainPageState extends State<MyMainPage> {
 }
 
 class Data {
+  String id;
   String image;
   String amuletName;
   String amuletCategories;
@@ -354,6 +353,6 @@ class Data {
   String info;
   bool isActive = true;
 
-  Data(this.image, this.amuletName, this.amuletCategories, this.texture,
+  Data(this.id, this.image, this.amuletName, this.amuletCategories, this.texture,
       this.info);
 }
