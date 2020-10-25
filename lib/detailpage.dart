@@ -21,6 +21,8 @@ class _MyDetailPageState extends State<MyDetailPage> {
   int currentIndex;
   List<String> currentPaths;
 
+  Data amulet;
+
   //------------------ Sample Variables ------------------
   String certificatePath = "assets/images/certificate1.jpg";
 
@@ -55,6 +57,20 @@ class _MyDetailPageState extends State<MyDetailPage> {
   ];
 
   //------------------ Custom Functions ------------------
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      getAmulet();
+    });
+  }
+
+  void getAmulet() async {
+    String id = widget.id;
+    // Query Amulet
+    // amulet = ...
+  }
+
   void enterFullScreenImage(List<String> paths, int index){
     setState(() {
       currentPaths = paths;
@@ -379,4 +395,19 @@ class _MyDetailPageState extends State<MyDetailPage> {
       ],
     );
   }
+}
+
+class Data {
+  String id;
+  List<String> images;
+  String certificateId;
+  String certificateImage;
+  String amuletName;
+  String amuletCategories;
+  String texture;
+  String info;
+  String confirmBy;
+  String confirmDate;
+
+  Data(this.id, this.images, this.certificateId, this.certificateImage, this.amuletName, this.amuletCategories, this.texture, this.info, this.confirmBy, this.confirmDate);
 }
