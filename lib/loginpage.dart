@@ -38,27 +38,28 @@ class _MyLoginPageState extends State<MyLoginPage> {
       print(e.code);
       switch (e.code) {
         case "wrong-password": // "ERROR_WRONG_PASSWORD":
-          print("Wrong Password! Try again.");
+          print("Wrong Password! Try again.Wrong email/password combination.");
           break;
-        case "ERROR_INVALID_EMAIL":
+        case "invalid-email":
           print("Email is not correct!, Try again");
           break;
-        case "ERROR_USER_NOT_FOUND":
+        case "user-not-found":
           print("User not found! Register first!");
           break;
-        case "ERROR_USER_DISABLED":
+        case "user-disabled":
           print("User has been disabled!, Try again");
           break;
-        case "too-many-requests": //"ERROR_TOO_MANY_REQUESTS":
+        case "operation-not-allowed": //"ERROR_TOO_MANY_REQUESTS":
           print(
-              "Sign in disabled due to too many requests from this user!, Try again");
+              "Too many requests to log into this account., Try again");
           break;
-        case "ERROR_OPERATION_NOT_ALLOWED":
+        case "operation-not-allowed":
           print(
               "Operation not allowed!, Please enable it in the firebase console");
           break;
         default:
           print("Unknown error");
+          break;
       }
     }
   }
