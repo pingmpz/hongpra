@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hongpra/loginpage.dart';
 import 'package:hongpra/myconfig.dart';
 
 class MyRegisterPage extends StatefulWidget {
@@ -40,6 +41,7 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
         print(user.user.uid);
         Firestore.instance.collection('users').doc().set({'userid': user.user.uid, 'firstname': firstname, 'lastname': lastname});
         // NAVIGATE
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyLoginPage()));
       }).catchError((error) {
         print(error.message);
       });

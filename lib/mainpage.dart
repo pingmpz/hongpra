@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:hongpra/myconfig.dart';
 import 'package:hongpra/detailpage.dart';
@@ -17,7 +18,7 @@ class MyMainPage extends StatefulWidget {
 
 class _MyMainPageState extends State<MyMainPage> {
   User loginUser;
-  List<String> items;
+  List<Data> items = new List<Data>();
 
   final searchController = new TextEditingController();
 
@@ -31,12 +32,20 @@ class _MyMainPageState extends State<MyMainPage> {
   }
 
   //------------------ Custom Methods ------------------
-  void getCurrentUser() async{
+  void getCurrentUser() async {
     try {
       final user = await FirebaseAuth.instance.currentUser;
-      if(user != null){
+
+      if (user != null) {
         loginUser = user;
+
+        print("user id is " + loginUser.uid);
+
         // --> generate list
+
+        generateItems();
+
+
       } else {
         Navigator.pushAndRemoveUntil(
             context,
@@ -46,6 +55,35 @@ class _MyMainPageState extends State<MyMainPage> {
     } catch (e) {
       print(e.toString());
     }
+  }
+
+
+  void generateItems() async {
+
+    items = new List<Data>();
+
+    final _firestoreInstance = FirebaseFirestore.instance;
+
+    _firestoreInstance.collection("users").get().then((querySnapshot) {
+      querySnapshot.docs.forEach((result) {
+        _firestoreInstance
+            .collection("users")
+            .doc(result.id)
+            .collection("amulets")
+            .get()
+            .then((querySnapshot) {
+          querySnapshot.docs.forEach((result) {
+
+            items.add(new Data(
+                result.data()['images'],
+                result.data()['name'],
+                result.data()['categories'],
+                result.data()['texture'],
+                result.data()['information']));
+          });
+        });
+      });
+    });
   }
 
   void signOut(BuildContext context) {
@@ -154,7 +192,8 @@ class _MyMainPageState extends State<MyMainPage> {
                     ),
                   );
                 } else {
-                  this.searchIcon = Icon(Icons.search, color: MyConfig.whiteColor);
+                  this.searchIcon =
+                      Icon(Icons.search, color: MyConfig.whiteColor);
                   this.searchTitle = Text("", style: MyConfig.normalText1);
                 }
               });
@@ -196,12 +235,16 @@ class _MyMainPageState extends State<MyMainPage> {
                         Text(texts[5], style: MyConfig.smallText1),
                       ],
                     ),
-                    ),
+                  ),
                 ],
               ),
             ),
             onTap: () {
-              Navigator.push(context, PageTransition(type: PageTransitionType.fade, child: MyDetailPage(index)));
+              Navigator.push(
+                  context,
+                  PageTransition(
+                      type: PageTransitionType.fade,
+                      child: MyDetailPage(index)));
             },
           ),
         ),
@@ -257,4 +300,15 @@ class _MyMainPageState extends State<MyMainPage> {
       ),
     );
   }
+}
+
+class Data {
+  String image;
+  String amuletName;
+  String amuletCategories;
+  String texture;
+  String info;
+
+  Data(this.image, this.amuletName, this.amuletCategories, this.texture,
+      this.info);
 }
