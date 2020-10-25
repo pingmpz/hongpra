@@ -101,7 +101,7 @@ class _MyDetailPageState extends State<MyDetailPage> {
 
     double desireWidth = (screenWidth < minWidth) ? screenWidth : minWidth;
     double desireHeight = (screenHeight < minHeight) ? screenHeight : minHeight;
-    double screenEdge = (screenWidth < minWidth)
+    double screenEdge = (screenWidth <= minWidth)
         ? screenMinEdge
         : min(screenWidth - minWidth, screenMaxEdge);
     double carouselHeight = screenHeight * imageHeightRatio;

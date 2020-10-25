@@ -148,12 +148,14 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
     return Scaffold(
       backgroundColor: MyConfig.themeColor2,
       appBar: myAppBar,
+      extendBodyBehindAppBar: true,
       body: SingleChildScrollView(
         child: Container(
+          height: screenHeight,
           margin: EdgeInsets.all(screenEdge),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               detailBox,
               SizedBox(height: desireHeight * 0.01),

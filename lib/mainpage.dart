@@ -9,9 +9,6 @@ import 'package:hongpra/loginpage.dart';
 import 'package:page_transition/page_transition.dart';
 
 class MyMainPage extends StatefulWidget {
-  // final FirebaseAuth _auth;
-  // MyMainPage(this._auth, {Key key}) : super(key: key);
-
   @override
   _MyMainPageState createState() => _MyMainPageState();
 }
@@ -28,24 +25,19 @@ class _MyMainPageState extends State<MyMainPage> {
   @override
   void initState() {
     super.initState();
-    getCurrentUser();
+    setState(() {
+      getCurrentUser();
+    });
   }
 
-  //------------------ Custom Methods ------------------
+  //------------------ Custom Functions ------------------
   void getCurrentUser() async {
     try {
       final user = await FirebaseAuth.instance.currentUser;
-
       if (user != null) {
         loginUser = user;
-
         print("user id is " + loginUser.uid);
-
-        // --> generate list
-
         generateItems();
-
-
       } else {
         Navigator.pushAndRemoveUntil(
             context,
@@ -57,12 +49,9 @@ class _MyMainPageState extends State<MyMainPage> {
     }
   }
 
-
   void generateItems() async {
-
-    items = new List<Data>();
-
     final _firestoreInstance = FirebaseFirestore.instance;
+    items = new List<Data>();
 
     _firestoreInstance.collection("users").get().then((querySnapshot) {
       querySnapshot.docs.forEach((result) {
@@ -73,13 +62,16 @@ class _MyMainPageState extends State<MyMainPage> {
             .get()
             .then((querySnapshot) {
           querySnapshot.docs.forEach((result) {
-
-            items.add(new Data(
-                result.data()['images'],
-                result.data()['name'],
-                result.data()['categories'],
-                result.data()['texture'],
-                result.data()['information']));
+            setState(() {
+              items.add(
+                new Data(
+                    result.data()['images'],
+                    result.data()['name'],
+                    result.data()['categories'],
+                    result.data()['texture'],
+                    result.data()['information']),
+              );
+            });
           });
         });
       });
@@ -118,18 +110,6 @@ class _MyMainPageState extends State<MyMainPage> {
             ? 0
             : ((screenWidth - minWidth) / (minWidth / minGridCount)).floor());
 
-    //------------------ Sample Variables ------------------
-    String path = 'assets/images/amulet1.jpg';
-
-    List<String> sampleTexts = [
-      'พระกริ่งชัย-วัฒน์ทั่วไป',
-      'ชื่อพระ : พระชัยวัฒน์',
-      'พิมพ์พระ : พิมพ์อุดมีกริ่ง',
-      'เนื้อพระ : ทองเหลือง',
-      'สถานที่ : วัดชนะสงคราม พ.ศ. 2484',
-      'วันที่รับรอง : 8 พฤศจิกายน 2562'
-    ];
-
     //------------------ Custom Widgets ------------------
     Widget myAppBar = AppBar(
       backgroundColor: MyConfig.themeColor1,
@@ -137,7 +117,9 @@ class _MyMainPageState extends State<MyMainPage> {
       leading: IconButton(
         icon: Icon(Icons.account_circle),
         color: MyConfig.whiteColor,
-        onPressed: () {},
+        onPressed: () {
+          setState(() {});
+        },
       ),
       title: Text('ห้องพระ', style: MyConfig.appBarTitleText),
       centerTitle: true,
@@ -203,7 +185,8 @@ class _MyMainPageState extends State<MyMainPage> {
       ),
     );
 
-    Widget buildCard(String path, List<String> texts, int index) {
+    Widget buildCard(
+        String image, amuletName, amuletCategories, texture, info) {
       return Container(
         margin: EdgeInsets.all(cardInnerEdge),
         child: Card(
@@ -218,8 +201,10 @@ class _MyMainPageState extends State<MyMainPage> {
                   Expanded(
                     flex: 3,
                     child: Container(
-                        margin: EdgeInsets.all(cardInnerEdge),
-                        child: Image(image: AssetImage(path))),
+                      margin: EdgeInsets.all(cardInnerEdge),
+                      child: Image.network(
+                          image), //child: Image(image: AssetImage(image)),
+                    ),
                   ),
                   Expanded(
                     flex: 6,
@@ -227,12 +212,13 @@ class _MyMainPageState extends State<MyMainPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Text(texts[0], style: MyConfig.normalBoldText1),
-                        Text(texts[1], style: MyConfig.smallText1),
-                        Text(texts[2], style: MyConfig.smallText1),
-                        Text(texts[3], style: MyConfig.smallText1),
-                        Text(texts[4], style: MyConfig.smallText1),
-                        Text(texts[5], style: MyConfig.smallText1),
+                        Text(amuletName, style: MyConfig.normalBoldText1),
+                        Text("ประเภท : " + amuletCategories,
+                            style: MyConfig.smallText1),
+                        Text("เนื้อพระ : " + texture,
+                            style: MyConfig.smallText1),
+                        Text("รายละเอียด : " + info,
+                            style: MyConfig.smallText1),
                       ],
                     ),
                   ),
@@ -243,21 +229,31 @@ class _MyMainPageState extends State<MyMainPage> {
               Navigator.push(
                   context,
                   PageTransition(
-                      type: PageTransitionType.fade,
-                      child: MyDetailPage(index)));
+                      type: PageTransitionType.fade, child: MyDetailPage(-1)));
             },
           ),
         ),
       );
     }
 
+    List<Widget> cardsBuilder() {
+      return List<Widget>.generate(items.length, (index) {
+        return buildCard(
+            items[index].image != null ? items[index].image : "",
+            items[index].amuletName != null ? items[index].amuletName : "",
+            items[index].amuletCategories != null
+                ? items[index].amuletCategories
+                : "",
+            items[index].texture != null ? items[index].texture : "",
+            items[index].info != null ? items[index].info : "");
+      });
+    }
+
     Widget myGrid = GridView.count(
       //controller: scrollController,
       crossAxisCount: gridCount,
       childAspectRatio: gridRatio,
-      children: List.generate(7, (index) {
-        return buildCard(path, sampleTexts, index);
-      }),
+      children: cardsBuilder(),
     );
 
     Widget myBottomNavBar = BottomNavigationBar(

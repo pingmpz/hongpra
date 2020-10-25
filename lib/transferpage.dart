@@ -19,13 +19,14 @@ class _MyTransferPageState extends State<MyTransferPage> {
 
   Future scan() async {
     scanner = await FlutterBarcodeScanner.scanBarcode("#" +
-        MyConfig.colorTheme1, "Cancel", true, ScanMode.BARCODE);
+        MyConfig.colorTheme1, "Cancel", true, ScanMode.QR);
     approve(scanner);
   }
 
   // Check ID Here
   Future approve(String id) async {
     setState(() {
+      // CHECK
       if (id != null) {
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => MyConfirmPage()));
