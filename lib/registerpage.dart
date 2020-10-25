@@ -24,7 +24,45 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
   TextEditingController firstnameController = TextEditingController();
   TextEditingController lastnameController = TextEditingController();
 
+  // Regular Expression for Email validation
+  String validateEmail(String value) {
+    Pattern pattern =
+        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+    RegExp regex = new RegExp(pattern);
 
+    if (!regex.hasMatch(value))
+      return 'Enter Valid Email';
+    else
+      return null;
+  }
+
+  // Regular Expression for Password validation
+  String validatePassword(String value) {
+    Pattern pattern =
+        r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])$';
+    RegExp regex = new RegExp(pattern);
+    print(value);
+    if (value.isEmpty) {
+      return 'Please enter password';
+    } else {
+      if (!regex.hasMatch(value))
+        return 'Enter valid password';
+      else
+        return null;
+    }
+  }
+
+
+  // Name validation
+  String validateName(String value) {
+    if (value.length < 3)
+      return 'Name must be more than 2 charater';
+    else
+      return null;
+  }
+
+
+  // Register for new user
   void signUp() {
 
     String email = emailController.text.trim();
@@ -32,6 +70,11 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
     String confirmPassword = confirmController.text.trim();
     String firstname = firstnameController.text.trim();
     String lastname = lastnameController.text.trim();
+
+
+    validateEmail(email);
+    validatePassword(password);
+
 
     if (password == confirmPassword && password.length >= 6) {
       _auth
