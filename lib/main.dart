@@ -11,14 +11,31 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
-  runApp(DevicePreview(
-    builder: (context) => MyApp(),
-  ),);
+  //---
+  bool _testing = false;
 
+  if(_testing) {
+    runApp(DevicePreview(
+      builder: (context) => MyTestApp(),
+    ),
+    );
+  } else {
+    runApp(MyApp());
+  }
 
 }
 
 class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: MyMainPage(),
+    );
+  }
+}
+
+class MyTestApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

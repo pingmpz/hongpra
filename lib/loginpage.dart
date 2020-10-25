@@ -63,7 +63,6 @@ class _MyLoginPageState extends State<MyLoginPage> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     //------------------ Custom Variables ------------------
