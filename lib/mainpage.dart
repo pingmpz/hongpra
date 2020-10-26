@@ -18,7 +18,8 @@ class _MyMainPageState extends State<MyMainPage> {
   List<Data> amuletList = new List<Data>();
 
   final searchController = new TextEditingController();
-  RefreshController refreshController = RefreshController(initialRefresh: false);
+  RefreshController refreshController =
+      RefreshController(initialRefresh: false);
 
   Widget searchTitle = Text("", style: MyConfig.normalText1);
   Icon searchIcon = new Icon(Icons.search, color: MyConfig.whiteColor);
@@ -57,23 +58,27 @@ class _MyMainPageState extends State<MyMainPage> {
   }
 
   void generateItems() async {
+    final checkUser = FirebaseAuth.instance.currentUser.uid;
     final _firestoreInstance = FirebaseFirestore.instance;
+
     amuletList = new List<Data>();
+
 
     _firestoreInstance.collection("users").get().then((querySnapshot) {
       querySnapshot.docs.forEach((result) {
         _firestoreInstance
             .collection("users")
-            .doc(result.id)
+            .doc(result.id) // amulets document ID
             .collection("amulets")
             .get()
             .then((querySnapshot) {
           querySnapshot.docs.forEach((result) {
+            //print("Result Id + " + result.id);
             setState(() {
               amuletList.add(
                 new Data(
-                    result.data()['id'],
-                    result.data()['images'],
+                    result.data()['amuletId'],
+                    result.data()['image'],
                     result.data()['name'],
                     result.data()['categories'],
                     result.data()['texture'],
@@ -97,8 +102,8 @@ class _MyMainPageState extends State<MyMainPage> {
   void search() {
     setState(() {
       String result = searchController.text;
-      for(Data item in amuletList){
-        if(item.amuletName.toLowerCase().contains(result.toLowerCase())){
+      for (Data item in amuletList) {
+        if (item.amuletName.toLowerCase().contains(result.toLowerCase())) {
           item.isActive = true;
         } else {
           item.isActive = false;
@@ -109,13 +114,13 @@ class _MyMainPageState extends State<MyMainPage> {
 
   void reset() {
     setState(() {
-      for(Data item in amuletList){
+      for (Data item in amuletList) {
         item.isActive = true;
       }
     });
   }
 
-  void refresh() async{
+  void refresh() async {
     setState(() async {
       generateItems();
       searchController.clear();
@@ -266,7 +271,8 @@ class _MyMainPageState extends State<MyMainPage> {
               ),
             ),
             onTap: () => {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => MyDetailPage(id)))
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => MyDetailPage(id)))
             },
           ),
         ),
@@ -274,21 +280,22 @@ class _MyMainPageState extends State<MyMainPage> {
     }
 
     List<Widget> cardsBuilder() {
-      List<Data> showingList = amuletList.where((element) => element.isActive == true).toList();
+      List<Data> showingList =
+          amuletList.where((element) => element.isActive == true).toList();
       return List<Widget>.generate(showingList.length, (index) {
-          return buildCard(
-              showingList[index].id != null ? showingList[index].id : "",
-              showingList[index].image != null ? showingList[index].image : "",
-              showingList[index].amuletName != null
-                  ? showingList[index].amuletName
-                  : "",
-              showingList[index].amuletCategories != null
-                  ? showingList[index].amuletCategories
-                  : "",
-              showingList[index].texture != null
-                  ? showingList[index].texture
-                  : "",
-              showingList[index].info != null ? showingList[index].info : "");
+        return buildCard(
+            showingList[index].id != null ? showingList[index].id : "",
+            showingList[index].image != null ? showingList[index].image : "",
+            showingList[index].amuletName != null
+                ? showingList[index].amuletName
+                : "",
+            showingList[index].amuletCategories != null
+                ? showingList[index].amuletCategories
+                : "",
+            showingList[index].texture != null
+                ? showingList[index].texture
+                : "",
+            showingList[index].info != null ? showingList[index].info : "");
       });
     }
 
@@ -353,6 +360,6 @@ class Data {
   String info;
   bool isActive = true;
 
-  Data(this.id, this.image, this.amuletName, this.amuletCategories, this.texture,
-      this.info);
+  Data(this.id, this.image, this.amuletName, this.amuletCategories,
+      this.texture, this.info);
 }

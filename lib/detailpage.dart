@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:hongpra/myconfig.dart';
 import 'package:carousel_pro/carousel_pro.dart';
@@ -21,7 +22,7 @@ class _MyDetailPageState extends State<MyDetailPage> {
   int currentIndex;
   List<String> currentPaths;
 
-  Data amulet;
+  List<Data> amulet;
 
   //------------------ Sample Variables ------------------
   String certificatePath = "assets/images/certificate1.jpg";
@@ -67,11 +68,43 @@ class _MyDetailPageState extends State<MyDetailPage> {
 
   void getAmulet() async {
     String id = widget.id;
+    final _firestoreInstance = FirebaseFirestore.instance;
+    amulet = new List<Data>();
     // Query Amulet
     // amulet = ...
+
+    _firestoreInstance.collection("users").get().then((querySnapshot) {
+      querySnapshot.docs.forEach((result) {
+        _firestoreInstance
+            .collection("users")
+            .doc(result.id)
+            .collection("amulets")
+            .get()
+            .then((querySnapshot) {
+          querySnapshot.docs.forEach((result) {
+            setState(() {
+              amulet.add(
+                new Data(
+                  result.data()['amuletId'],
+                  result.data()['image'],
+                  result.data()['name'],
+                  result.data()['categories'],
+                  result.data()['texture'],
+                  result.data()['information'],
+                  result.data()['certificateImage'],
+                  result.data()['certificateId'],
+                  result.data()['comfirmBy'],
+                  result.data()['confirmDate'],
+                ),
+              );
+            });
+          });
+        });
+      });
+    });
   }
 
-  void enterFullScreenImage(List<String> paths, int index){
+  void enterFullScreenImage(List<String> paths, int index) {
     setState(() {
       currentPaths = paths;
       currentIndex = index;
@@ -80,23 +113,28 @@ class _MyDetailPageState extends State<MyDetailPage> {
       _isArrowRightShown = (index == paths.length - 1) ? false : true;
     });
   }
-  void exitFullScreenImage(){
+
+  void exitFullScreenImage() {
     setState(() {
       _isImageShown = false;
     });
   }
-  void nextImage(){
+
+  void nextImage() {
     setState(() {
       currentIndex = currentIndex + 1;
       _isArrowLeftShown = (currentIndex == 0) ? false : true;
-      _isArrowRightShown = (currentIndex == currentPaths.length - 1) ? false : true;
+      _isArrowRightShown =
+          (currentIndex == currentPaths.length - 1) ? false : true;
     });
   }
-  void previousImage(){
+
+  void previousImage() {
     setState(() {
       currentIndex = currentIndex - 1;
       _isArrowLeftShown = (currentIndex == 0) ? false : true;
-      _isArrowRightShown = (currentIndex == currentPaths.length - 1) ? false : true;
+      _isArrowRightShown =
+          (currentIndex == currentPaths.length - 1) ? false : true;
     });
   }
 
@@ -160,9 +198,7 @@ class _MyDetailPageState extends State<MyDetailPage> {
         paths.length,
         (index) => GestureDetector(
           child: Image(image: AssetImage(paths[index])),
-          onDoubleTap: () => {
-            enterFullScreenImage(paths, index)
-          },
+          onDoubleTap: () => {enterFullScreenImage(paths, index)},
         ),
       );
     }
@@ -203,9 +239,7 @@ class _MyDetailPageState extends State<MyDetailPage> {
                   child: IconButton(
                     icon: Icon(Icons.clear),
                     color: Colors.white,
-                    onPressed: () => {
-                      exitFullScreenImage()
-                    },
+                    onPressed: () => {exitFullScreenImage()},
                   ),
                 ),
               ),
@@ -215,36 +249,36 @@ class _MyDetailPageState extends State<MyDetailPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  (_isArrowLeftShown) ? Padding(
-                    padding: EdgeInsets.all(screenEdge),
-                    child: Material(
-                      color: MyConfig.transparentColor,
-                      child: Ink(
-                        child: IconButton(
-                          icon: Icon(Icons.chevron_left),
-                          color: Colors.white,
-                          onPressed: () => {
-                            previousImage()
-                          },
-                        ),
-                      ),
-                    ),
-                  ) : SizedBox(),
-                  (_isArrowRightShown) ? Padding(
-                    padding: EdgeInsets.all(screenEdge),
-                    child: Material(
-                      color: MyConfig.transparentColor,
-                      child: Ink(
-                        child: IconButton(
-                          icon: Icon(Icons.chevron_right),
-                          color: Colors.white,
-                          onPressed: () => {
-                            nextImage()
-                          },
-                        ),
-                      ),
-                    ),
-                  ) : SizedBox(),
+                  (_isArrowLeftShown)
+                      ? Padding(
+                          padding: EdgeInsets.all(screenEdge),
+                          child: Material(
+                            color: MyConfig.transparentColor,
+                            child: Ink(
+                              child: IconButton(
+                                icon: Icon(Icons.chevron_left),
+                                color: Colors.white,
+                                onPressed: () => {previousImage()},
+                              ),
+                            ),
+                          ),
+                        )
+                      : SizedBox(),
+                  (_isArrowRightShown)
+                      ? Padding(
+                          padding: EdgeInsets.all(screenEdge),
+                          child: Material(
+                            color: MyConfig.transparentColor,
+                            child: Ink(
+                              child: IconButton(
+                                icon: Icon(Icons.chevron_right),
+                                color: Colors.white,
+                                onPressed: () => {nextImage()},
+                              ),
+                            ),
+                          ),
+                        )
+                      : SizedBox(),
                 ],
               ),
             )
@@ -409,5 +443,15 @@ class Data {
   String confirmBy;
   String confirmDate;
 
-  Data(this.id, this.images, this.certificateId, this.certificateImage, this.amuletName, this.amuletCategories, this.texture, this.info, this.confirmBy, this.confirmDate);
+  Data(
+      this.id,
+      this.images,
+      this.certificateId,
+      this.certificateImage,
+      this.amuletName,
+      this.amuletCategories,
+      this.texture,
+      this.info,
+      this.confirmBy,
+      this.confirmDate);
 }

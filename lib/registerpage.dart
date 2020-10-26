@@ -83,8 +83,11 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
           .createUserWithEmailAndPassword(email: email, password: password)
           .then((user) {
         print("Registation Success");
-        print(user.user.uid);
-        Firestore.instance.collection('users').doc().set({'userid': user.user.uid, 'firstname': firstname, 'lastname': lastname});
+
+        String userId = user.user.uid;
+        print(userId);
+        // 'userid': userId,
+        Firestore.instance.collection('users').doc().set({'userid': userId, 'firstname': firstname, 'lastname': lastname});
         // NAVIGATE
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyLoginPage()));
       }).catchError((error) {
