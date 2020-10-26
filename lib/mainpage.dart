@@ -1,12 +1,14 @@
+import 'dart:math';
 import 'dart:ui';
 
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:hongpra/myconfig.dart';
 import 'package:hongpra/detailpage.dart';
 import 'package:hongpra/loginpage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:intl/intl.dart';
 
 class MyMainPage extends StatefulWidget {
   @override
@@ -14,15 +16,18 @@ class MyMainPage extends StatefulWidget {
 }
 
 class _MyMainPageState extends State<MyMainPage> {
-  User loginUser;
-  List<Data> amuletList = new List<Data>();
+  int selectedPage = 0;
 
   final searchController = new TextEditingController();
-  RefreshController refreshController =
-      RefreshController(initialRefresh: false);
+  RefreshController refreshController = new RefreshController(initialRefresh: false);
+  TabController tabController;
 
   Widget searchTitle = Text("", style: MyConfig.normalText1);
   Icon searchIcon = new Icon(Icons.search, color: MyConfig.whiteColor);
+
+  User loginUser;
+  List<Amulet> amuletList = new List<Amulet>();
+  List<History> historyList = new List<History>();
 
   @override
   void initState() {
@@ -34,8 +39,10 @@ class _MyMainPageState extends State<MyMainPage> {
 
   @override
   void dispose() {
-    searchController.dispose();
     super.dispose();
+    searchController.dispose();
+    refreshController.dispose();
+    tabController.dispose();
   }
 
   //------------------ Custom Functions ------------------
@@ -44,8 +51,9 @@ class _MyMainPageState extends State<MyMainPage> {
       final user = await FirebaseAuth.instance.currentUser;
       if (user != null) {
         loginUser = user;
-        print("user id is " + loginUser.uid);
-        generateItems();
+        print("# Login User ID : " + loginUser.uid);
+        generateAmuletList();
+        generateHistoryList();
       } else {
         Navigator.pushAndRemoveUntil(
             context,
@@ -57,12 +65,11 @@ class _MyMainPageState extends State<MyMainPage> {
     }
   }
 
-  void generateItems() async {
+  void generateAmuletList() async {
     final checkUser = FirebaseAuth.instance.currentUser.uid;
     final _firestoreInstance = FirebaseFirestore.instance;
 
-    amuletList = new List<Data>();
-
+    amuletList = new List<Amulet>();
 
     _firestoreInstance.collection("users").get().then((querySnapshot) {
       querySnapshot.docs.forEach((result) {
@@ -76,7 +83,7 @@ class _MyMainPageState extends State<MyMainPage> {
             //print("Result Id + " + result.id);
             setState(() {
               amuletList.add(
-                new Data(
+                new Amulet(
                     result.data()['amuletId'],
                     result.data()['image'],
                     result.data()['name'],
@@ -91,6 +98,18 @@ class _MyMainPageState extends State<MyMainPage> {
     });
   }
 
+  void generateHistoryList() async {
+      setState(() {
+        int day = 24;
+        //-- Need sort desc before add
+        historyList.add(new History(1, "9999999", "PING", new DateTime.now()));
+        historyList.add(new History(2, "8888888", "BOY", new DateTime.now().subtract(Duration(hours: day))));
+        historyList.add(new History(1, "7777777", "KEN", new DateTime.now().subtract(Duration(hours: day))));
+        historyList.add(new History(2, "6666666", "TURBO", new DateTime.now().subtract(Duration(hours: day * 2))));
+        historyList.add(new History(1, "5555555", "PLAYSPACE", new DateTime.now().subtract(Duration(hours: day * 3))));
+      });
+  }
+
   void signOut(BuildContext context) {
     FirebaseAuth.instance.signOut();
     Navigator.pushAndRemoveUntil(
@@ -102,7 +121,7 @@ class _MyMainPageState extends State<MyMainPage> {
   void search() {
     setState(() {
       String result = searchController.text;
-      for (Data item in amuletList) {
+      for (Amulet item in amuletList) {
         if (item.amuletName.toLowerCase().contains(result.toLowerCase())) {
           item.isActive = true;
         } else {
@@ -114,7 +133,7 @@ class _MyMainPageState extends State<MyMainPage> {
 
   void reset() {
     setState(() {
-      for (Data item in amuletList) {
+      for (Amulet item in amuletList) {
         item.isActive = true;
       }
     });
@@ -122,10 +141,16 @@ class _MyMainPageState extends State<MyMainPage> {
 
   void refresh() async {
     setState(() async {
-      generateItems();
+      generateAmuletList();
       searchController.clear();
       await Future.delayed(Duration(milliseconds: 1000));
       refreshController.refreshCompleted();
+    });
+  }
+
+  void onPageChanged(int index) {
+    setState(() {
+      selectedPage = index;
     });
   }
 
@@ -147,6 +172,9 @@ class _MyMainPageState extends State<MyMainPage> {
     double screenHeight = MediaQuery.of(context).size.height;
     double desireWidth = (screenWidth < minWidth) ? screenWidth : minWidth;
     double desireHeight = (screenHeight < minHeight) ? screenHeight : minHeight;
+    double screenEdge = (screenWidth <= minWidth)
+        ? screenMinEdge
+        : min(screenWidth - minWidth, screenMaxEdge);
 
     int gridCount = minGridCount +
         ((screenWidth < minWidth)
@@ -176,6 +204,7 @@ class _MyMainPageState extends State<MyMainPage> {
       ],
     );
 
+    //----------------- Page 0 -------------------
     Widget mySearchBar = PreferredSize(
       preferredSize: Size.fromHeight(searchBarHeight),
       child: AppBar(
@@ -230,7 +259,7 @@ class _MyMainPageState extends State<MyMainPage> {
       ),
     );
 
-    Widget buildCard(
+    Widget buildAmuletCard(
         String id, String image, amuletName, amuletCategories, texture, info) {
       return Container(
         margin: EdgeInsets.all(cardInnerEdge),
@@ -279,11 +308,11 @@ class _MyMainPageState extends State<MyMainPage> {
       );
     }
 
-    List<Widget> cardsBuilder() {
-      List<Data> showingList =
+    List<Widget> amuletCardBuilder() {
+      List<Amulet> showingList =
           amuletList.where((element) => element.isActive == true).toList();
       return List<Widget>.generate(showingList.length, (index) {
-        return buildCard(
+        return buildAmuletCard(
             showingList[index].id != null ? showingList[index].id : "",
             showingList[index].image != null ? showingList[index].image : "",
             showingList[index].amuletName != null
@@ -299,11 +328,167 @@ class _MyMainPageState extends State<MyMainPage> {
       });
     }
 
-    Widget myGrid = GridView.count(
+    Widget amuletGrid = GridView.count(
       crossAxisCount: gridCount,
       childAspectRatio: gridRatio,
-      children: cardsBuilder(),
+      children: amuletCardBuilder(),
     );
+
+    Widget page_0 = Scaffold(
+      backgroundColor: MyConfig.themeColor2,
+      appBar: mySearchBar,
+      body: SmartRefresher(
+        enablePullDown: true,
+        controller: refreshController,
+        onRefresh: refresh,
+        //header: WaterDropHeader(),
+        child: amuletGrid,
+      ),
+    );
+
+    //----------------- Page 1 -------------------
+
+    //----------------- Page 2 -------------------
+
+    Widget myTabBar = AppBar(
+      elevation: 0.0,
+      backgroundColor: MyConfig.themeColor2,
+      title: Text('ประวัติกิจกรรม', style: MyConfig.largeBoldText),
+      bottom: TabBar(
+        controller: tabController,
+        labelColor: MyConfig.blackColor,
+        labelStyle: MyConfig.normalBoldText1,
+        unselectedLabelColor: MyConfig.greyColor,
+        unselectedLabelStyle: MyConfig.normalBoldText1,
+        indicatorColor: MyConfig.themeColor1,
+        tabs: [
+          Tab(text: "ทั้งหมด"),
+          Tab(text: "ส่งมอบ"),
+          Tab(text: "รับมอบ"),
+        ],
+      ),
+    );
+
+    Widget historyHeader(int day, int month, int year){
+      List<String> monthName = ['มกราคม',
+        'กุมภาพันธ์',
+        'มีนาคม',
+        'เมษายน',
+        'พฤษภาคม',
+        'มิถุนายน',
+        'กรกฎาคม',
+        'สิงหาคม',
+        'กันยายน',
+        'ตุลาคม',
+        'พฤศจิกายน',
+        'ธันวาคม'];
+      // day = day + 1;
+      month = month - 1;
+      year = year + 543;
+      return Card(
+        color: MyConfig.transparentColor,
+        elevation: 0.0,
+        margin: EdgeInsets.zero,
+        child: Padding(
+          padding: EdgeInsets.all(cardInnerEdge * 3),
+          child:
+          Text(day.toString() + " " + monthName[month] + " " + year.toString(), style: MyConfig.normalText1),
+        ),
+      );
+    }
+
+    Widget historyCard(int type,String certificateId,String name){
+      String typeName = (type == 1)?"ส่งมอบ":"รับมอบ";
+      String typeUser = (type == 1)?"ผู้รับมอบ":"ผู้ส่งมอบ";
+      return Card(
+        color: MyConfig.whiteColor,
+        child: Padding(
+          padding: EdgeInsets.all(cardInnerEdge * 3),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text(typeName, style: MyConfig.normalBoldText1),
+              Text("รหัสใบรับรอง : " + certificateId,
+                  style: MyConfig.smallText1),
+              Text(typeUser + " : " + name,
+                  style: MyConfig.smallText1),
+            ],
+          ),
+        ),
+      );
+    }
+
+    List<Widget> buildHistoryCard(int type){
+      List<History> showingList = historyList;
+      if(type != 0) showingList = historyList.where((element) => element.type == type).toList();
+      List<Widget> resultList = new List<Widget>();
+      if(showingList.length != 0) {
+        DateTime selectedDate = new DateTime.now().subtract(Duration(hours: 999999));
+        DateFormat formatter = DateFormat('dd-MM-yyyy');
+        String selectedDateF = formatter.format(selectedDate);
+        for (int i = 0; i < showingList.length; i++) {
+          String showingDateF = formatter.format(showingList[i].timestamp);
+          if(selectedDateF != showingDateF){
+            selectedDateF = showingDateF;
+            resultList.add(historyHeader(showingList[i].timestamp.day, showingList[i].timestamp.month, showingList[i].timestamp.year));
+          }
+          resultList.add(historyCard(showingList[i].type, showingList[i].certificateId, showingList[i].name));
+        }
+      }
+      return resultList;
+    }
+
+    Widget page_2 = DefaultTabController(
+      length: 3,
+      child: Scaffold(
+        appBar: myTabBar,
+        body: Container(
+          padding: EdgeInsets.only(top: screenEdge),
+          color: MyConfig.themeColor2,
+          child: TabBarView(
+            children: [
+              Container(
+                height: screenHeight,
+                color: MyConfig.themeColor2,
+                child: ListView(
+                  children: buildHistoryCard(0),
+                ),
+              ),
+              Container(
+                height: screenHeight,
+                color: MyConfig.themeColor2,
+                child: ListView(
+                  children: buildHistoryCard(1),
+                ),
+              ),
+              Container(
+                height: screenHeight,
+                color: MyConfig.themeColor2,
+                child: ListView(
+                  children: buildHistoryCard(2),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    //--------------------------------------------
+
+    Widget buildPage() {
+      Widget currentPage = SizedBox();
+      setState(() {
+        if (selectedPage == 0) {
+          currentPage = page_0;
+        } else if (selectedPage == 1) {
+        } else if (selectedPage == 2) {
+          currentPage = page_2;
+        }
+      });
+      return currentPage;
+    }
 
     Widget myBottomNavBar = BottomNavigationBar(
       backgroundColor: MyConfig.themeColor1,
@@ -311,6 +496,8 @@ class _MyMainPageState extends State<MyMainPage> {
       unselectedItemColor: MyConfig.whiteColor.withOpacity(0.5),
       selectedLabelStyle: MyConfig.normalText1,
       unselectedLabelStyle: MyConfig.normalText1,
+      currentIndex: selectedPage,
+      onTap: onPageChanged,
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           icon: Icon(Icons.home),
@@ -334,24 +521,14 @@ class _MyMainPageState extends State<MyMainPage> {
       child: Scaffold(
         appBar: myAppBar,
         backgroundColor: MyConfig.themeColor1,
-        body: Scaffold(
-          backgroundColor: MyConfig.themeColor2,
-          appBar: mySearchBar,
-          body: SmartRefresher(
-            enablePullDown: true,
-            controller: refreshController,
-            onRefresh: refresh,
-            //header: WaterDropHeader(),
-            child: myGrid,
-          ),
-        ),
+        body: buildPage(),
         bottomNavigationBar: myBottomNavBar,
       ),
     );
   }
 }
 
-class Data {
+class Amulet {
   String id;
   String image;
   String amuletName;
@@ -360,6 +537,15 @@ class Data {
   String info;
   bool isActive = true;
 
-  Data(this.id, this.image, this.amuletName, this.amuletCategories,
+  Amulet(this.id, this.image, this.amuletName, this.amuletCategories,
       this.texture, this.info);
+}
+
+class History {
+  int type;
+  String certificateId;
+  String name;
+  DateTime timestamp;
+
+  History(this.type, this.certificateId, this.name, this.timestamp);
 }
