@@ -396,9 +396,12 @@ class _MyMainPageState extends State<MyMainPage> {
       );
     }
 
-    Widget historyCard(int type,String certificateId,String name){
+    Widget historyCard(int type,String certificateId,String name, int hour, int minute){
       String typeName = (type == 1)?"ส่งมอบ":"รับมอบ";
       String typeUser = (type == 1)?"ผู้รับมอบ":"ผู้ส่งมอบ";
+      String hourText = (hour < 10) ? "0" + hour.toString(): hour.toString();
+      String minuteText = (minute < 10) ? "0" + minute.toString(): minute.toString();
+      String time = hourText + "." + minuteText;
       return Card(
         color: MyConfig.whiteColor,
         child: Padding(
@@ -411,6 +414,8 @@ class _MyMainPageState extends State<MyMainPage> {
               Text("รหัสใบรับรอง : " + certificateId,
                   style: MyConfig.smallText1),
               Text(typeUser + " : " + name,
+                  style: MyConfig.smallText1),
+              Text("เวลา : " + time,
                   style: MyConfig.smallText1),
             ],
           ),
@@ -432,7 +437,7 @@ class _MyMainPageState extends State<MyMainPage> {
             selectedDateF = showingDateF;
             resultList.add(historyHeader(showingList[i].timestamp.day, showingList[i].timestamp.month, showingList[i].timestamp.year));
           }
-          resultList.add(historyCard(showingList[i].type, showingList[i].certificateId, showingList[i].name));
+          resultList.add(historyCard(showingList[i].type, showingList[i].certificateId, showingList[i].name, showingList[i].timestamp.hour, showingList[i].timestamp.minute));
         }
       }
       return resultList;
