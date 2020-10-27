@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hongpra/myconfig.dart';
 import 'package:carousel_pro/carousel_pro.dart';
@@ -38,7 +39,8 @@ class _MyDetailPageState extends State<MyDetailPage> {
     amulet = new Amulet("ID", null, "CERTIFICATEID", null, "NAME", "CATAGORY",
         "TEXTURE", "INFO", "CONFIRMBY", "CONFIRMDATE");
 
-    _firestoreInstance.collection("users").get().then((querySnapshot) {
+    print("Amulet ID " + id);
+
       _firestoreInstance
           .collection("users")
           .doc(id)
@@ -59,7 +61,7 @@ class _MyDetailPageState extends State<MyDetailPage> {
                   value.data()['comfirmDate']);
             });
       });
-    });
+
   }
 
   void enterFullScreenImage(List<String> paths, int index) {
