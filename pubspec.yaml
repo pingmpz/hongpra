@@ -39,6 +39,7 @@ flutter:
     - assets/images/logo.png
     - assets/images/amulet1.jpg
     - assets/images/certificate1.jpg
+    - assets/images/notfound.png
 
   fonts:
     - family: Srisakdi

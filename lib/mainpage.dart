@@ -276,8 +276,7 @@ class _MyMainPageState extends State<MyMainPage> {
                     flex: 3,
                     child: Container(
                       margin: EdgeInsets.all(cardInnerEdge),
-                      child: Image.network(image),
-                      //child: Image(image: AssetImage(image)),
+                      child: (image != null) ? Image.network(image) : Image(image: AssetImage("assets/images/notfound.png")),
                     ),
                   ),
                   Expanded(
