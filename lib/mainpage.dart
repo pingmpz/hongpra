@@ -19,7 +19,8 @@ class _MyMainPageState extends State<MyMainPage> {
   int selectedPage = 0;
 
   final searchController = new TextEditingController();
-  RefreshController refreshController = new RefreshController(initialRefresh: false);
+  RefreshController refreshController =
+      new RefreshController(initialRefresh: false);
   TabController tabController;
 
   Widget searchTitle = Text("", style: MyConfig.normalText1);
@@ -75,7 +76,7 @@ class _MyMainPageState extends State<MyMainPage> {
       querySnapshot.docs.forEach((result) {
         _firestoreInstance
             .collection("users")
-            .doc(checkUser)
+            .doc(checkUser) // User document ID
             //.doc(result.id) // amulets document ID
             .collection("amulets")
             .get()
@@ -100,15 +101,45 @@ class _MyMainPageState extends State<MyMainPage> {
   }
 
   void generateHistoryList() async {
-      setState(() {
-        int day = 24;
-        //-- Need sort desc before add
-        historyList.add(new History(1, "9999999", "PING", new DateTime.now()));
-        historyList.add(new History(2, "8888888", "BOY", new DateTime.now().subtract(Duration(hours: day))));
-        historyList.add(new History(1, "7777777", "KEN", new DateTime.now().subtract(Duration(hours: day))));
-        historyList.add(new History(2, "6666666", "TURBO", new DateTime.now().subtract(Duration(hours: day * 2))));
-        historyList.add(new History(1, "5555555", "PLAYSPACE", new DateTime.now().subtract(Duration(hours: day * 3))));
+    final checkUser = FirebaseAuth.instance.currentUser.uid;
+    final _firestoreInstance = FirebaseFirestore.instance;
+
+    _firestoreInstance.collection("users").get().then((querySnapshot) {
+      querySnapshot.docs.forEach((result) {
+        _firestoreInstance
+            .collection("users")
+            .doc(checkUser) // User document ID
+            .collection("history")
+            .get()
+            .then((querySnapshot) {
+          querySnapshot.docs.forEach((result) {
+            setState(() {
+              historyList.add(
+                new History(
+                    result.data()['date'],
+                    result.data()['type'],
+                    result.data()['certificateId'],
+                    result.data()['senderId'],)
+              );
+            });
+          });
+        });
       });
+    });
+
+    setState(() {
+      int day = 24;
+      //-- Need sort desc before add
+      historyList.add(new History(1, "9999999", "PING", new DateTime.now()));
+      historyList.add(new History(2, "8888888", "BOY",
+          new DateTime.now().subtract(Duration(hours: day))));
+      historyList.add(new History(1, "7777777", "KEN",
+          new DateTime.now().subtract(Duration(hours: day))));
+      historyList.add(new History(2, "6666666", "TURBO",
+          new DateTime.now().subtract(Duration(hours: day * 2))));
+      historyList.add(new History(1, "5555555", "PLAYSPACE",
+          new DateTime.now().subtract(Duration(hours: day * 3))));
+    });
   }
 
   void signOut(BuildContext context) {
@@ -277,7 +308,10 @@ class _MyMainPageState extends State<MyMainPage> {
                     flex: 3,
                     child: Container(
                       margin: EdgeInsets.all(cardInnerEdge),
-                      child: (image != null) ? Image.network(image) : Image(image: AssetImage("assets/images/notfound.png")),
+                      child: (image != null)
+                          ? Image.network(image)
+                          : Image(
+                              image: AssetImage("assets/images/notfound.png")),
                     ),
                   ),
                   Expanded(
@@ -369,8 +403,9 @@ class _MyMainPageState extends State<MyMainPage> {
       ),
     );
 
-    Widget historyHeader(int day, int month, int year){
-      List<String> monthName = ['มกราคม',
+    Widget historyHeader(int day, int month, int year) {
+      List<String> monthName = [
+        'มกราคม',
         'กุมภาพันธ์',
         'มีนาคม',
         'เมษายน',
@@ -381,7 +416,8 @@ class _MyMainPageState extends State<MyMainPage> {
         'กันยายน',
         'ตุลาคม',
         'พฤศจิกายน',
-        'ธันวาคม'];
+        'ธันวาคม'
+      ];
       // day = day + 1;
       month = month - 1;
       year = year + 543;
@@ -391,17 +427,20 @@ class _MyMainPageState extends State<MyMainPage> {
         margin: EdgeInsets.zero,
         child: Padding(
           padding: EdgeInsets.all(cardInnerEdge * 3),
-          child:
-          Text(day.toString() + " " + monthName[month] + " " + year.toString(), style: MyConfig.normalText1),
+          child: Text(
+              day.toString() + " " + monthName[month] + " " + year.toString(),
+              style: MyConfig.normalText1),
         ),
       );
     }
 
-    Widget historyCard(int type,String certificateId,String name, int hour, int minute){
-      String typeName = (type == 1)?"ส่งมอบ":"รับมอบ";
-      String typeUser = (type == 1)?"ผู้รับมอบ":"ผู้ส่งมอบ";
-      String hourText = (hour < 10) ? "0" + hour.toString(): hour.toString();
-      String minuteText = (minute < 10) ? "0" + minute.toString(): minute.toString();
+    Widget historyCard(
+        int type, String certificateId, String name, int hour, int minute) {
+      String typeName = (type == 1) ? "ส่งมอบ" : "รับมอบ";
+      String typeUser = (type == 1) ? "ผู้รับมอบ" : "ผู้ส่งมอบ";
+      String hourText = (hour < 10) ? "0" + hour.toString() : hour.toString();
+      String minuteText =
+          (minute < 10) ? "0" + minute.toString() : minute.toString();
       String time = hourText + "." + minuteText;
       return Card(
         color: MyConfig.whiteColor,
@@ -414,31 +453,38 @@ class _MyMainPageState extends State<MyMainPage> {
               Text(typeName, style: MyConfig.normalBoldText1),
               Text("รหัสใบรับรอง : " + certificateId,
                   style: MyConfig.smallText1),
-              Text(typeUser + " : " + name,
-                  style: MyConfig.smallText1),
-              Text("เวลา : " + time,
-                  style: MyConfig.smallText1),
+              Text(typeUser + " : " + name, style: MyConfig.smallText1),
+              Text("เวลา : " + time, style: MyConfig.smallText1),
             ],
           ),
         ),
       );
     }
 
-    List<Widget> buildHistoryCard(int type){
+    List<Widget> buildHistoryCard(int type) {
       List<History> showingList = historyList;
-      if(type != 0) showingList = historyList.where((element) => element.type == type).toList();
+      if (type != 0)
+        showingList =
+            historyList.where((element) => element.type == type).toList();
       List<Widget> resultList = new List<Widget>();
-      if(showingList.length != 0) {
-        DateTime selectedDate = new DateTime.now().subtract(Duration(hours: 999999));
+      if (showingList.length != 0) {
+        DateTime selectedDate =
+            new DateTime.now().subtract(Duration(hours: 999999));
         DateFormat formatter = DateFormat('dd-MM-yyyy');
         String selectedDateF = formatter.format(selectedDate);
         for (int i = 0; i < showingList.length; i++) {
           String showingDateF = formatter.format(showingList[i].timestamp);
-          if(selectedDateF != showingDateF){
+          if (selectedDateF != showingDateF) {
             selectedDateF = showingDateF;
-            resultList.add(historyHeader(showingList[i].timestamp.day, showingList[i].timestamp.month, showingList[i].timestamp.year));
+            resultList.add(historyHeader(showingList[i].timestamp.day,
+                showingList[i].timestamp.month, showingList[i].timestamp.year));
           }
-          resultList.add(historyCard(showingList[i].type, showingList[i].certificateId, showingList[i].name, showingList[i].timestamp.hour, showingList[i].timestamp.minute));
+          resultList.add(historyCard(
+              showingList[i].type,
+              showingList[i].certificateId,
+              showingList[i].name,
+              showingList[i].timestamp.hour,
+              showingList[i].timestamp.minute));
         }
       }
       return resultList;

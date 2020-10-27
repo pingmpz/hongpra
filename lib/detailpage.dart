@@ -77,7 +77,7 @@ class _MyDetailPageState extends State<MyDetailPage> {
       querySnapshot.docs.forEach((result) {
         _firestoreInstance
             .collection("users")
-            .doc(result.id)
+            .doc(id)
             .collection("amulets")
             .get()
             .then((querySnapshot) {
@@ -94,7 +94,7 @@ class _MyDetailPageState extends State<MyDetailPage> {
                   result.data()['certificateImage'],
                   result.data()['certificateId'],
                   result.data()['comfirmBy'],
-                  result.data()['confirmDate'],
+                  result.data()['comfirmDate'],
                 ),
               );
             });
