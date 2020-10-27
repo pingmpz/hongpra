@@ -92,10 +92,36 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
             context, MaterialPageRoute(builder: (context) => MyLoginPage()));
       }).catchError((error) {
         print(error.message);
+        buildAlertDialog("สมัครสมาชิกล้มเหลว", "");
       });
     } else {
       print("Password and Confirm-password is not match.");
+      buildAlertDialog("สมัครสมาชิกล้มเหลว", "รหัสผ่านและยืนยันรหัสผ่านไม่ตรงกัน");
     }
+  }
+
+  void buildAlertDialog(String title, String content) {
+    Widget okButton = FlatButton(
+      child: Text("ยืนยัน", style: MyConfig.linkText),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    );
+
+    Widget result = AlertDialog(
+      title: Center(child: Text(title, style: MyConfig.normalBoldText1)),
+      content: Text(content, style: MyConfig.normalText1),
+      actions: [
+        okButton,
+      ],
+    );
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return result;
+      },
+    );
   }
 
   @override

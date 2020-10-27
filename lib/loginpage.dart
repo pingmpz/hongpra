@@ -13,7 +13,6 @@ class MyLoginPage extends StatefulWidget {
 }
 
 class _MyLoginPageState extends State<MyLoginPage> {
-
   final _auth = FirebaseAuth.instance;
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -30,36 +29,67 @@ class _MyLoginPageState extends State<MyLoginPage> {
           email: emailController.text.trim(),
           password: passwordController.text.trim());
       if (user != null) {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyMainPage()));
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => MyMainPage()));
       }
     } catch (e) {
       print(e.code);
       switch (e.code) {
         case "wrong-password":
           print("Wrong Password! Try again.Wrong email/password combination.");
+          buildAlertDialog("เข้าสู่ระบบล้มเหลว", 'อีเมลหรือรหัสผ่านผิด');
           break;
         case "invalid-email":
           print("Email is not correct!, Try again");
+          buildAlertDialog("เข้าสู่ระบบล้มเหลว", 'ไม่พบบัญชีผู้ใช้งาน');
           break;
         case "user-not-found":
           print("User not found! Register first!");
+          buildAlertDialog("เข้าสู่ระบบล้มเหลว", 'ไม่พบบัญชีผู้ใช้งาน');
           break;
         case "user-disabled":
           print("User has been disabled!, Try again");
+          buildAlertDialog("เข้าสู่ระบบล้มเหลว", 'บัญชีนี้ถูกระงับ');
           break;
-        case "operation-not-allowed":
-          print(
-              "Too many requests to log into this account., Try again");
-          break;
+        // case "operation-not-allowed":
+        //   print("Too many requests to log into this account., Try again");
+        //   buildAlertDialog("เข้าสู่ระบบล้มเหลว", "");
+        //   break;
         case "operation-not-allowed":
           print(
               "Operation not allowed!, Please enable it in the firebase console");
+          buildAlertDialog("เข้าสู่ระบบล้มเหลว", "");
           break;
         default:
           print("Unknown error");
+          buildAlertDialog("เข้าสู่ระบบล้มเหลว", "");
           break;
       }
     }
+  }
+
+  void buildAlertDialog(String title, String content) {
+    Widget okButton = FlatButton(
+      child: Text("ยืนยัน", style: MyConfig.linkText),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    );
+
+    Widget result = AlertDialog(
+      title: Center(child: Text(title, style: MyConfig.normalBoldText1)),
+      content: Text(content, style: MyConfig.normalText1),
+      actions: [
+        okButton,
+      ],
+    );
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return result;
+      },
+    );
   }
 
   @override
@@ -84,14 +114,21 @@ class _MyLoginPageState extends State<MyLoginPage> {
 
     double desireWidth = (screenWidth < minWidth) ? screenWidth : minWidth;
     double desireHeight = (screenHeight < minHeight) ? screenHeight : minHeight;
-    double screenEdge = (screenWidth <= minWidth) ? minEdge : min(screenWidth - minWidth, maxEdge);
-    double textFieldEdge = (screenWidth < minWidth) ? screenWidth/minWidth * maxTextFieldEdge : maxTextFieldEdge;
+    double screenEdge = (screenWidth <= minWidth)
+        ? minEdge
+        : min(screenWidth - minWidth, maxEdge);
+    double textFieldEdge = (screenWidth < minWidth)
+        ? screenWidth / minWidth * maxTextFieldEdge
+        : maxTextFieldEdge;
 
     //------------------ Custom Widgets ------------------
 
-    Widget headerText = Center(child: Text('ห้องพระ', style: MyConfig.logoText));
-    Widget titleText = Center(child: Text('ยินดีต้อนรับสู่ ห้องพระ', style: MyConfig.largeBoldText));
-    Widget subtitleText = Center(child: Text('เข้าสู่ระบบเพื่อใช้งาน', style: MyConfig.smallText2));
+    Widget headerText =
+        Center(child: Text('ห้องพระ', style: MyConfig.logoText));
+    Widget titleText = Center(
+        child: Text('ยินดีต้อนรับสู่ ห้องพระ', style: MyConfig.largeBoldText));
+    Widget subtitleText = Center(
+        child: Text('เข้าสู่ระบบเพื่อใช้งาน', style: MyConfig.smallText2));
     Widget emailLabel = Text('อีเมล', style: MyConfig.normalText1);
 
     Widget emailTextField = TextField(
@@ -129,14 +166,10 @@ class _MyLoginPageState extends State<MyLoginPage> {
         minWidth: loginButtonWidth,
         height: loginButtonHeight,
         child: RaisedButton(
-          onPressed: () => {
-            signIn()
-          },
+          onPressed: () => {signIn()},
           color: MyConfig.blackColor,
           child: Text('เข้าสู่ระบบ', style: MyConfig.buttonText),
-
         ),
-
       ),
     );
 
@@ -158,7 +191,8 @@ class _MyLoginPageState extends State<MyLoginPage> {
       height: footerHeight,
       color: MyConfig.blackColor,
       child: Center(
-        child: Text('@HongPra.com 2020, All right Reserved.', style: MyConfig.normalText2),
+        child: Text('@HongPra.com 2020, All right Reserved.',
+            style: MyConfig.normalText2),
       ),
     );
 
@@ -169,8 +203,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
         child: Container(
           width: desireWidth,
           height: screenHeight,
-          padding:
-              EdgeInsets.symmetric(horizontal: screenEdge, vertical: 0.0),
+          padding: EdgeInsets.symmetric(horizontal: screenEdge, vertical: 0.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -178,7 +211,8 @@ class _MyLoginPageState extends State<MyLoginPage> {
               headerText,
               SizedBox(height: desireHeight * 0.01),
               Container(
-                padding: EdgeInsets.symmetric(horizontal: boxEdgeWidth, vertical: boxEdgeHeight),
+                padding: EdgeInsets.symmetric(
+                    horizontal: boxEdgeWidth, vertical: boxEdgeHeight),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(boxCurve)),
                   color: MyConfig.whiteColor,
