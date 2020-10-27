@@ -74,30 +74,28 @@ class _MyDetailPageState extends State<MyDetailPage> {
     // amulet = ...
 
     _firestoreInstance.collection("users").get().then((querySnapshot) {
-      querySnapshot.docs.forEach((result) {
-        _firestoreInstance
-            .collection("users")
-            .doc(id)
-            .collection("amulets")
-            .get()
-            .then((querySnapshot) {
-          querySnapshot.docs.forEach((result) {
-            setState(() {
-              amulet.add(
-                new Data(
-                  result.data()['amuletId'],
-                  result.data()['image'],
-                  result.data()['name'],
-                  result.data()['categories'],
-                  result.data()['texture'],
-                  result.data()['information'],
-                  result.data()['certificateImage'],
-                  result.data()['certificateId'],
-                  result.data()['comfirmBy'],
-                  result.data()['comfirmDate'],
-                ),
-              );
-            });
+      _firestoreInstance
+          .collection("users")
+          .doc(id)
+          .collection("amulets")
+          .get()
+          .then((querySnapshot) {
+        querySnapshot.docs.forEach((result) {
+          setState(() {
+            amulet.add(
+              new Data(
+                result.data()['amuletId'],
+                result.data()['image'],
+                result.data()['name'],
+                result.data()['categories'],
+                result.data()['texture'],
+                result.data()['information'],
+                result.data()['certificateImage'],
+                result.data()['certificateId'],
+                result.data()['comfirmBy'],
+                result.data()['comfirmDate'],
+              ),
+            );
           });
         });
       });

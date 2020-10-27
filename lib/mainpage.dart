@@ -16,11 +16,13 @@ class MyMainPage extends StatefulWidget {
 }
 
 class _MyMainPageState extends State<MyMainPage> {
-  int selectedPage = 0;
+  int selectedPage = 2;
 
   final searchController = new TextEditingController();
-  RefreshController refreshController =
+  RefreshController refreshAmuletListController =
       new RefreshController(initialRefresh: false);
+  RefreshController refreshHistoryListController =
+  new RefreshController(initialRefresh: false);
   TabController tabController;
 
   Widget searchTitle = Text("", style: MyConfig.normalText1);
@@ -42,7 +44,8 @@ class _MyMainPageState extends State<MyMainPage> {
   void dispose() {
     super.dispose();
     searchController.dispose();
-    refreshController.dispose();
+    // refreshAmuletListController.dispose();
+    // refreshHistoryListController.dispose();
     tabController.dispose();
   }
 
@@ -66,14 +69,13 @@ class _MyMainPageState extends State<MyMainPage> {
     }
   }
 
-  void generateAmuletList() async {
+  Future generateAmuletList() async {
     final checkUser = FirebaseAuth.instance.currentUser.uid;
     final _firestoreInstance = FirebaseFirestore.instance;
 
     amuletList = new List<Amulet>();
 
     _firestoreInstance.collection("users").get().then((querySnapshot) {
-      querySnapshot.docs.forEach((result) {
         _firestoreInstance
             .collection("users")
             .doc(checkUser) // User document ID
@@ -96,16 +98,16 @@ class _MyMainPageState extends State<MyMainPage> {
             });
           });
         });
-      });
     });
   }
 
-  void generateHistoryList() async {
+  Future generateHistoryList() async {
     final checkUser = FirebaseAuth.instance.currentUser.uid;
     final _firestoreInstance = FirebaseFirestore.instance;
 
+    historyList = new List<History>();
+
     _firestoreInstance.collection("users").get().then((querySnapshot) {
-      querySnapshot.docs.forEach((result) {
         _firestoreInstance
             .collection("users")
             .doc(checkUser) // User document ID
@@ -116,29 +118,15 @@ class _MyMainPageState extends State<MyMainPage> {
             setState(() {
               historyList.add(
                 new History(
-                    result.data()['date'],
                     result.data()['type'],
                     result.data()['certificateId'],
-                    result.data()['senderId'],)
+                    (result.data()['type'] == 1)? result.data()['recieverId']: result.data()['senderId'],
+                    new DateTime.now(), //result.data()['date'],
+                )
               );
             });
           });
-        });
       });
-    });
-
-    setState(() {
-      int day = 24;
-      //-- Need sort desc before add
-      historyList.add(new History(1, "9999999", "PING", new DateTime.now()));
-      historyList.add(new History(2, "8888888", "BOY",
-          new DateTime.now().subtract(Duration(hours: day))));
-      historyList.add(new History(1, "7777777", "KEN",
-          new DateTime.now().subtract(Duration(hours: day))));
-      historyList.add(new History(2, "6666666", "TURBO",
-          new DateTime.now().subtract(Duration(hours: day * 2))));
-      historyList.add(new History(1, "5555555", "PLAYSPACE",
-          new DateTime.now().subtract(Duration(hours: day * 3))));
     });
   }
 
@@ -171,14 +159,23 @@ class _MyMainPageState extends State<MyMainPage> {
     });
   }
 
-  void refresh() async {
+  void refreshAmuletList() async {
     setState(() async {
       generateAmuletList();
       searchController.clear();
       await Future.delayed(Duration(milliseconds: 1000));
-      refreshController.refreshCompleted();
+      refreshAmuletListController.refreshCompleted();
     });
   }
+
+  void refreshHistoryList() async {
+    setState(() async {
+      generateHistoryList();
+      await Future.delayed(Duration(milliseconds: 1000));
+      refreshHistoryListController.refreshCompleted();
+    });
+  }
+
 
   void onPageChanged(int index) {
     setState(() {
@@ -221,7 +218,9 @@ class _MyMainPageState extends State<MyMainPage> {
         icon: Icon(Icons.account_circle),
         color: MyConfig.whiteColor,
         onPressed: () {
-          setState(() {});
+          setState(() {
+            print(amuletList.length);
+          });
         },
       ),
       title: Text('ห้องพระ', style: MyConfig.appBarTitleText),
@@ -373,8 +372,8 @@ class _MyMainPageState extends State<MyMainPage> {
       appBar: mySearchBar,
       body: SmartRefresher(
         enablePullDown: true,
-        controller: refreshController,
-        onRefresh: refresh,
+        controller: refreshAmuletListController,
+        onRefresh: refreshAmuletList,
         //header: WaterDropHeader(),
         child: amuletGrid,
       ),
@@ -502,22 +501,37 @@ class _MyMainPageState extends State<MyMainPage> {
               Container(
                 height: screenHeight,
                 color: MyConfig.themeColor2,
-                child: ListView(
-                  children: buildHistoryCard(0),
+                child: SmartRefresher(
+                  enablePullDown: true,
+                  controller: refreshHistoryListController,
+                  onRefresh: refreshHistoryList,
+                  child: ListView(
+                    children: buildHistoryCard(0),
+                  ),
                 ),
               ),
               Container(
                 height: screenHeight,
                 color: MyConfig.themeColor2,
-                child: ListView(
-                  children: buildHistoryCard(1),
+                child: SmartRefresher(
+                  enablePullDown: true,
+                  controller: refreshHistoryListController,
+                  onRefresh: refreshHistoryList,
+                  child: ListView(
+                    children: buildHistoryCard(1),
+                  ),
                 ),
               ),
               Container(
                 height: screenHeight,
                 color: MyConfig.themeColor2,
-                child: ListView(
-                  children: buildHistoryCard(2),
+                child: SmartRefresher(
+                  enablePullDown: true,
+                  controller: refreshHistoryListController,
+                  onRefresh: refreshHistoryList,
+                  child: ListView(
+                    children: buildHistoryCard(2),
+                  ),
                 ),
               ),
             ],
