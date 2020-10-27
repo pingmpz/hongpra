@@ -8,15 +8,12 @@ import 'package:hongpra/loginpage.dart';
 import 'package:hongpra/myconfig.dart';
 
 class MyRegisterPage extends StatefulWidget {
-
   @override
   _MyRegisterPageState createState() => _MyRegisterPageState();
 }
 
 class _MyRegisterPageState extends State<MyRegisterPage> {
-
   FirebaseAuth _auth = FirebaseAuth.instance;
-
 
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -47,8 +44,7 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
   }
 
   String validatePassword(String value) {
-    Pattern pattern =
-        r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])$';
+    Pattern pattern = r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])$';
     RegExp regex = new RegExp(pattern);
     print(value);
     if (value.isEmpty) {
@@ -87,9 +83,13 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
         String userId = user.user.uid;
         print(userId);
         // 'userid': userId,
-        Firestore.instance.collection('users').doc().set({'userid': userId, 'firstname': firstname, 'lastname': lastname});
+        Firestore.instance
+            .collection('users')
+            .doc(userId)
+            .set({'userid': userId, 'firstname': firstname, 'lastname': lastname});
         // NAVIGATE
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyLoginPage()));
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => MyLoginPage()));
       }).catchError((error) {
         print(error.message);
       });
@@ -117,8 +117,12 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
     double screenHeight = MediaQuery.of(context).size.height;
     double desireWidth = (screenWidth < minWidth) ? screenWidth : minWidth;
     double desireHeight = (screenHeight < minHeight) ? screenHeight : minHeight;
-    double screenEdge = (screenWidth <= minWidth) ? screenMinEdge : min(screenWidth - minWidth, screenMaxEdge);
-    double textFieldEdge = (screenWidth < minWidth) ? screenWidth/minWidth * maxTextFieldEdge : maxTextFieldEdge;
+    double screenEdge = (screenWidth <= minWidth)
+        ? screenMinEdge
+        : min(screenWidth - minWidth, screenMaxEdge);
+    double textFieldEdge = (screenWidth < minWidth)
+        ? screenWidth / minWidth * maxTextFieldEdge
+        : maxTextFieldEdge;
 
     //------------------ Custom Widgets ------------------
     Widget myAppBar = AppBar(
@@ -177,7 +181,8 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
           border: OutlineInputBorder()),
     );
 
-    Widget rePasswordLabel = Text('ยืนยันรหัสผ่าน', style: MyConfig.normalText1);
+    Widget rePasswordLabel =
+        Text('ยืนยันรหัสผ่าน', style: MyConfig.normalText1);
 
     Widget rePasswordField = TextField(
       controller: confirmPasswordController,
@@ -227,7 +232,7 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
         minWidth: registerButtonWidth,
         height: registerButtonHeight,
         child: RaisedButton(
-          onPressed: () => { signUp() },
+          onPressed: () => {signUp()},
           color: MyConfig.blackColor,
           child: Text('สมัครสมาชิก', style: MyConfig.buttonText),
         ),
@@ -238,7 +243,8 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
       height: footerHeight,
       color: MyConfig.blackColor,
       child: Center(
-        child: Text('@HongPra.com 2020, All right Reserved.', style: MyConfig.normalText2),
+        child: Text('@HongPra.com 2020, All right Reserved.',
+            style: MyConfig.normalText2),
       ),
     );
 
@@ -251,7 +257,8 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
           width: desireWidth,
           height: desireHeight,
           margin: EdgeInsets.all(screenEdge),
-          padding: EdgeInsets.symmetric(horizontal: boxEdgeWidth, vertical: boxEdgeHeight),
+          padding: EdgeInsets.symmetric(
+              horizontal: boxEdgeWidth, vertical: boxEdgeHeight),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(boxCurve)),
             color: MyConfig.whiteColor,
