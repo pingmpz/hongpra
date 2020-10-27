@@ -35,29 +35,29 @@ class _MyDetailPageState extends State<MyDetailPage> {
   void getAmulet() async {
     String id = widget.id;
     final _firestoreInstance = FirebaseFirestore.instance;
-    amulet = new Amulet("ID", null, "CERTIFICATEID", null, "NAME", "CATAGORY", "TEXTURE", "INFO", "CONFIRMBY", "CONFIRMDATE");
+    amulet = new Amulet("ID", null, "CERTIFICATEID", null, "NAME", "CATAGORY",
+        "TEXTURE", "INFO", "CONFIRMBY", "CONFIRMDATE");
 
     _firestoreInstance.collection("users").get().then((querySnapshot) {
       _firestoreInstance
           .collection("users")
           .doc(id)
           .collection("amulets")
+          .doc()
           .get()
-          .then((querySnapshot) {
-        querySnapshot.docs.forEach((result) {
-          setState(() {
-            // amulet = new Amulet(result.data()['amuletId'],
-            //     result.data()['image'],
-            //     result.data()['certificateId'],
-            //     result.data()['certificateImage'],
-            //     result.data()['name'],
-            //     result.data()['categories'],
-            //     result.data()['texture'],
-            //     result.data()['information'],
-            //     result.data()['comfirmBy'],
-            //     result.data()['comfirmDate']);
-          });
-        });
+          .then((value) {
+            setState(() {
+              amulet = new Amulet(value.data()['amuletId'],
+                  value.data()['image'],
+                  value.data()['certificateId'],
+                  value.data()['certificateImage'],
+                  value.data()['name'],
+                  value.data()['categories'],
+                  value.data()['texture'],
+                  value.data()['information'],
+                  value.data()['comfirmBy'],
+                  value.data()['comfirmDate']);
+            });
       });
     });
   }
@@ -169,13 +169,15 @@ class _MyDetailPageState extends State<MyDetailPage> {
         child: Card(
           child: Padding(
             padding: EdgeInsets.all(cardPadding),
-            child: (amulet.images != null) ? Carousel(
-              dotSize: dotSize,
-              dotSpacing: dotSize * 3,
-              indicatorBgPadding: dotSize,
-              autoplay: false,
-              images: buildImages(amulet.images),
-            ): Image(image: AssetImage("assets/images/notfound.png")),
+            child: (amulet.images != null)
+                ? Carousel(
+                    dotSize: dotSize,
+                    dotSpacing: dotSize * 3,
+                    indicatorBgPadding: dotSize,
+                    autoplay: false,
+                    images: buildImages(amulet.images),
+                  )
+                : Image(image: AssetImage("assets/images/notfound.png")),
           ),
         ),
       ),
@@ -329,10 +331,13 @@ class _MyDetailPageState extends State<MyDetailPage> {
                   minWidth: buttonWidth,
                   height: buttonHeight,
                   child: RaisedButton(
-                    color: (amulet.certificateImage != null) ? MyConfig.greenColor : MyConfig.greyColor,
+                    color: (amulet.certificateImage != null)
+                        ? MyConfig.greenColor
+                        : MyConfig.greyColor,
                     child: Text('ดูใบรับรอง', style: MyConfig.buttonText),
                     onPressed: () => {
-                      if (amulet.certificateImage != null) enterFullScreenImage([amulet.certificateImage], 0)
+                      if (amulet.certificateImage != null)
+                        enterFullScreenImage([amulet.certificateImage], 0)
                     },
                   ),
                 ),
