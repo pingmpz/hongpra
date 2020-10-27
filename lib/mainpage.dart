@@ -16,7 +16,7 @@ class MyMainPage extends StatefulWidget {
 }
 
 class _MyMainPageState extends State<MyMainPage> {
-  int selectedPage = 2;
+  int selectedPage = 0;
 
   final searchController = new TextEditingController();
   RefreshController refreshAmuletListController =

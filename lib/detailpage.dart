@@ -21,41 +21,7 @@ class _MyDetailPageState extends State<MyDetailPage> {
   bool _isArrowRightShown = false;
   int currentIndex;
   List<String> currentPaths;
-
-  List<Data> amulet;
-
-  //------------------ Sample Variables ------------------
-  String certificatePath = "assets/images/certificate1.jpg";
-
-  List<String> amuletPaths = [
-    "assets/images/amulet1.jpg",
-    "assets/images/certificate1.jpg",
-    "assets/images/amulet1.jpg",
-    "assets/images/certificate1.jpg",
-    "assets/images/amulet1.jpg",
-  ];
-
-  String amuletName = 'พระกริ่งชัย-วัฒน์ทั่วไป';
-
-  List<String> headers = [
-    'ชื่อพระ',
-    'พิมพ์พระ',
-    'เนื้อพระ',
-    'รายละเอียด',
-    'รหัสใบรับรอง',
-    'วันที่รับรอง',
-    'รับรองโดย',
-  ];
-
-  List<String> texts = [
-    'พระชัยวัฒน์',
-    'พิมพ์อุดมีกริ่ง',
-    'ทองเหลือง',
-    'วัดชนะสงคราม พ.ศ. 2484',
-    '19945A007',
-    '8 พฤศจิกายน 2562',
-    'หัวหน้าสมาคมพระเครื่องแห่งประเทศไทย',
-  ];
+  Amulet amulet;
 
   //------------------ Custom Functions ------------------
   @override
@@ -69,9 +35,7 @@ class _MyDetailPageState extends State<MyDetailPage> {
   void getAmulet() async {
     String id = widget.id;
     final _firestoreInstance = FirebaseFirestore.instance;
-    amulet = new List<Data>();
-    // Query Amulet
-    // amulet = ...
+    amulet = new Amulet("ID", null, "CERTIFICATEID", null, "NAME", "CATAGORY", "TEXTURE", "INFO", "CONFIRMBY", "CONFIRMDATE");
 
     _firestoreInstance.collection("users").get().then((querySnapshot) {
       _firestoreInstance
@@ -82,20 +46,16 @@ class _MyDetailPageState extends State<MyDetailPage> {
           .then((querySnapshot) {
         querySnapshot.docs.forEach((result) {
           setState(() {
-            amulet.add(
-              new Data(
-                result.data()['amuletId'],
-                result.data()['image'],
-                result.data()['name'],
-                result.data()['categories'],
-                result.data()['texture'],
-                result.data()['information'],
-                result.data()['certificateImage'],
-                result.data()['certificateId'],
-                result.data()['comfirmBy'],
-                result.data()['comfirmDate'],
-              ),
-            );
+            // amulet = new Amulet(result.data()['amuletId'],
+            //     result.data()['image'],
+            //     result.data()['certificateId'],
+            //     result.data()['certificateImage'],
+            //     result.data()['name'],
+            //     result.data()['categories'],
+            //     result.data()['texture'],
+            //     result.data()['information'],
+            //     result.data()['comfirmBy'],
+            //     result.data()['comfirmDate']);
           });
         });
       });
@@ -189,13 +149,14 @@ class _MyDetailPageState extends State<MyDetailPage> {
     );
 
     Widget amuletTitleText =
-        Center(child: Text(amuletName, style: MyConfig.largeBoldText));
+        Center(child: Text(amulet.amuletName, style: MyConfig.largeBoldText));
 
     List<Widget> buildImages(List<String> paths) {
       return List<Widget>.generate(
         paths.length,
         (index) => GestureDetector(
-          child: Image(image: AssetImage(paths[index])),
+          child: Image.network(paths[index]),
+          //child: (paths[index] != null) ? Image.network(paths[index]) : Image(image: AssetImage("assets/images/notfound.png")),
           onDoubleTap: () => {enterFullScreenImage(paths, index)},
         ),
       );
@@ -208,13 +169,13 @@ class _MyDetailPageState extends State<MyDetailPage> {
         child: Card(
           child: Padding(
             padding: EdgeInsets.all(cardPadding),
-            child: Carousel(
+            child: (amulet.images != null) ? Carousel(
               dotSize: dotSize,
               dotSpacing: dotSize * 3,
               indicatorBgPadding: dotSize,
               autoplay: false,
-              images: buildImages(amuletPaths),
-            ),
+              images: buildImages(amulet.images),
+            ): Image(image: AssetImage("assets/images/notfound.png")),
           ),
         ),
       ),
@@ -298,29 +259,29 @@ class _MyDetailPageState extends State<MyDetailPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(headers[0], style: MyConfig.smallBoldText1),
-                  Text(texts[0], style: MyConfig.smallText1),
+                  Text("ชื่อพระ", style: MyConfig.smallBoldText1),
+                  Text(amulet.amuletName, style: MyConfig.smallText1),
                 ],
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(headers[1], style: MyConfig.smallBoldText1),
-                  Text(texts[1], style: MyConfig.smallText1),
+                  Text("พิมพ์พระ", style: MyConfig.smallBoldText1),
+                  Text(amulet.amuletCategories, style: MyConfig.smallText1),
                 ],
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(headers[2], style: MyConfig.smallBoldText1),
-                  Text(texts[2], style: MyConfig.smallText1),
+                  Text("เนื้อพระ", style: MyConfig.smallBoldText1),
+                  Text(amulet.texture, style: MyConfig.smallText1),
                 ],
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(headers[3], style: MyConfig.smallBoldText1),
-                  Text(texts[3], style: MyConfig.smallText1),
+                  Text("รายละเอียด", style: MyConfig.smallBoldText1),
+                  Text(amulet.info, style: MyConfig.smallText1),
                 ],
               ),
             ],
@@ -344,22 +305,22 @@ class _MyDetailPageState extends State<MyDetailPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(headers[4], style: MyConfig.smallBoldText1),
-                  Text(texts[4], style: MyConfig.smallText1),
+                  Text("รหัสใบรับรอง", style: MyConfig.smallBoldText1),
+                  Text(amulet.certificateId, style: MyConfig.smallText1),
                 ],
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(headers[5], style: MyConfig.smallBoldText1),
-                  Text(texts[5], style: MyConfig.smallText1),
+                  Text("วันที่รับรอง", style: MyConfig.smallBoldText1),
+                  Text(amulet.confirmDate, style: MyConfig.smallText1),
                 ],
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(headers[6], style: MyConfig.smallBoldText1),
-                  Text(texts[6], style: MyConfig.smallText1),
+                  Text("รับรองโดย", style: MyConfig.smallBoldText1),
+                  Text(amulet.confirmBy, style: MyConfig.smallText1),
                 ],
               ),
               SizedBox(height: columnSpace),
@@ -368,10 +329,10 @@ class _MyDetailPageState extends State<MyDetailPage> {
                   minWidth: buttonWidth,
                   height: buttonHeight,
                   child: RaisedButton(
-                    color: MyConfig.greyColor,
+                    color: (amulet.certificateImage != null) ? MyConfig.greenColor : MyConfig.greyColor,
                     child: Text('ดูใบรับรอง', style: MyConfig.buttonText),
                     onPressed: () => {
-                      enterFullScreenImage([certificatePath], 0)
+                      if (amulet.certificateImage != null) enterFullScreenImage([amulet.certificateImage], 0)
                     },
                   ),
                 ),
@@ -429,7 +390,7 @@ class _MyDetailPageState extends State<MyDetailPage> {
   }
 }
 
-class Data {
+class Amulet {
   String id;
   List<String> images;
   String certificateId;
@@ -441,7 +402,7 @@ class Data {
   String confirmBy;
   String confirmDate;
 
-  Data(
+  Amulet(
       this.id,
       this.images,
       this.certificateId,
