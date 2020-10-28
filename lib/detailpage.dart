@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -23,6 +24,7 @@ class _MyDetailPageState extends State<MyDetailPage> {
   int currentIndex;
   List<String> currentPaths;
   Amulet amulet;
+  Certificate certificate;
 
   //------------------ Custom Functions ------------------
   @override
@@ -36,10 +38,9 @@ class _MyDetailPageState extends State<MyDetailPage> {
   void getAmulet() async {
     String id = widget.id;
     final _firestoreInstance = FirebaseFirestore.instance;
-    amulet = new Amulet("ID", null, "CERTIFICATEID", null, "NAME", "CATAGORY",
-        "TEXTURE", "INFO", "CONFIRMBY", "CONFIRMDATE");
 
-    print("Amulet ID : " + id);
+    amulet = new Amulet("id", null, "name", "category", "texture", "info");
+    certificate = new Certificate("id", null, "confirmBy", "confirmDate");
 
       _firestoreInstance
           .collection("users")
@@ -49,17 +50,9 @@ class _MyDetailPageState extends State<MyDetailPage> {
           .get()
           .then((value) {
             setState(() {
-              amulet = new Amulet(
-                  value.data()['amuletId'],
-                  value.data()['image'],
-                  value.data()['certificateId'],
-                  value.data()['certificateImage'],
-                  value.data()['name'],
-                  value.data()['categories'],
-                  value.data()['texture'],
-                  value.data()['information'],
-                  value.data()['comfirmBy'],
-                  value.data()['comfirmDate']);
+              // value.data()['amuletId']
+              amulet = new Amulet("id", null, "name", "category", "texture", "info");
+              certificate = new Certificate("id", null, "confirmBy", "confirmDate");
             });
       });
 
@@ -152,7 +145,7 @@ class _MyDetailPageState extends State<MyDetailPage> {
     );
 
     Widget amuletTitleText =
-        Center(child: Text(amulet.amuletName, style: MyConfig.largeBoldText1));
+        Center(child: Text(amulet.name, style: MyConfig.largeBoldText1));
 
     List<Widget> buildImages(List<String> paths) {
       return List<Widget>.generate(
@@ -265,14 +258,14 @@ class _MyDetailPageState extends State<MyDetailPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text("ชื่อพระ", style: MyConfig.smallBoldText1),
-                  Text(amulet.amuletName, style: MyConfig.smallText1),
+                  Text(amulet.name, style: MyConfig.smallText1),
                 ],
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text("พิมพ์พระ", style: MyConfig.smallBoldText1),
-                  Text(amulet.amuletCategories, style: MyConfig.smallText1),
+                  Text(amulet.category, style: MyConfig.smallText1),
                 ],
               ),
               Row(
@@ -311,21 +304,21 @@ class _MyDetailPageState extends State<MyDetailPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text("รหัสใบรับรอง", style: MyConfig.smallBoldText1),
-                  Text(amulet.certificateId, style: MyConfig.smallText1),
+                  Text(certificate.id, style: MyConfig.smallText1),
                 ],
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text("วันที่รับรอง", style: MyConfig.smallBoldText1),
-                  Text(amulet.confirmDate, style: MyConfig.smallText1),
+                  Text(certificate.confirmDate, style: MyConfig.smallText1),
                 ],
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text("รับรองโดย", style: MyConfig.smallBoldText1),
-                  Text(amulet.confirmBy, style: MyConfig.smallText1),
+                  Text(certificate.confirmBy, style: MyConfig.smallText1),
                 ],
               ),
               SizedBox(height: columnSpace),
@@ -334,13 +327,13 @@ class _MyDetailPageState extends State<MyDetailPage> {
                   minWidth: buttonWidth,
                   height: buttonHeight,
                   child: RaisedButton(
-                    color: (amulet.certificateImage != null)
+                    color: (certificate.image != null)
                         ? MyConfig.greenColor
                         : MyConfig.greyColor,
                     child: Text('ดูใบรับรอง', style: MyConfig.buttonText),
                     onPressed: () => {
-                      if (amulet.certificateImage != null)
-                        enterFullScreenImage([amulet.certificateImage], 0)
+                      if (certificate.image != null)
+                        enterFullScreenImage([certificate.image], 0)
                     },
                   ),
                 ),
@@ -401,24 +394,30 @@ class _MyDetailPageState extends State<MyDetailPage> {
 class Amulet {
   String id;
   List<String> images;
-  String certificateId;
-  String certificateImage;
-  String amuletName;
-  String amuletCategories;
+  String name;
+  String category;
   String texture;
   String info;
-  String confirmBy;
-  String confirmDate;
 
   Amulet(
       this.id,
       this.images,
-      this.certificateId,
-      this.certificateImage,
-      this.amuletName,
-      this.amuletCategories,
+      this.name,
+      this.category,
       this.texture,
-      this.info,
+      this.info,);
+}
+
+class Certificate {
+  String id;
+  String image;
+  String confirmBy;
+  String confirmDate;
+
+  Certificate(
+      this.id,
+      this.image,
       this.confirmBy,
-      this.confirmDate);
+      this.confirmDate,
+      );
 }

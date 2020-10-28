@@ -78,13 +78,11 @@ class _MyMainPageState extends State<MyMainPage> {
     _firestoreInstance.collection("users").get().then((querySnapshot) {
       _firestoreInstance
           .collection("users")
-          .doc(checkUser) // User document ID
-          //.doc(result.id) // amulets document ID
+          .doc(checkUser)
           .collection("amulets")
           .get()
           .then((querySnapshot) {
         querySnapshot.docs.forEach((result) {
-          //print("Result Id + " + result.id);
           setState(() {
             amuletList.add(
               new Amulet(
@@ -143,7 +141,7 @@ class _MyMainPageState extends State<MyMainPage> {
     setState(() {
       String result = searchController.text;
       for (Amulet item in amuletList) {
-        if (item.amuletName.toLowerCase().contains(result.toLowerCase())) {
+        if (item.name.toLowerCase().contains(result.toLowerCase())) {
           item.isActive = true;
         } else {
           item.isActive = false;
@@ -348,11 +346,11 @@ class _MyMainPageState extends State<MyMainPage> {
         return buildAmuletCard(
             showingList[index].id != null ? showingList[index].id : "",
             showingList[index].image != null ? showingList[index].image : "",
-            showingList[index].amuletName != null
-                ? showingList[index].amuletName
+            showingList[index].name != null
+                ? showingList[index].name
                 : "",
-            showingList[index].amuletCategories != null
-                ? showingList[index].amuletCategories
+            showingList[index].category != null
+                ? showingList[index].category
                 : "",
             showingList[index].texture != null
                 ? showingList[index].texture
@@ -628,13 +626,13 @@ class _MyMainPageState extends State<MyMainPage> {
 class Amulet {
   String id;
   String image;
-  String amuletName;
-  String amuletCategories;
+  String name;
+  String category;
   String texture;
   String info;
   bool isActive = true;
 
-  Amulet(this.id, this.image, this.amuletName, this.amuletCategories,
+  Amulet(this.id, this.image, this.name, this.category,
       this.texture, this.info);
 }
 
