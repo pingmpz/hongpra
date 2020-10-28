@@ -52,6 +52,26 @@ class _MyDetailPageState extends State<MyDetailPage> {
               // value.data()['amuletId']
               amulet = new Amulet("id", null, "name", "category", "texture", "info");
               certificate = new Certificate("id", null, "confirmBy", "confirmDate");
+
+
+              amulet = new Amulet(
+                value.data()['amuletId'],
+                new List(value.data()['amuletImageList']),
+                value.data()['name'],
+                value.data()['category'],
+                value.data()['texture'],
+                value.data()['infomation'],
+              );
+
+
+              certificate = Certificate(
+                value.data()['certificateId'],
+                value.data()['certificateImage'],
+                value.data()['confirmBy'],
+                value.data()['confirmDate'],
+              );
+
+
             });
       });
 
