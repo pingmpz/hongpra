@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -22,8 +23,8 @@ class _MyDetailPageState extends State<MyDetailPage> {
   bool _isArrowRightShown = false;
   int currentIndex;
   List<String> currentPaths;
-  Amulet amulet;
-  Certificate certificate;
+  Amulet amulet = new Amulet("", [], "", "", "", "");
+  Certificate certificate= new Certificate("", "", "", new DateTime.now());
 
   //------------------ Custom Functions ------------------
   @override
@@ -34,44 +35,36 @@ class _MyDetailPageState extends State<MyDetailPage> {
     });
   }
 
-  void getAmulet() async {
+  Future getAmulet() async {
     String id = widget.id;
+    final checkUser = FirebaseAuth.instance.currentUser.uid;
     final _firestoreInstance = FirebaseFirestore.instance;
-
-    amulet = new Amulet("id", null, "name", "category", "texture", "info");
-    certificate = new Certificate("id", null, "confirmBy", "confirmDate");
 
       _firestoreInstance
           .collection("users")
-          .doc(id)
+          .doc(checkUser)
           .collection("amulets")
-          .doc()
+          .doc(id)
           .get()
           .then((value) {
             setState(() {
-              // value.data()['amuletId']
-              amulet = new Amulet("id", null, "name", "category", "texture", "info");
-              certificate = new Certificate("id", null, "confirmBy", "confirmDate");
-
-
               amulet = new Amulet(
-                value.data()['amuletId'],
-                new List<String>(value.data()['amuletImageList']),
-                value.data()['name'],
-                value.data()['category'],
-                value.data()['texture'],
-                value.data()['infomation'],
+                (value.data()['amuletId'] != null) ? value.data()['amuletId'] : "",
+                (value.data()['amuletImageList'] != null) ? HashMap<String, dynamic>.from(value.data()['amuletImageList']).values.toList().cast<String>() : [],
+                (value.data()['name'] != null) ? value.data()['name'] : "",
+                (value.data()['categories'] != null) ? value.data()['categories'] : "",
+                (value.data()['texture'] != null) ? value.data()['texture'] : "",
+                (value.data()['information'] != null) ? value.data()['information'] : "",
               );
 
+              //print(HashMap<String, dynamic>.from(value.data()['amuletImageList']).values.toList());
 
-              certificate = Certificate(
-                value.data()['certificateId'],
-                value.data()['certificateImage'],
-                value.data()['confirmBy'],
-                value.data()['confirmDate'],
+              certificate = new Certificate(
+                (value.data()['certificateId'] != null) ? value.data()['certificateId'] : "",
+                (value.data()['certificateImage'] != null) ? value.data()['certificateImage'] : "",
+                (value.data()['confirmBy'] != null) ? value.data()['confirmBy'] : "",
+                (value.data()['confirmDate'] != null) ? value.data()['confirmDate'].toDate() : new DateTime.now(),
               );
-
-
             });
       });
 
@@ -184,7 +177,7 @@ class _MyDetailPageState extends State<MyDetailPage> {
         child: Card(
           child: Padding(
             padding: EdgeInsets.all(cardPadding),
-            child: (amulet.images != null && amulet.images.isNotEmpty)
+            child: (amulet.images.isNotEmpty)
                 ? Carousel(
                     dotSize: dotSize,
                     dotSpacing: dotSize * 3,
@@ -205,7 +198,7 @@ class _MyDetailPageState extends State<MyDetailPage> {
           alignment: Alignment.topRight,
           children: [
             PhotoView(
-              imageProvider: AssetImage(currentPaths[currentIndex]),
+              imageProvider: NetworkImage(currentPaths[currentIndex]),
             ),
             Padding(
               padding: EdgeInsets.all(screenEdge),
@@ -233,7 +226,7 @@ class _MyDetailPageState extends State<MyDetailPage> {
                             child: Ink(
                               child: IconButton(
                                 icon: Icon(Icons.chevron_left),
-                                color: Colors.white,
+                                color: MyConfig.whiteColor,
                                 onPressed: () => {previousImage()},
                               ),
                             ),
@@ -248,7 +241,7 @@ class _MyDetailPageState extends State<MyDetailPage> {
                             child: Ink(
                               child: IconButton(
                                 icon: Icon(Icons.chevron_right),
-                                color: Colors.white,
+                                color: MyConfig.whiteColor,
                                 onPressed: () => {nextImage()},
                               ),
                             ),
@@ -330,7 +323,7 @@ class _MyDetailPageState extends State<MyDetailPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text("วันที่รับรอง", style: MyConfig.smallBoldText1),
-                  Text(certificate.confirmDate, style: MyConfig.smallText1),
+                  Text(MyConfig.dateText(certificate.confirmDate), style: MyConfig.smallText1),
                 ],
               ),
               Row(
@@ -346,13 +339,12 @@ class _MyDetailPageState extends State<MyDetailPage> {
                   minWidth: buttonWidth,
                   height: buttonHeight,
                   child: RaisedButton(
-                    color: (certificate.image != null)
+                    color: (certificate.image != "")
                         ? MyConfig.greenColor
                         : MyConfig.greyColor,
                     child: Text('ดูใบรับรอง', style: MyConfig.buttonText),
                     onPressed: () => {
-                      if (certificate.image != null)
-                        enterFullScreenImage([certificate.image], 0)
+                      if (certificate.image != "") enterFullScreenImage([certificate.image], 0)
                     },
                   ),
                 ),
@@ -431,7 +423,7 @@ class Certificate {
   String id;
   String image;
   String confirmBy;
-  String confirmDate;
+  DateTime confirmDate;
 
   Certificate(
       this.id,

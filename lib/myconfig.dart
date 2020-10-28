@@ -47,4 +47,28 @@ class MyConfig {
   static TextStyle logoText = TextStyle(fontFamily: fontFamily2, fontSize: 86, color: whiteColor, fontWeight: bold);
   static TextStyle appBarTitleText = TextStyle(fontFamily: fontFamily1, fontSize: largeSize, color: whiteColor, fontWeight: bold);
 
+  static List<String> monthName = [
+    'มกราคม',
+    'กุมภาพันธ์',
+    'มีนาคม',
+    'เมษายน',
+    'พฤษภาคม',
+    'มิถุนายน',
+    'กรกฎาคม',
+    'สิงหาคม',
+    'กันยายน',
+    'ตุลาคม',
+    'พฤศจิกายน',
+    'ธันวาคม'
+  ];
+
+  static String dateText(DateTime dateTime){
+    int day = dateTime.day;
+    int month = dateTime.month - 1;
+    int year = dateTime.year + 543;
+    String result = day.toString() + " " + monthName[month] + " " + year.toString();
+    return result;
+  }
+
+
 }

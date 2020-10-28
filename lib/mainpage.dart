@@ -86,12 +86,12 @@ class _MyMainPageState extends State<MyMainPage> {
           setState(() {
             amuletList.add(
               new Amulet(
-                  result.data()['amuletId'],
-                  result.data()['amuletImageList']['image1'],
-                  result.data()['name'],
-                  result.data()['categories'],
-                  result.data()['texture'],
-                  result.data()['information']),
+                  (result.data()['amuletId'] != null) ? result.data()['amuletId'] : "",
+                  (result.data()['amuletImageList']['image1'] != null) ? result.data()['amuletImageList']['image1'] : "",
+                  (result.data()['name'] != null) ? result.data()['name'] : "",
+                  (result.data()['categories'] != null) ? result.data()['categories'] : "",
+                  (result.data()['texture'] != null) ? result.data()['texture'] : "",
+                  (result.data()['information'] != null) ? result.data()['information'] : ""),
             );
           });
         });
@@ -116,11 +116,11 @@ class _MyMainPageState extends State<MyMainPage> {
         querySnapshot.docs.forEach((result) {
           setState(() {
             historyList.add(new History(
-              result.data()['type'],
-              result.data()['certificateId'],
-              result.data()['recieverId'],
-              result.data()['senderId'],
-              result.data()['date'].toDate(),
+              (result.data()['type'] != null) ? result.data()['type'] : -1,
+              (result.data()['certificateId'] != null) ? result.data()['certificateId'] : "",
+              (result.data()['recieverId'] != null) ? result.data()['recieverId'] : "",
+              (result.data()['senderId'] != null) ? result.data()['senderId'] : "",
+              (result.data()['date'] != null) ? result.data()['date'].toDate() : null,
             ));
           });
         });
@@ -304,7 +304,7 @@ class _MyMainPageState extends State<MyMainPage> {
                     flex: 3,
                     child: Container(
                       margin: EdgeInsets.all(cardInnerEdge),
-                      child: (image.isNotEmpty && image != null && image != "")
+                      child: (image != "")
                           ? Image.network(image)
                           : Image(image: AssetImage("assets/images/notfound.png")),
                     ),
@@ -341,12 +341,12 @@ class _MyMainPageState extends State<MyMainPage> {
       List<Amulet> showingList = amuletList.where((element) => element.isActive == true).toList();
       return List<Widget>.generate(showingList.length, (index) {
         return buildAmuletCard(
-            showingList[index].id != null ? showingList[index].id : "",
-            showingList[index].image != null ? showingList[index].image : "",
-            showingList[index].name != null ? showingList[index].name : "",
-            showingList[index].category != null ? showingList[index].category : "",
-            showingList[index].texture != null ? showingList[index].texture : "",
-            showingList[index].info != null ? showingList[index].info : "");
+            showingList[index].id,
+            showingList[index].image,
+            showingList[index].name,
+            showingList[index].category,
+            showingList[index].texture,
+            showingList[index].info);
       });
     }
 
@@ -363,7 +363,6 @@ class _MyMainPageState extends State<MyMainPage> {
         enablePullDown: true,
         controller: refreshAmuletListController,
         onRefresh: refreshAmuletList,
-        //header: WaterDropHeader(),
         child: amuletGrid,
       ),
     );
@@ -422,33 +421,14 @@ class _MyMainPageState extends State<MyMainPage> {
       ),
     );
 
-    Widget historyHeader(int day, int month, int year) {
-      List<String> monthName = [
-        'มกราคม',
-        'กุมภาพันธ์',
-        'มีนาคม',
-        'เมษายน',
-        'พฤษภาคม',
-        'มิถุนายน',
-        'กรกฎาคม',
-        'สิงหาคม',
-        'กันยายน',
-        'ตุลาคม',
-        'พฤศจิกายน',
-        'ธันวาคม'
-      ];
-      // day = day + 1;
-      month = month - 1;
-      year = year + 543;
+    Widget historyHeader(DateTime dateTime) {
       return Card(
         color: MyConfig.transparentColor,
         elevation: 0.0,
         margin: EdgeInsets.zero,
         child: Padding(
           padding: EdgeInsets.all(cardInnerEdge * 3),
-          child: Text(
-              day.toString() + " " + monthName[month] + " " + year.toString(),
-              style: MyConfig.normalText1),
+          child: Text(MyConfig.dateText(dateTime), style: MyConfig.normalText1),
         ),
       );
     }
@@ -481,24 +461,21 @@ class _MyMainPageState extends State<MyMainPage> {
       List<Widget> resultList = new List<Widget>();
       List<History> showingList = historyList;
       if (type != 0) showingList = historyList.where((element) => element.type == type).toList();
-      if (showingList.length != 0 && showingList != null && showingList.isNotEmpty) {
+      if (showingList.isNotEmpty) {
         String selectedDate =  DateFormat('dd-MM-yyyy').format(new DateTime.now().subtract(Duration(hours: 999999)));
         for (int i = 0; i < showingList.length; i++) {
           String showingDate =  DateFormat('dd-MM-yyyy').format(showingList[i].timestamp);
           if (selectedDate != showingDate) {
             selectedDate = showingDate;
-            resultList.add(historyHeader(
-                (showingList[i].timestamp.day != null) ? showingList[i].timestamp.day : "",
-                (showingList[i].timestamp.month != null) ? showingList[i].timestamp.month : "",
-                (showingList[i].timestamp.year != null) ? showingList[i].timestamp.year : ""));
+            resultList.add(historyHeader(showingList[i].timestamp));
           }
           resultList.add(historyCard(
-              (showingList[i].type != null) ? showingList[i].type : 0,
-              (showingList[i].certificateId != null) ? showingList[i].certificateId : "",
-              (showingList[i].reciever != null) ? showingList[i].reciever : "",
-              (showingList[i].sender != null) ? showingList[i].sender : "",
-              (showingList[i].timestamp.hour != null) ? showingList[i].timestamp.hour : "",
-              (showingList[i].timestamp.minute != null) ? showingList[i].timestamp.minute : ""));
+              showingList[i].type,
+              showingList[i].certificateId,
+              showingList[i].reciever,
+              showingList[i].sender,
+              showingList[i].timestamp.hour,
+              showingList[i].timestamp.minute));
         }
       }
       return resultList;
