@@ -56,7 +56,7 @@ class _MyDetailPageState extends State<MyDetailPage> {
 
               amulet = new Amulet(
                 value.data()['amuletId'],
-                new List(value.data()['amuletImageList']),
+                new List<String>(value.data()['amuletImageList']),
                 value.data()['name'],
                 value.data()['category'],
                 value.data()['texture'],
