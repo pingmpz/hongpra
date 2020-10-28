@@ -381,12 +381,43 @@ class _MyMainPageState extends State<MyMainPage> {
 
     //----------------- Page 1 -------------------
 
+    Widget page_1 = Container(
+      color: MyConfig.themeColor2,
+      height: screenHeight,
+      child: Container(
+        margin: EdgeInsets.all(screenEdge),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text('QR Code', style: MyConfig.largeBoldText4),
+              SizedBox(height: screenHeight * 0.01),
+              Container(
+                height: desireHeight / 2,
+                decoration: BoxDecoration(
+                  border: Border.all(),
+                ),
+                child: Image(
+                  image: AssetImage('assets/images/notfound.png'),
+                ),
+              ),
+              SizedBox(height: screenHeight * 0.05),
+              Text('UID', style: MyConfig.largeBoldText4),
+              SizedBox(height: screenHeight * 0.01),
+              Center(child: Text('12345678', style: MyConfig.largeBoldText1)),
+            ],
+          ),
+        ),
+      ),
+    );
+
     //----------------- Page 2 -------------------
 
     Widget myTabBar = AppBar(
       elevation: 0.0,
       backgroundColor: MyConfig.themeColor2,
-      title: Text('ประวัติกิจกรรม', style: MyConfig.largeBoldText),
+      title: Text('ประวัติกิจกรรม', style: MyConfig.largeBoldText1),
       bottom: TabBar(
         controller: tabController,
         labelColor: MyConfig.blackColor,
@@ -548,6 +579,7 @@ class _MyMainPageState extends State<MyMainPage> {
         if (selectedPage == 0) {
           currentPage = page_0;
         } else if (selectedPage == 1) {
+          currentPage = page_1;
         } else if (selectedPage == 2) {
           currentPage = page_2;
         }

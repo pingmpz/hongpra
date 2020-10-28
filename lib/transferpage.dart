@@ -89,7 +89,7 @@ class _MyTransferPageState extends State<MyTransferPage> {
     );
 
     Widget titleText =
-        Center(child: Text('เลือกผู้รับ', style: MyConfig.largeBoldText));
+        Center(child: Text('เลือกผู้รับ', style: MyConfig.largeBoldText1));
 
     Widget idButton = Center(
       child: ButtonTheme(

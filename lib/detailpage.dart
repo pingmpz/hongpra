@@ -39,7 +39,7 @@ class _MyDetailPageState extends State<MyDetailPage> {
     amulet = new Amulet("ID", null, "CERTIFICATEID", null, "NAME", "CATAGORY",
         "TEXTURE", "INFO", "CONFIRMBY", "CONFIRMDATE");
 
-    print("Amulet ID " + id);
+    print("Amulet ID : " + id);
 
       _firestoreInstance
           .collection("users")
@@ -49,7 +49,8 @@ class _MyDetailPageState extends State<MyDetailPage> {
           .get()
           .then((value) {
             setState(() {
-              amulet = new Amulet(value.data()['amuletId'],
+              amulet = new Amulet(
+                  value.data()['amuletId'],
                   value.data()['image'],
                   value.data()['certificateId'],
                   value.data()['certificateImage'],
@@ -151,7 +152,7 @@ class _MyDetailPageState extends State<MyDetailPage> {
     );
 
     Widget amuletTitleText =
-        Center(child: Text(amulet.amuletName, style: MyConfig.largeBoldText));
+        Center(child: Text(amulet.amuletName, style: MyConfig.largeBoldText1));
 
     List<Widget> buildImages(List<String> paths) {
       return List<Widget>.generate(

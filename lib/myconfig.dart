@@ -34,11 +34,12 @@ class MyConfig {
   static TextStyle normalBoldText4 = TextStyle(fontFamily: fontFamily1, fontSize: normalSize, color: themeColor1, fontWeight: bold);
 
   static TextStyle smallText1 = TextStyle(fontFamily: fontFamily1, fontSize: smallSize, color: blackColor);
-  static TextStyle smallText2 = TextStyle(fontFamily: fontFamily1, fontSize: smallSize, color: greyColor);
+  static TextStyle smallText5 = TextStyle(fontFamily: fontFamily1, fontSize: smallSize, color: greyColor);
 
   static TextStyle smallBoldText1 = TextStyle(fontFamily: fontFamily1, fontSize: smallSize, color: blackColor, fontWeight: bold);
 
-  static TextStyle largeBoldText = TextStyle(fontFamily: fontFamily1, fontSize: largeSize, color: blackColor, fontWeight: bold);
+  static TextStyle largeBoldText1 = TextStyle(fontFamily: fontFamily1, fontSize: largeSize, color: blackColor, fontWeight: bold);
+  static TextStyle largeBoldText4 = TextStyle(fontFamily: fontFamily1, fontSize: largeSize, color: themeColor1, fontWeight: bold);
 
   static TextStyle buttonText = TextStyle(fontFamily: fontFamily1, fontSize: normalSize, color: whiteColor, fontWeight: bold);
   static TextStyle linkText = TextStyle(fontFamily: fontFamily1, fontSize: normalSize, color: blackColor, fontWeight: bold);

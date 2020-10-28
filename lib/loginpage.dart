@@ -126,9 +126,9 @@ class _MyLoginPageState extends State<MyLoginPage> {
     Widget headerText =
         Center(child: Text('ห้องพระ', style: MyConfig.logoText));
     Widget titleText = Center(
-        child: Text('ยินดีต้อนรับสู่ ห้องพระ', style: MyConfig.largeBoldText));
+        child: Text('ยินดีต้อนรับสู่ ห้องพระ', style: MyConfig.largeBoldText1));
     Widget subtitleText = Center(
-        child: Text('เข้าสู่ระบบเพื่อใช้งาน', style: MyConfig.smallText2));
+        child: Text('เข้าสู่ระบบเพื่อใช้งาน', style: MyConfig.smallText5));
     Widget emailLabel = Text('อีเมล', style: MyConfig.normalText1);
 
     Widget emailTextField = TextField(
