@@ -108,9 +108,9 @@ class _MyMainPageState extends State<MyMainPage> {
     _firestoreInstance.collection("users").get().then((querySnapshot) {
       _firestoreInstance
           .collection("users")
-          .doc(checkUser) // User document ID
+          .doc(checkUser)
           .collection("history")
-          //.orderBy("timestamp", descending: true)
+          .orderBy("date", descending: true)
           .get()
           .then((querySnapshot) {
         querySnapshot.docs.forEach((result) {
@@ -118,10 +118,9 @@ class _MyMainPageState extends State<MyMainPage> {
             historyList.add(new History(
               result.data()['type'],
               result.data()['certificateId'],
-              (result.data()['type'] == 1)
-                  ? result.data()['recieverId']
-                  : result.data()['senderId'],
-              new DateTime.now(), //result.data()['date'],
+              result.data()['recieverId'],
+              result.data()['senderId'],
+              result.data()['date'].toDate(),
             ));
           });
         });
@@ -462,10 +461,8 @@ class _MyMainPageState extends State<MyMainPage> {
       );
     }
 
-    Widget historyCard(
-        int type, String certificateId, String name, int hour, int minute) {
+    Widget historyCard(int type, String certificateId, String reciever, String sender, int hour, int minute) {
       String typeName = (type == 1) ? "ส่งมอบ" : "รับมอบ";
-      String typeUser = (type == 1) ? "ผู้รับมอบ" : "ผู้ส่งมอบ";
       String hourText = (hour < 10) ? "0" + hour.toString() : hour.toString();
       String minuteText =
           (minute < 10) ? "0" + minute.toString() : minute.toString();
@@ -481,7 +478,8 @@ class _MyMainPageState extends State<MyMainPage> {
               Text(typeName, style: MyConfig.normalBoldText1),
               Text("รหัสใบรับรอง : " + certificateId,
                   style: MyConfig.smallText1),
-              Text(typeUser + " : " + name, style: MyConfig.smallText1),
+              Text("ผู้ส่งมอบ : " + sender, style: MyConfig.smallText1),
+              Text("ผู้รับมอบ : " + reciever, style: MyConfig.smallText1),
               Text("เวลา : " + time, style: MyConfig.smallText1),
             ],
           ),
@@ -496,8 +494,7 @@ class _MyMainPageState extends State<MyMainPage> {
             historyList.where((element) => element.type == type).toList();
       List<Widget> resultList = new List<Widget>();
       if (showingList.length != 0) {
-        DateTime selectedDate =
-            new DateTime.now().subtract(Duration(hours: 999999));
+        DateTime selectedDate = new DateTime.now().subtract(Duration(hours: 999999));
         DateFormat formatter = DateFormat('dd-MM-yyyy');
         String selectedDateF = formatter.format(selectedDate);
         for (int i = 0; i < showingList.length; i++) {
@@ -510,7 +507,8 @@ class _MyMainPageState extends State<MyMainPage> {
           resultList.add(historyCard(
               showingList[i].type,
               showingList[i].certificateId,
-              showingList[i].name,
+              showingList[i].reciever,
+              showingList[i].sender,
               showingList[i].timestamp.hour,
               showingList[i].timestamp.minute));
         }
@@ -639,8 +637,9 @@ class Amulet {
 class History {
   int type;
   String certificateId;
-  String name;
+  String reciever;
+  String sender;
   DateTime timestamp;
 
-  History(this.type, this.certificateId, this.name, this.timestamp);
+  History(this.type, this.certificateId, this.reciever, this.sender, this.timestamp);
 }
