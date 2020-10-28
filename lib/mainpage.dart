@@ -87,7 +87,7 @@ class _MyMainPageState extends State<MyMainPage> {
             amuletList.add(
               new Amulet(
                   result.data()['amuletId'],
-                  result.data()['image'],
+                  result.data()['amuletImageList']['image1'],
                   result.data()['name'],
                   result.data()['categories'],
                   result.data()['texture'],
@@ -305,7 +305,7 @@ class _MyMainPageState extends State<MyMainPage> {
                     flex: 3,
                     child: Container(
                       margin: EdgeInsets.all(cardInnerEdge),
-                      child: (image != null)
+                      child: (image.isNotEmpty && image != null && image != "")
                           ? Image.network(image)
                           : Image(
                               image: AssetImage("assets/images/notfound.png")),
