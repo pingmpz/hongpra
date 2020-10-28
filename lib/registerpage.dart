@@ -71,6 +71,8 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
     String firstname = firstNameController.text.trim();
     String lastname = lastNameController.text.trim();
 
+    final String uniqueID = Uuid().generateUniqueId();
+
     validateEmail(email);
     validatePassword(password);
 
@@ -81,12 +83,17 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
         print("Registation Success");
 
         String userId = user.user.uid;
+        // Print user ID
         print(userId);
+        // Print unique ID
+        print("Unique ID: " + uniqueID);
         // 'userid': userId,
-        Firestore.instance
-            .collection('users')
-            .doc(userId)
-            .set({'userid': userId, 'firstname': firstname, 'lastname': lastname});
+        Firestore.instance.collection('users').doc(userId).set({
+          'userid': userId,
+          'firstname': firstname,
+          'lastname': lastname,
+          'uniqueId': uniqueID
+        });
         // NAVIGATE
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => MyLoginPage()));
@@ -96,7 +103,8 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
       });
     } else {
       print("Password and Confirm-password is not match.");
-      buildAlertDialog("สมัครสมาชิกล้มเหลว", "รหัสผ่านและยืนยันรหัสผ่านไม่ตรงกัน");
+      buildAlertDialog(
+          "สมัครสมาชิกล้มเหลว", "รหัสผ่านและยืนยันรหัสผ่านไม่ตรงกัน");
     }
   }
 
@@ -321,4 +329,25 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
       bottomNavigationBar: footerBar,
     );
   }
+}
+
+class Uuid {
+  final Random _random = Random();
+
+  /// Generate a random uuid. This is a uuid scheme that only uses
+  /// random numbers as the source of the generated uuid.
+  String generateUniqueId() {
+    //final int special = 8 + _random.nextInt(4);
+
+    // Format xxxxxxxx
+    return '${_bitsDigits(16, 4)}${_bitsDigits(16, 4)}';
+  }
+
+  String _bitsDigits(int bitCount, int digitCount) =>
+      _printDigits(_generateBits(bitCount), digitCount);
+
+  int _generateBits(int bitCount) => _random.nextInt(1 << bitCount);
+
+  String _printDigits(int value, int count) =>
+      value.toRadixString(16).padLeft(count, '0');
 }

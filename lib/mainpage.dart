@@ -22,7 +22,7 @@ class _MyMainPageState extends State<MyMainPage> {
   RefreshController refreshAmuletListController =
       new RefreshController(initialRefresh: false);
   RefreshController refreshHistoryListController =
-  new RefreshController(initialRefresh: false);
+      new RefreshController(initialRefresh: false);
   TabController tabController;
 
   Widget searchTitle = Text("", style: MyConfig.normalText1);
@@ -76,28 +76,28 @@ class _MyMainPageState extends State<MyMainPage> {
     amuletList = new List<Amulet>();
 
     _firestoreInstance.collection("users").get().then((querySnapshot) {
-        _firestoreInstance
-            .collection("users")
-            .doc(checkUser) // User document ID
-            //.doc(result.id) // amulets document ID
-            .collection("amulets")
-            .get()
-            .then((querySnapshot) {
-          querySnapshot.docs.forEach((result) {
-            //print("Result Id + " + result.id);
-            setState(() {
-              amuletList.add(
-                new Amulet(
-                    result.data()['amuletId'],
-                    result.data()['image'],
-                    result.data()['name'],
-                    result.data()['categories'],
-                    result.data()['texture'],
-                    result.data()['information']),
-              );
-            });
+      _firestoreInstance
+          .collection("users")
+          .doc(checkUser) // User document ID
+          //.doc(result.id) // amulets document ID
+          .collection("amulets")
+          .get()
+          .then((querySnapshot) {
+        querySnapshot.docs.forEach((result) {
+          //print("Result Id + " + result.id);
+          setState(() {
+            amuletList.add(
+              new Amulet(
+                  result.data()['amuletId'],
+                  result.data()['image'],
+                  result.data()['name'],
+                  result.data()['categories'],
+                  result.data()['texture'],
+                  result.data()['information']),
+            );
           });
         });
+      });
     });
   }
 
@@ -108,24 +108,25 @@ class _MyMainPageState extends State<MyMainPage> {
     historyList = new List<History>();
 
     _firestoreInstance.collection("users").get().then((querySnapshot) {
-        _firestoreInstance
-            .collection("users")
-            .doc(checkUser) // User document ID
-            .collection("history")
-            .get()
-            .then((querySnapshot) {
-          querySnapshot.docs.forEach((result) {
-            setState(() {
-              historyList.add(
-                new History(
-                    result.data()['type'],
-                    result.data()['certificateId'],
-                    (result.data()['type'] == 1)? result.data()['recieverId']: result.data()['senderId'],
-                    new DateTime.now(), //result.data()['date'],
-                )
-              );
-            });
+      _firestoreInstance
+          .collection("users")
+          .doc(checkUser) // User document ID
+          .collection("history")
+          //.orderBy("timestamp", descending: true)
+          .get()
+          .then((querySnapshot) {
+        querySnapshot.docs.forEach((result) {
+          setState(() {
+            historyList.add(new History(
+              result.data()['type'],
+              result.data()['certificateId'],
+              (result.data()['type'] == 1)
+                  ? result.data()['recieverId']
+                  : result.data()['senderId'],
+              new DateTime.now(), //result.data()['date'],
+            ));
           });
+        });
       });
     });
   }
@@ -175,7 +176,6 @@ class _MyMainPageState extends State<MyMainPage> {
       refreshHistoryListController.refreshCompleted();
     });
   }
-
 
   void onPageChanged(int index) {
     setState(() {
