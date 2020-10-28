@@ -1,4 +1,3 @@
-import 'dart:ffi';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -151,8 +150,8 @@ class _MyDetailPageState extends State<MyDetailPage> {
       return List<Widget>.generate(
         paths.length,
         (index) => GestureDetector(
-          child: Image.network(paths[index]),
-          //child: (paths[index] != null) ? Image.network(paths[index]) : Image(image: AssetImage("assets/images/notfound.png")),
+          //child: Image.network(paths[index]),
+          child: (paths[index] != null && paths[index] != "" && paths[index].isNotEmpty) ? Image.network(paths[index]) : Image(image: AssetImage("assets/images/notfound.png")),
           onDoubleTap: () => {enterFullScreenImage(paths, index)},
         ),
       );
@@ -165,7 +164,7 @@ class _MyDetailPageState extends State<MyDetailPage> {
         child: Card(
           child: Padding(
             padding: EdgeInsets.all(cardPadding),
-            child: (amulet.images != null)
+            child: (amulet.images != null && amulet.images.isNotEmpty)
                 ? Carousel(
                     dotSize: dotSize,
                     dotSpacing: dotSize * 3,

@@ -306,8 +306,7 @@ class _MyMainPageState extends State<MyMainPage> {
                       margin: EdgeInsets.all(cardInnerEdge),
                       child: (image.isNotEmpty && image != null && image != "")
                           ? Image.network(image)
-                          : Image(
-                              image: AssetImage("assets/images/notfound.png")),
+                          : Image(image: AssetImage("assets/images/notfound.png")),
                     ),
                   ),
                   Expanded(
@@ -339,21 +338,14 @@ class _MyMainPageState extends State<MyMainPage> {
     }
 
     List<Widget> amuletCardBuilder() {
-      List<Amulet> showingList =
-          amuletList.where((element) => element.isActive == true).toList();
+      List<Amulet> showingList = amuletList.where((element) => element.isActive == true).toList();
       return List<Widget>.generate(showingList.length, (index) {
         return buildAmuletCard(
             showingList[index].id != null ? showingList[index].id : "",
             showingList[index].image != null ? showingList[index].image : "",
-            showingList[index].name != null
-                ? showingList[index].name
-                : "",
-            showingList[index].category != null
-                ? showingList[index].category
-                : "",
-            showingList[index].texture != null
-                ? showingList[index].texture
-                : "",
+            showingList[index].name != null ? showingList[index].name : "",
+            showingList[index].category != null ? showingList[index].category : "",
+            showingList[index].texture != null ? showingList[index].texture : "",
             showingList[index].info != null ? showingList[index].info : "");
       });
     }
@@ -464,8 +456,7 @@ class _MyMainPageState extends State<MyMainPage> {
     Widget historyCard(int type, String certificateId, String reciever, String sender, int hour, int minute) {
       String typeName = (type == 1) ? "ส่งมอบ" : "รับมอบ";
       String hourText = (hour < 10) ? "0" + hour.toString() : hour.toString();
-      String minuteText =
-          (minute < 10) ? "0" + minute.toString() : minute.toString();
+      String minuteText = (minute < 10) ? "0" + minute.toString() : minute.toString();
       String time = hourText + "." + minuteText;
       return Card(
         color: MyConfig.whiteColor,
@@ -476,10 +467,9 @@ class _MyMainPageState extends State<MyMainPage> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Text(typeName, style: MyConfig.normalBoldText1),
-              Text("รหัสใบรับรอง : " + certificateId,
-                  style: MyConfig.smallText1),
-              Text("ผู้ส่งมอบ : " + sender, style: MyConfig.smallText1),
-              Text("ผู้รับมอบ : " + reciever, style: MyConfig.smallText1),
+              Text("รหัสใบรับรอง : " + certificateId, style: MyConfig.smallText1),
+              (type == 1) ? Text("ผู้รับมอบ : " + reciever, style: MyConfig.smallText1) : SizedBox(),
+              (type == 2) ? Text("ผู้ส่งมอบ : " + sender, style: MyConfig.smallText1) : SizedBox(),
               Text("เวลา : " + time, style: MyConfig.smallText1),
             ],
           ),
@@ -488,29 +478,27 @@ class _MyMainPageState extends State<MyMainPage> {
     }
 
     List<Widget> buildHistoryCard(int type) {
-      List<History> showingList = historyList;
-      if (type != 0)
-        showingList =
-            historyList.where((element) => element.type == type).toList();
       List<Widget> resultList = new List<Widget>();
-      if (showingList.length != 0) {
-        DateTime selectedDate = new DateTime.now().subtract(Duration(hours: 999999));
-        DateFormat formatter = DateFormat('dd-MM-yyyy');
-        String selectedDateF = formatter.format(selectedDate);
+      List<History> showingList = historyList;
+      if (type != 0) showingList = historyList.where((element) => element.type == type).toList();
+      if (showingList.length != 0 && showingList != null && showingList.isNotEmpty) {
+        String selectedDate =  DateFormat('dd-MM-yyyy').format(new DateTime.now().subtract(Duration(hours: 999999)));
         for (int i = 0; i < showingList.length; i++) {
-          String showingDateF = formatter.format(showingList[i].timestamp);
-          if (selectedDateF != showingDateF) {
-            selectedDateF = showingDateF;
-            resultList.add(historyHeader(showingList[i].timestamp.day,
-                showingList[i].timestamp.month, showingList[i].timestamp.year));
+          String showingDate =  DateFormat('dd-MM-yyyy').format(showingList[i].timestamp);
+          if (selectedDate != showingDate) {
+            selectedDate = showingDate;
+            resultList.add(historyHeader(
+                (showingList[i].timestamp.day != null) ? showingList[i].timestamp.day : "",
+                (showingList[i].timestamp.month != null) ? showingList[i].timestamp.month : "",
+                (showingList[i].timestamp.year != null) ? showingList[i].timestamp.year : ""));
           }
           resultList.add(historyCard(
-              showingList[i].type,
-              showingList[i].certificateId,
-              showingList[i].reciever,
-              showingList[i].sender,
-              showingList[i].timestamp.hour,
-              showingList[i].timestamp.minute));
+              (showingList[i].type != null) ? showingList[i].type : 0,
+              (showingList[i].certificateId != null) ? showingList[i].certificateId : "",
+              (showingList[i].reciever != null) ? showingList[i].reciever : "",
+              (showingList[i].sender != null) ? showingList[i].sender : "",
+              (showingList[i].timestamp.hour != null) ? showingList[i].timestamp.hour : "",
+              (showingList[i].timestamp.minute != null) ? showingList[i].timestamp.minute : ""));
         }
       }
       return resultList;
