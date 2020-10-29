@@ -121,37 +121,4 @@ class MyConfig {
         day.toString() + " " + monthName[month] + " " + year.toString();
     return result;
   }
-
-  static String splitDateTimeText(DateTime dateTime) {
-
-    String hoursString = "";
-    String minutesString = "";
-
-
-    if (dateTime == null) return "";
-    int day = dateTime.day;
-    int month = dateTime.month;
-    int year = dateTime.year + 543;
-    int hours = dateTime.hour;
-    int minutes = dateTime.minute;
-
-    if(hours < 10){
-      hoursString = "0"+hours.toString();
-    }else{
-      hoursString = hours.toString();
-    }
-
-    if(minutes < 10){
-      minutesString = "0"+minutes.toString();
-    }else{
-      minutesString = minutes.toString();
-    }
-
-    String result = day.toString() +
-        month.toString() +
-        year.toString().substring(2, year.toString().length) +
-        hoursString +
-        minutesString;
-    return result;
-  }
 }

@@ -414,7 +414,7 @@ class _MyMainPageState extends State<MyMainPage> {
         enablePullDown: true,
         controller: refreshAmuletListController,
         onRefresh: refreshAmuletList,
-        child: (amuletList.isNotEmpty) ? amuletGrid : loadingEffect,
+        child: amuletGrid, //(amuletList.isNotEmpty) ? amuletGrid : loadingEffect,
       ),
     );
 
@@ -520,9 +520,7 @@ class _MyMainPageState extends State<MyMainPage> {
     List<Widget> buildHistoryCard(int type) {
       List<Widget> resultList = new List<Widget>();
       List<History> showingList = historyList;
-      if (type != 0)
-        showingList =
-            historyList.where((element) => element.type == type).toList();
+      if (type != 0) showingList = historyList.where((element) => element.type == type).toList();
       if (showingList.isNotEmpty) {
         String selectedDate = DateFormat('dd-MM-yyyy')
             .format(new DateTime.now().subtract(Duration(hours: 999999)));

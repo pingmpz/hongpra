@@ -4,6 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:hongpra/myconfig.dart';
 
 class MyConfirmPage extends StatefulWidget {
+  final String recieverId;
+  final String amuletId;
+  const MyConfirmPage(this.recieverId, this.amuletId);
+
   @override
   _MyConfirmPageState createState() => _MyConfirmPageState();
 }

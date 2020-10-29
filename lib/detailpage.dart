@@ -362,7 +362,7 @@ class _MyDetailPageState extends State<MyDetailPage> {
           child: Text('ส่งมอบ', style: MyConfig.buttonText),
           onPressed: () => {
             Navigator.push(context,
-                MaterialPageRoute(builder: (context) => MyTransferPage()))
+                MaterialPageRoute(builder: (context) => MyTransferPage(widget.id)))
           },
         ),
       ),

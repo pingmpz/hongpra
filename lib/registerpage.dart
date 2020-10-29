@@ -64,14 +64,44 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
       return null;
   }
 
+  String createUniqueId(){
+    String result = "";
+    DateTime dateTime = new DateTime.now();
+
+    //-- Layer 1
+    String day = (dateTime.day < 10) ? "0" + dateTime.day.toString() : dateTime.day.toString();
+    String month = (dateTime.month < 10) ? "0" + dateTime.month.toString() : dateTime.month.toString();
+    int yearText = int.parse((dateTime.toString()).substring(2,4));
+    String year = (yearText < 10) ? "0" + yearText.toString() : yearText.toString();
+    String hour = (dateTime.hour < 10) ? "0" + dateTime.hour.toString() : dateTime.hour.toString();
+    String min = (dateTime.minute < 10) ? "0" + dateTime.minute.toString() : dateTime.minute.toString();
+    String sec = (dateTime.second < 10) ? "0" + dateTime.second.toString() : dateTime.second.toString();
+    result = day + month + year + hour + min + sec;
+    //-- Layer 2 : SWAP
+    List<String> resultList = result.split("");
+    for(int i = 0;i < resultList.length - 1;i += 2){
+      String temp = resultList[i];
+      resultList[i] = resultList[i + 1];
+      resultList[i + 1] = temp;
+    }
+    result = resultList.reduce((value, element) => value += element);
+    //-- Layer 3 : SPLIT & MERGE
+    String head = "";
+    String tail = "";
+    for(int i = 0;i < resultList.length - 1;i += 2){
+      head = head + result.substring(i, i + 1);
+      tail = tail + result.substring(i + 1, i + 2);
+    }
+    result = head + tail;
+    return result;
+  }
+
   void signUp() {
     String email = emailController.text.trim();
     String password = passwordController.text.trim();
     String confirmPassword = confirmPasswordController.text.trim();
     String firstname = firstNameController.text.trim();
     String lastname = lastNameController.text.trim();
-
-    final String uniqueID = Uuid().generateUniqueId();
 
     validateEmail(email);
     validatePassword(password);
@@ -80,25 +110,16 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
       _auth
           .createUserWithEmailAndPassword(email: email, password: password)
           .then((user) {
-        print("Registation Success");
+        print("Register Success");
 
         String userId = user.user.uid;
-        // Print user ID
-        print(userId);
-        // Print unique ID
-        print("Unique ID: " + uniqueID);
+        String uniqueId = createUniqueId();
 
-        //Print dateTime
-        DateTime dateTime = new DateTime.now();
-        String date = MyConfig.splitDateTimeText(dateTime);
-        print("DateTime " + date);
-
-        // 'userid': userId,
         Firestore.instance.collection('users').doc(userId).set({
           'userId': userId,
           'firstname': firstname,
           'lastname': lastname,
-          'uniqueId': uniqueID
+          'uniqueId': uniqueId,
         });
         // NAVIGATE
         Navigator.pushReplacement(
@@ -153,8 +174,14 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
     double registerButtonHeight = 40;
     double footerHeight = 30;
 
-    double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
+    double screenWidth = MediaQuery
+        .of(context)
+        .size
+        .width;
+    double screenHeight = MediaQuery
+        .of(context)
+        .size
+        .height;
     double desireWidth = (screenWidth < minWidth) ? screenWidth : minWidth;
     double desireHeight = (screenHeight < minHeight) ? screenHeight : minHeight;
     double screenEdge = (screenWidth <= minWidth)
@@ -222,7 +249,7 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
     );
 
     Widget rePasswordLabel =
-        Text('ยืนยันรหัสผ่าน', style: MyConfig.normalText1);
+    Text('ยืนยันรหัสผ่าน', style: MyConfig.normalText1);
 
     Widget rePasswordField = TextField(
       controller: confirmPasswordController,
@@ -335,57 +362,4 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
       bottomNavigationBar: footerBar,
     );
   }
-}
-
-class Uuid {
-  final Random _random = Random();
-
-  /// Generate a random uuid. This is a uuid scheme that only uses
-  /// random numbers as the source of the generated uuid.
-  String generateUniqueId() {
-    //final int special = 8 + _random.nextInt(4);
-
-    // Format xxxxxxxx
-    return '${_bitsDigits(16, 4)}${_bitsDigits(16, 4)}';
-  }
-
-  String _bitsDigits(int bitCount, int digitCount) =>
-      _printDigits(_generateBits(bitCount), digitCount);
-
-  int _generateBits(int bitCount) => _random.nextInt(1 << bitCount);
-
-  String _printDigits(int value, int count) =>
-      value.toRadixString(16).padLeft(count, '0');
-}
-
-// - 99 - (HH) = 80 <- 2
-// - Swap H2 H1 <- 3
-// - HMSymdxHMSymd <- 1
-
-class swappingString{
-
-  String generateString(String str){
-
-    var char = "";
-
-    if(str == null || str.isEmpty) return "";
-
-    for(int i=0; i < str.length; i++) {
-      char = str[i];
-    }
-
-    for (int i = 0; i < char.length - 1; i += 2) {
-
-      // Swapping the characters
-      var temp = char[i];
-      char[i] = char[i + 1];
-      char[i + 1] = temp;
-    }
-
-    // Converting the result into a
-    // string and return
-    return new String(char);
-
-  }
-
 }

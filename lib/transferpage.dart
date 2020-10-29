@@ -6,6 +6,9 @@ import 'package:hongpra/comfirmpage.dart';
 import 'package:hongpra/myconfig.dart';
 
 class MyTransferPage extends StatefulWidget {
+  final String amuletId;
+  const MyTransferPage(this.amuletId);
+
   @override
   _MyTransferPageState createState() => _MyTransferPageState();
 }
@@ -14,22 +17,28 @@ class _MyTransferPageState extends State<MyTransferPage> {
   TextEditingController idController = TextEditingController();
   String scanner = "";
 
-
   //------------------ Custom Functions ------------------
 
   Future scan() async {
     scanner = await FlutterBarcodeScanner.scanBarcode("#" +
         MyConfig.colorTheme1, "Cancel", true, ScanMode.QR);
-    approve(scanner);
+    approve(2, scanner);
   }
 
-  // Check ID Here
-  Future approve(String id) async {
+  Future approve(int type, String id) async {
     setState(() {
-      // CHECK
-      if (id != null) {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => MyConfirmPage()));
+      String userId = "";
+      if(type == 1){
+        //-- Check By uniqueId
+
+      } else if (type == 2){
+        //-- Check By userId
+
+      }
+      if (userId != "") {
+        Navigator.push(context, MaterialPageRoute(builder: (context) => MyConfirmPage(userId, widget.amuletId)));
+      } else {
+        //-- AlertDialog
       }
     });
   }
@@ -96,7 +105,7 @@ class _MyTransferPageState extends State<MyTransferPage> {
         minWidth: buttonWidth,
         height: buttonHeight,
         child: RaisedButton(
-          onPressed: () => {approve(idController.text)},
+          onPressed: () => {approve(1, idController.text)},
           color: MyConfig.themeColor1,
           child: Text('ยืนยัน', style: MyConfig.buttonText),
         ),
@@ -110,7 +119,7 @@ class _MyTransferPageState extends State<MyTransferPage> {
       decoration: InputDecoration(
         isDense: true,
         contentPadding: EdgeInsets.all(textFieldEdge),
-        hintText: "ป้อน ID ของผู้รับ",
+        hintText: "ป้อน UID ของผู้รับ",
         filled: true,
         fillColor: MyConfig.whiteColor,
         border: OutlineInputBorder(),
