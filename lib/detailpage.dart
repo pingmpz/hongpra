@@ -24,7 +24,7 @@ class _MyDetailPageState extends State<MyDetailPage> {
   int currentIndex;
   List<String> currentPaths;
   Amulet amulet = new Amulet("", [], "", "", "", "");
-  Certificate certificate= new Certificate("", "", "", new DateTime.now());
+  Certificate certificate= new Certificate("", "", "", null);
 
   //------------------ Custom Functions ------------------
   @override
@@ -57,13 +57,11 @@ class _MyDetailPageState extends State<MyDetailPage> {
                 (value.data()['information'] != null) ? value.data()['information'] : "",
               );
 
-              //print(HashMap<String, dynamic>.from(value.data()['amuletImageList']).values.toList());
-
               certificate = new Certificate(
                 (value.data()['certificateId'] != null) ? value.data()['certificateId'] : "",
                 (value.data()['certificateImage'] != null) ? value.data()['certificateImage'] : "",
                 (value.data()['confirmBy'] != null) ? value.data()['confirmBy'] : "",
-                (value.data()['confirmDate'] != null) ? value.data()['confirmDate'].toDate() : new DateTime.now(),
+                (value.data()['confirmDate'] != null) ? value.data()['confirmDate'].toDate() : null,
               );
             });
       });
