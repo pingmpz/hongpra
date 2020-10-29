@@ -81,7 +81,7 @@ class _MyMainPageState extends State<MyMainPage> {
       _firestoreInstance
           .collection("users")
           .doc(checkUser)
-          .collection("amulets")
+          .collection("amulet")
           .get()
           .then((querySnapshot) {
         querySnapshot.docs.forEach((result) {

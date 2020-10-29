@@ -43,7 +43,7 @@ class _MyDetailPageState extends State<MyDetailPage> {
       _firestoreInstance
           .collection("users")
           .doc(checkUser)
-          .collection("amulets")
+          .collection("amulet")
           .doc(id)
           .get()
           .then((value) {
