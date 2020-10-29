@@ -27,6 +27,7 @@ class MyConfig {
   static TextStyle normalText1 = TextStyle(fontFamily: fontFamily1, fontSize: normalSize, color: blackColor);
   static TextStyle normalText2 = TextStyle(fontFamily: fontFamily1, fontSize: normalSize, color: whiteColor);
   static TextStyle normalText3 = TextStyle(fontFamily: fontFamily1, fontSize: normalSize, color: redColor);
+  static TextStyle normalText4 = TextStyle(fontFamily: fontFamily1, fontSize: normalSize, color: themeColor1);
 
   static TextStyle normalBoldText1 = TextStyle(fontFamily: fontFamily1, fontSize: normalSize, color: blackColor, fontWeight: bold);
   static TextStyle normalBoldText2 = TextStyle(fontFamily: fontFamily1, fontSize: normalSize, color: whiteColor, fontWeight: bold);

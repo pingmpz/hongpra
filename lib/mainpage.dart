@@ -7,6 +7,8 @@ import 'package:hongpra/detailpage.dart';
 import 'package:hongpra/loginpage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:loading/indicator/ball_pulse_indicator.dart';
+import 'package:loading/loading.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:intl/intl.dart';
 
@@ -356,6 +358,12 @@ class _MyMainPageState extends State<MyMainPage> {
       children: amuletCardBuilder(),
     );
 
+    Widget loadingEffect = Container(
+      child: Center(
+        child: Loading(indicator: BallPulseIndicator(), size: 50.0, color: MyConfig.themeColor1),
+      ),
+    );
+
     Widget page_0 = Scaffold(
       backgroundColor: MyConfig.themeColor2,
       appBar: mySearchBar,
@@ -363,7 +371,7 @@ class _MyMainPageState extends State<MyMainPage> {
         enablePullDown: true,
         controller: refreshAmuletListController,
         onRefresh: refreshAmuletList,
-        child: amuletGrid,
+        child: (amuletList.isNotEmpty) ? amuletGrid : loadingEffect,
       ),
     );
 
