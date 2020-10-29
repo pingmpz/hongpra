@@ -11,6 +11,7 @@ import 'package:loading/indicator/ball_pulse_indicator.dart';
 import 'package:loading/loading.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:intl/intl.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 class MyMainPage extends StatefulWidget {
   @override
@@ -33,6 +34,8 @@ class _MyMainPageState extends State<MyMainPage> {
   User loginUser;
   List<Amulet> amuletList = new List<Amulet>();
   List<History> historyList = new List<History>();
+  String uid = "";
+  String qrCode = "";
 
   @override
   void initState() {
@@ -48,7 +51,7 @@ class _MyMainPageState extends State<MyMainPage> {
     searchController.dispose();
     // refreshAmuletListController.dispose();
     // refreshHistoryListController.dispose();
-    tabController.dispose();
+    //tabController.dispose();
   }
 
   //------------------ Custom Functions ------------------
@@ -60,6 +63,7 @@ class _MyMainPageState extends State<MyMainPage> {
         print("# Login User ID : " + loginUser.uid);
         generateAmuletList();
         generateHistoryList();
+        getUID();
       } else {
         Navigator.pushAndRemoveUntil(
             context,
@@ -81,19 +85,29 @@ class _MyMainPageState extends State<MyMainPage> {
       _firestoreInstance
           .collection("users")
           .doc(checkUser)
-          .collection("amulets")
+          .collection("amulet")
           .get()
           .then((querySnapshot) {
         querySnapshot.docs.forEach((result) {
           setState(() {
             amuletList.add(
               new Amulet(
-                  (result.data()['amuletId'] != null) ? result.data()['amuletId'] : "",
-                  (result.data()['amuletImageList']['image1'] != null) ? result.data()['amuletImageList']['image1'] : "",
+                  (result.data()['amuletId'] != null)
+                      ? result.data()['amuletId']
+                      : "",
+                  (result.data()['amuletImageList']['image1'] != null)
+                      ? result.data()['amuletImageList']['image1']
+                      : "",
                   (result.data()['name'] != null) ? result.data()['name'] : "",
-                  (result.data()['categories'] != null) ? result.data()['categories'] : "",
-                  (result.data()['texture'] != null) ? result.data()['texture'] : "",
-                  (result.data()['information'] != null) ? result.data()['information'] : ""),
+                  (result.data()['categories'] != null)
+                      ? result.data()['categories']
+                      : "",
+                  (result.data()['texture'] != null)
+                      ? result.data()['texture']
+                      : "",
+                  (result.data()['information'] != null)
+                      ? result.data()['information']
+                      : ""),
             );
           });
         });
@@ -119,13 +133,37 @@ class _MyMainPageState extends State<MyMainPage> {
           setState(() {
             historyList.add(new History(
               (result.data()['type'] != null) ? result.data()['type'] : -1,
-              (result.data()['certificateId'] != null) ? result.data()['certificateId'] : "",
-              (result.data()['recieverId'] != null) ? result.data()['recieverId'] : "",
-              (result.data()['senderId'] != null) ? result.data()['senderId'] : "",
-              (result.data()['date'] != null) ? result.data()['date'].toDate() : null,
+              (result.data()['certificateId'] != null)
+                  ? result.data()['certificateId']
+                  : "",
+              (result.data()['recieverId'] != null)
+                  ? result.data()['recieverId']
+                  : "",
+              (result.data()['senderId'] != null)
+                  ? result.data()['senderId']
+                  : "",
+              (result.data()['date'] != null)
+                  ? result.data()['date'].toDate()
+                  : null,
             ));
           });
         });
+      });
+    });
+  }
+
+  Future getUID() async {
+    final checkUser = FirebaseAuth.instance.currentUser.uid;
+    final _firestoreInstance = FirebaseFirestore.instance;
+
+    historyList = new List<History>();
+
+    _firestoreInstance.collection("users").get().then((querySnapshot) {
+      _firestoreInstance.collection("users").doc(checkUser).get().then((value) {
+        uid =
+            (value.data()['uniqueId'] != null) ? value.data()['uniqueId'] : "";
+        qrCode = (value.data()['userId'] != null) ? value.data()['userId'] : "";
+        print(value.data()['userId']);
       });
     });
   }
@@ -308,7 +346,8 @@ class _MyMainPageState extends State<MyMainPage> {
                       margin: EdgeInsets.all(cardInnerEdge),
                       child: (image != "")
                           ? Image.network(image)
-                          : Image(image: AssetImage("assets/images/notfound.png")),
+                          : Image(
+                              image: AssetImage("assets/images/notfound.png")),
                     ),
                   ),
                   Expanded(
@@ -340,7 +379,8 @@ class _MyMainPageState extends State<MyMainPage> {
     }
 
     List<Widget> amuletCardBuilder() {
-      List<Amulet> showingList = amuletList.where((element) => element.isActive == true).toList();
+      List<Amulet> showingList =
+          amuletList.where((element) => element.isActive == true).toList();
       return List<Widget>.generate(showingList.length, (index) {
         return buildAmuletCard(
             showingList[index].id,
@@ -360,7 +400,10 @@ class _MyMainPageState extends State<MyMainPage> {
 
     Widget loadingEffect = Container(
       child: Center(
-        child: Loading(indicator: BallPulseIndicator(), size: 50.0, color: MyConfig.themeColor1),
+        child: Loading(
+            indicator: BallPulseIndicator(),
+            size: 50.0,
+            color: MyConfig.themeColor1),
       ),
     );
 
@@ -388,20 +431,22 @@ class _MyMainPageState extends State<MyMainPage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text('QR Code', style: MyConfig.largeBoldText4),
-              SizedBox(height: screenHeight * 0.01),
+              SizedBox(height: screenHeight * 0.005),
               Container(
-                height: desireHeight / 2,
-                decoration: BoxDecoration(
-                  border: Border.all(),
-                ),
-                child: Image(
-                  image: AssetImage('assets/images/notfound.png'),
-                ),
-              ),
-              SizedBox(height: screenHeight * 0.05),
+                  height: desireHeight / 2,
+                  child: Center(
+                    child: (qrCode != "")
+                        ? QrImage(
+                            data: qrCode,
+                            version: QrVersions.auto,
+                            size: min(300.0, 300.0 * (screenWidth/minWidth)),
+                          )
+                        : Image(image: AssetImage('assets/images/notfound.png')),
+                  )),
+              SizedBox(height: screenHeight * 0.005),
               Text('UID', style: MyConfig.largeBoldText4),
               SizedBox(height: screenHeight * 0.01),
-              Center(child: Text('12345678', style: MyConfig.largeBoldText1)),
+              Center(child: Text(uid, style: MyConfig.largeBoldText1)),
             ],
           ),
         ),
@@ -441,10 +486,12 @@ class _MyMainPageState extends State<MyMainPage> {
       );
     }
 
-    Widget historyCard(int type, String certificateId, String reciever, String sender, int hour, int minute) {
+    Widget historyCard(int type, String certificateId, String reciever,
+        String sender, int hour, int minute) {
       String typeName = (type == 1) ? "ส่งมอบ" : "รับมอบ";
       String hourText = (hour < 10) ? "0" + hour.toString() : hour.toString();
-      String minuteText = (minute < 10) ? "0" + minute.toString() : minute.toString();
+      String minuteText =
+          (minute < 10) ? "0" + minute.toString() : minute.toString();
       String time = hourText + "." + minuteText;
       return Card(
         color: MyConfig.whiteColor,
@@ -455,9 +502,14 @@ class _MyMainPageState extends State<MyMainPage> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Text(typeName, style: MyConfig.normalBoldText1),
-              Text("รหัสใบรับรอง : " + certificateId, style: MyConfig.smallText1),
-              (type == 1) ? Text("ผู้รับมอบ : " + reciever, style: MyConfig.smallText1) : SizedBox(),
-              (type == 2) ? Text("ผู้ส่งมอบ : " + sender, style: MyConfig.smallText1) : SizedBox(),
+              Text("รหัสใบรับรอง : " + certificateId,
+                  style: MyConfig.smallText1),
+              (type == 1)
+                  ? Text("ผู้รับมอบ : " + reciever, style: MyConfig.smallText1)
+                  : SizedBox(),
+              (type == 2)
+                  ? Text("ผู้ส่งมอบ : " + sender, style: MyConfig.smallText1)
+                  : SizedBox(),
               Text("เวลา : " + time, style: MyConfig.smallText1),
             ],
           ),
@@ -468,11 +520,15 @@ class _MyMainPageState extends State<MyMainPage> {
     List<Widget> buildHistoryCard(int type) {
       List<Widget> resultList = new List<Widget>();
       List<History> showingList = historyList;
-      if (type != 0) showingList = historyList.where((element) => element.type == type).toList();
+      if (type != 0)
+        showingList =
+            historyList.where((element) => element.type == type).toList();
       if (showingList.isNotEmpty) {
-        String selectedDate =  DateFormat('dd-MM-yyyy').format(new DateTime.now().subtract(Duration(hours: 999999)));
+        String selectedDate = DateFormat('dd-MM-yyyy')
+            .format(new DateTime.now().subtract(Duration(hours: 999999)));
         for (int i = 0; i < showingList.length; i++) {
-          String showingDate =  DateFormat('dd-MM-yyyy').format(showingList[i].timestamp);
+          String showingDate =
+              DateFormat('dd-MM-yyyy').format(showingList[i].timestamp);
           if (selectedDate != showingDate) {
             selectedDate = showingDate;
             resultList.add(historyHeader(showingList[i].timestamp));
@@ -603,8 +659,8 @@ class Amulet {
   String info;
   bool isActive = true;
 
-  Amulet(this.id, this.image, this.name, this.category,
-      this.texture, this.info);
+  Amulet(
+      this.id, this.image, this.name, this.category, this.texture, this.info);
 }
 
 class History {
@@ -614,5 +670,6 @@ class History {
   String sender;
   DateTime timestamp;
 
-  History(this.type, this.certificateId, this.reciever, this.sender, this.timestamp);
+  History(this.type, this.certificateId, this.reciever, this.sender,
+      this.timestamp);
 }

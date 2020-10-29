@@ -26,6 +26,7 @@ dependencies:
   flutter_barcode_scanner:
   pull_to_refresh:
   loading:
+  qr_flutter:
 
 
 dev_dependencies:

@@ -64,6 +64,7 @@ class MyConfig {
   ];
 
   static String dateText(DateTime dateTime){
+    if(dateTime == null) return "";
     int day = dateTime.day;
     int month = dateTime.month - 1;
     int year = dateTime.year + 543;

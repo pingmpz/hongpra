@@ -351,3 +351,7 @@ class Uuid {
   String _printDigits(int value, int count) =>
       value.toRadixString(16).padLeft(count, '0');
 }
+
+// - 99 - (HH) = 80 <- 2
+// - Swap H2 H1 <- 3
+// - HMSymdxHMSymd <- 1
