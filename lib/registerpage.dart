@@ -87,9 +87,15 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
         print(userId);
         // Print unique ID
         print("Unique ID: " + uniqueID);
+
+        //Print dateTime
+        DateTime dateTime = new DateTime.now();
+        String date = MyConfig.splitDateTimeText(dateTime);
+        print("DateTime " + date);
+
         // 'userid': userId,
         Firestore.instance.collection('users').doc(userId).set({
-          'userid': userId,
+          'userId': userId,
           'firstname': firstname,
           'lastname': lastname,
           'uniqueId': uniqueID
@@ -355,3 +361,31 @@ class Uuid {
 // - 99 - (HH) = 80 <- 2
 // - Swap H2 H1 <- 3
 // - HMSymdxHMSymd <- 1
+
+class swappingString{
+
+  String generateString(String str){
+
+    var char = "";
+
+    if(str == null || str.isEmpty) return "";
+
+    for(int i=0; i < str.length; i++) {
+      char = str[i];
+    }
+
+    for (int i = 0; i < char.length - 1; i += 2) {
+
+      // Swapping the characters
+      var temp = char[i];
+      char[i] = char[i + 1];
+      char[i + 1] = temp;
+    }
+
+    // Converting the result into a
+    // string and return
+    return new String(char);
+
+  }
+
+}
