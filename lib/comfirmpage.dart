@@ -103,7 +103,7 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
         .add({
       "certificateId": certificateId,
       "date": FieldValue.serverTimestamp(),
-      "receiverTd": recieverUserId,
+      "receiverId": recieverUserId,
       "senderId": senderUserId,
       "type": 1
     });
@@ -116,7 +116,7 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
         .add({
       "certificateId": certificateId,
       "date": FieldValue.serverTimestamp(),
-      "receiverTd": recieverUserId,
+      "receiverId": recieverUserId,
       "senderId": senderUserId,
       "type": 2
     });

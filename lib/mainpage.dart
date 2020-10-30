@@ -83,8 +83,10 @@ class _MyMainPageState extends State<MyMainPage> {
   }
 
   void generateAmuletList() async {
-    amuletList = new List<Amulet>();
-    _isLoadedAmuletList = false;
+    setState(() {
+      amuletList = new List<Amulet>();
+      _isLoadedAmuletList = false;
+    });
 
     var result = await _firestoreInstance.collection("users")
           .doc(checkUser)
@@ -108,7 +110,9 @@ class _MyMainPageState extends State<MyMainPage> {
   }
 
   void generateHistoryList() async {
-    historyList = new List<History>();
+    setState(() {
+      historyList = new List<History>();
+    });
 
     var result = await _firestoreInstance
           .collection("users")
