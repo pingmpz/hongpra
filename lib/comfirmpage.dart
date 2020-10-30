@@ -38,41 +38,34 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
 
   void getMyInfo() async {
     senderName = "";
-    var result = await _firestoreInstance
-        .collection("users")
-        .where("userId", isEqualTo: checkUser)
-        .get();
+    var result = await _firestoreInstance.collection("users").where("userId", isEqualTo: checkUser).get();
     result.docs.forEach((res) {
       setState(() {
-        senderName = res.data()['firstname'];
+        String firstName = (res.data()['firstName'] != null) ? res.data()['firstName'] : "";
+        String lastName = (res.data()['lastName'] != null) ? res.data()['lastName'] : "";
+        senderName = firstName + " " + lastName;
       });
     });
   }
 
   void getReceiverInfo() async {
     receiverName = "";
-    var result = await _firestoreInstance
-        .collection("users")
-        .where("userId", isEqualTo: widget.receiverId)
-        .get();
+    var result = await _firestoreInstance.collection("users").where("userId", isEqualTo: widget.receiverId).get();
     result.docs.forEach((res) {
       setState(() {
-        receiverName = res.data()['firstname'];
+        String firstName = (res.data()['firstName'] != null) ? res.data()['firstName'] : "";
+        String lastName = (res.data()['lastName'] != null) ? res.data()['lastName'] : "";
+        receiverName = firstName + " " + lastName;
       });
     });
   }
 
   void getAmuletInfo() async {
     certificateId = "";
-    var result = await _firestoreInstance
-        .collection("users")
-        .doc(checkUser)
-        .collection("amulet")
-        .where("amuletId", isEqualTo: widget.amuletId)
-        .get();
+    var result = await _firestoreInstance.collection("users").doc(checkUser).collection("amulet").where("amuletId", isEqualTo: widget.amuletId).get();
     result.docs.forEach((res) {
       setState(() {
-        certificateId = res.data()['certificateId'];
+        certificateId = (res.data()['certificateId'] != null) ? res.data()['certificateId'] : "";
       });
     });
   }

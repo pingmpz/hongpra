@@ -99,8 +99,8 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
     String email = emailController.text.trim();
     String password = passwordController.text.trim();
     String confirmPassword = confirmPasswordController.text.trim();
-    String firstname = firstNameController.text.trim();
-    String lastname = lastNameController.text.trim();
+    String firstName = firstNameController.text.trim();
+    String lastName = lastNameController.text.trim();
 
     validateEmail(email);
     validatePassword(password);
@@ -113,8 +113,8 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
 
         _firestoreInstance.collection('users').doc(userId).set({
           'userId': userId,
-          'firstname': firstname,
-          'lastname': lastname,
+          'firstName': firstName,
+          'lastName': lastName,
           'uniqueId': uniqueId,
         });
 

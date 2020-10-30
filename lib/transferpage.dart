@@ -65,7 +65,7 @@ class _MyTransferPageState extends State<MyTransferPage> {
     }
     if (userId == FirebaseAuth.instance.currentUser.uid) {
       buildAlertDialog('เกิดข้อผิดพลาด', 'ไม่สามารถส่งมอบให้ตัวเองได้');
-    } else if (userId != "") {
+    } else if (userId != "" && userId != null) {
       Navigator.push(context, MaterialPageRoute(builder: (context) => MyConfirmPage(userId, widget.amuletId)));
     } else {
       buildAlertDialog('เกิดข้อผิดพลาด', 'ไม่พบบัญชีผู้ใช้งาน');
