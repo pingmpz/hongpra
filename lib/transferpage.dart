@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:hongpra/comfirmpage.dart';
@@ -28,16 +29,54 @@ class _MyTransferPageState extends State<MyTransferPage> {
   }
 
   Future approve(int type, String id) async {
+    final _firestoreInstance = FirebaseFirestore.instance;
+    String userId = "";
+    String nameTest = "";
+
     setState(() {
-      String userId = "";
-      if(type == 1){
+
+      if (type == 1) {
         //-- Check By uniqueId
 
-      } else if (type == 2){
+        _firestoreInstance
+            .collection("users")
+            .where("uniqueId", isEqualTo: id)
+            .get()
+            .then((value) {
+          // value.docs.forEach((result) {
+          userId = value.data()['userId'];
+          // });
+        });
+
+        print("UserId: " + userId);
+        print("AmuletId: " + widget.amuletId);
+
+      } else if (type == 2) {
         //-- Check By userId
+
+        _firestoreInstance
+            .collection("users")
+            .where("userId", isEqualTo: userId)
+            .get()
+            .then((value) {
+          value.docs.forEach((result) {
+
+            userId = result.data()['userId'];
+            nameTest = result.data()['firstname'];
+
+
+          });
+        });
+
+        print("UserId: " + userId);
+        print("Name: " + nameTest);
+        print("AmuletId: " + widget.amuletId);
+
 
       }
       if (userId != "") {
+
+        //Navigator.push(context, MaterialPageRoute(builder: (context) => MyConfirmPage(userId, widget.amuletId)));
         Navigator.push(context, MaterialPageRoute(builder: (context) => MyConfirmPage(userId, widget.amuletId)));
       } else {
         //-- AlertDialog
