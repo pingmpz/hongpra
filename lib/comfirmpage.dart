@@ -25,7 +25,6 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
   final _firestoreInstance = FirebaseFirestore.instance;
   final checkUser = FirebaseAuth.instance.currentUser.uid;
 
-
   //-------------------------------------------------------------------------------------------------------- Functions
 
   @override
@@ -78,10 +77,9 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
   }
 
   void confirm() async {
-
     //-- Get Receiever and Sender Unique ID
-    String recieverUniqueId = "";
-    String senderUniqueId = "";
+    String recieverUserId = widget.receiverId;
+    String senderUserId = checkUser;
 
     //-- Get amulet data
     String amuletId = "";
@@ -98,71 +96,88 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
     String name = "";
     String texture = "";
 
-    //-- Get RecieverId
-    var resultRecieverUniqueId = await _firestoreInstance
-        .collection("users")
-        .where("userId", isEqualTo: widget.receiverId)
-        .get();
-    resultRecieverUniqueId.docs.forEach((res) {
-      setState(() {
-        recieverUniqueId = res.data()['uniqueId'];
-      });
-    });
-
-    //-- Get SenderId
-    var resultSenderUniqueId = await _firestoreInstance
-        .collection("users")
-        .where("userId", isEqualTo: checkUser)
-        .get();
-    resultSenderUniqueId.docs.forEach((res) {
-      setState(() {
-        senderUniqueId = res.data()['uniqueId'];
-      });
-    });
-
     //-- Create History of Sender
-    await _firestoreInstance.collection("users").doc(checkUser).collection("history")
+    await _firestoreInstance
+        .collection("users")
+        .doc(checkUser)
+        .collection("history")
         .add({
       "certificateId": certificateId,
       "date": FieldValue.serverTimestamp(),
-      "recieverTd": recieverUniqueId,
-      "senderId": senderUniqueId,
+      "recieverTd": recieverUserId,
+      "senderId": senderUserId,
       "type": 1
     });
 
     //-- Create History of Receiver
-    await _firestoreInstance.collection("users").doc(widget.receiverId).collection("history")
+    await _firestoreInstance
+        .collection("users")
+        .doc(widget.receiverId)
+        .collection("history")
         .add({
       "certificateId": certificateId,
       "date": FieldValue.serverTimestamp(),
-      "recieverTd": recieverUniqueId,
-      "senderId": senderUniqueId,
+      "recieverTd": recieverUserId,
+      "senderId": senderUserId,
       "type": 2
     });
 
-
-    var resultAmulet = await _firestoreInstance.collection("users")
+    var resultAmulet = await _firestoreInstance
+        .collection("users")
         .doc(checkUser)
         .collection("amulet")
         .doc(widget.amuletId)
         .get();
 
-    amuletId = (resultAmulet.data()['amuletId'] != null) ? resultAmulet.data()['amuletId'] : "";
-    amuletImageList1 = (resultAmulet.data()['amuletImageList']['image1'] != null) ? resultAmulet.data()['amuletImageList']['image1'] : "";
-    amuletImageList2 = (resultAmulet.data()['amuletImageList']['image1'] != null) ? resultAmulet.data()['amuletImageList']['image2'] : "";
-    amuletImageList3 = (resultAmulet.data()['amuletImageList']['image1'] != null) ? resultAmulet.data()['amuletImageList']['image3'] : "";
-    categories = (resultAmulet.data()['categories'] != null) ? resultAmulet.data()['categories'] : "";
-    certificateIdResult = (resultAmulet.data()['certificateId'] != null) ? resultAmulet.data()['certificateId'] : "";
-    certificateImage = (resultAmulet.data()['certificateImage'] != null) ? resultAmulet.data()['certificateImage'] : "";
-    confirmDate = (resultAmulet.data()['confirmDate'] != null) ? resultAmulet.data()['confirmDate'].toDate() : "";
-    confirmBy = (resultAmulet.data()['confirmBy'] != null) ? resultAmulet.data()['confirmBy'] : "";
-    image = (resultAmulet.data()['image'] != null) ? resultAmulet.data()['image'] : "";
-    information = (resultAmulet.data()['information'] != null) ? resultAmulet.data()['information'] : "";
-    name = (resultAmulet.data()['name'] != null) ? resultAmulet.data()['name'] : "";
-    texture = (resultAmulet.data()['texture'] != null) ? resultAmulet.data()['texture'] : "";
+    amuletId = (resultAmulet.data()['amuletId'] != null)
+        ? resultAmulet.data()['amuletId']
+        : "";
+    amuletImageList1 =
+        (resultAmulet.data()['amuletImageList']['image1'] != null)
+            ? resultAmulet.data()['amuletImageList']['image1']
+            : "";
+    amuletImageList2 =
+        (resultAmulet.data()['amuletImageList']['image1'] != null)
+            ? resultAmulet.data()['amuletImageList']['image2']
+            : "";
+    amuletImageList3 =
+        (resultAmulet.data()['amuletImageList']['image1'] != null)
+            ? resultAmulet.data()['amuletImageList']['image3']
+            : "";
+    categories = (resultAmulet.data()['categories'] != null)
+        ? resultAmulet.data()['categories']
+        : "";
+    certificateIdResult = (resultAmulet.data()['certificateId'] != null)
+        ? resultAmulet.data()['certificateId']
+        : "";
+    certificateImage = (resultAmulet.data()['certificateImage'] != null)
+        ? resultAmulet.data()['certificateImage']
+        : "";
+    confirmDate = (resultAmulet.data()['confirmDate'] != null)
+        ? resultAmulet.data()['confirmDate'].toDate()
+        : "";
+    confirmBy = (resultAmulet.data()['confirmBy'] != null)
+        ? resultAmulet.data()['confirmBy']
+        : "";
+    image = (resultAmulet.data()['image'] != null)
+        ? resultAmulet.data()['image']
+        : "";
+    information = (resultAmulet.data()['information'] != null)
+        ? resultAmulet.data()['information']
+        : "";
+    name = (resultAmulet.data()['name'] != null)
+        ? resultAmulet.data()['name']
+        : "";
+    texture = (resultAmulet.data()['texture'] != null)
+        ? resultAmulet.data()['texture']
+        : "";
 
     //-- Add Amulet to Receiver
-    await _firestoreInstance.collection("users").doc(widget.receiverId).collection("amulet").doc(widget.amuletId)
+    await _firestoreInstance
+        .collection("users")
+        .doc(widget.receiverId)
+        .collection("amulet")
+        .doc(widget.amuletId)
         .set({
       "amuletId": amuletId,
       "amuletImageList": {
@@ -182,11 +197,17 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
     });
 
     //-- Remove Amulet of Sender
-    await _firestoreInstance.collection("users").doc(checkUser).collection("amulet").doc(widget.amuletId)
-        .delete().then((value) => print("Delete Successful!!"));
+    await _firestoreInstance
+        .collection("users")
+        .doc(checkUser)
+        .collection("amulet")
+        .doc(widget.amuletId)
+        .delete()
+        .then((value) => print("Delete Successful!!"));
 
     //--  Navigate
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyMainPage()));
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => MyMainPage()));
   }
 
   void back() {
