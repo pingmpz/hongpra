@@ -33,29 +33,33 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
     getAmuletInfo();
   }
 
-  Future getMyInfo() async{
+  void getMyInfo() async {
     senderName = "";
     var result = await _firestoreInstance
         .collection("users")
         .where("userId", isEqualTo: checkUser)
         .get();
     result.docs.forEach((res) {
-      senderName = res.data()['firstname'];
+      setState(() {
+        senderName = res.data()['firstname'];
+      });
     });
   }
 
-  Future getReceiverInfo() async {
+  void getReceiverInfo() async {
     receiverName = "";
     var result = await _firestoreInstance
         .collection("users")
         .where("userId", isEqualTo: widget.receiverId)
         .get();
     result.docs.forEach((res) {
-      receiverName = res.data()['firstname'];
+      setState(() {
+        receiverName = res.data()['firstname'];
+      });
     });
   }
 
-  Future getAmuletInfo() async {
+  void getAmuletInfo() async {
     certificateId = "";
     var result = await _firestoreInstance
         .collection("users")
@@ -64,11 +68,13 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
         .where("amuletId", isEqualTo: widget.amuletId)
         .get();
     result.docs.forEach((res) {
-      certificateId = res.data()['certificateId'];
+      setState(() {
+        certificateId = res.data()['certificateId'];
+      });
     });
   }
 
-  void confirm(){
+  void confirm() async {
     //-- Create History of Sender
 
     //-- Create History of Receiver
@@ -76,11 +82,9 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
     //-- Add Amulet to Receiver
 
     //-- Remove Amulet of Sender
-
   }
 
-
-  void back(){
+  void back() {
     Navigator.pop(context);
   }
 
@@ -99,7 +103,9 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
 
     // double desireWidth = (screenWidth < minWidth) ? screenWidth : minWidth;
     double desireHeight = (screenHeight < minHeight) ? screenHeight : minHeight;
-    double screenEdge = (screenWidth <= minWidth) ? screenMinEdge : min(screenWidth - minWidth, screenMaxEdge);
+    double screenEdge = (screenWidth <= minWidth)
+        ? screenMinEdge
+        : min(screenWidth - minWidth, screenMaxEdge);
     double buttonWidth = (screenWidth - (screenEdge * 3)) / 2;
     double buttonHeight = 40.0;
 
@@ -137,13 +143,16 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Center(child: Text("ข้อมูลการส่งมอบ", style: MyConfig.normalBoldText4)),
+              Center(
+                  child:
+                      Text("ข้อมูลการส่งมอบ", style: MyConfig.normalBoldText4)),
               SizedBox(height: columnSpace),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text('วันที่', style: MyConfig.smallBoldText1),
-                  Text(MyConfig.dateText(DateTime.now()), style: MyConfig.smallText1),
+                  Text(MyConfig.dateText(DateTime.now()),
+                      style: MyConfig.smallText1),
                 ],
               ),
               Row(

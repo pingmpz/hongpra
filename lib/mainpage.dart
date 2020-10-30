@@ -33,12 +33,17 @@ class _MyMainPageState extends State<MyMainPage> {
 
   //-- Firebase
   User loginUser;
+  final checkUser = FirebaseAuth.instance.currentUser.uid;
+  final _firestoreInstance = FirebaseFirestore.instance;
 
   //-- Items
   List<Amulet> amuletList = new List<Amulet>();
   List<History> historyList = new List<History>();
   String uid = "";
   String qrCode = "";
+
+  //-- Items State
+  bool _isLoadedAmuletList = false;
 
   //-------------------------------------------------------------------------------------------------------- Functions
 
@@ -59,7 +64,7 @@ class _MyMainPageState extends State<MyMainPage> {
 
   void getCurrentUser() async {
     try {
-      final user = await FirebaseAuth.instance.currentUser;
+      var user = await FirebaseAuth.instance.currentUser;
       if (user != null) {
         loginUser = user;
         print("# Login User ID : " + loginUser.uid);
@@ -77,97 +82,60 @@ class _MyMainPageState extends State<MyMainPage> {
     }
   }
 
-  Future generateAmuletList() async {
-    final checkUser = FirebaseAuth.instance.currentUser.uid;
-    final _firestoreInstance = FirebaseFirestore.instance;
-
+  void generateAmuletList() async {
     amuletList = new List<Amulet>();
+    _isLoadedAmuletList = false;
 
-    _firestoreInstance.collection("users").get().then((querySnapshot) {
-      _firestoreInstance
-          .collection("users")
+    var result = await _firestoreInstance.collection("users")
           .doc(checkUser)
           .collection("amulet")
-          .get()
-          .then((querySnapshot) {
-        querySnapshot.docs.forEach((result) {
-          setState(() {
-            amuletList.add(
-              new Amulet(
-                  (result.data()['amuletId'] != null)
-                      ? result.data()['amuletId']
-                      : "",
-                  (result.data()['amuletImageList']['image1'] != null)
-                      ? result.data()['amuletImageList']['image1']
-                      : "",
-                  (result.data()['name'] != null) ? result.data()['name'] : "",
-                  (result.data()['categories'] != null)
-                      ? result.data()['categories']
-                      : "",
-                  (result.data()['texture'] != null)
-                      ? result.data()['texture']
-                      : "",
-                  (result.data()['information'] != null)
-                      ? result.data()['information']
-                      : ""),
-            );
-          });
-        });
+          .get();
+
+    result.docs.forEach((values) {
+      setState(() {
+        amuletList.add(
+          new Amulet(
+              (values.data()['amuletId'] != null) ? values.data()['amuletId'] : "",
+              (values.data()['amuletImageList']['image1'] != null) ? values.data()['amuletImageList']['image1'] : "",
+              (values.data()['name'] != null) ? values.data()['name'] : "",
+              (values.data()['categories'] != null) ? values.data()['categories'] : "",
+              (values.data()['texture'] != null) ? values.data()['texture'] : "",
+              (values.data()['information'] != null) ? values.data()['information'] : ""),
+        );
       });
     });
+    setState(() => _isLoadedAmuletList = true);
   }
 
-  Future generateHistoryList() async {
-    final checkUser = FirebaseAuth.instance.currentUser.uid;
-    final _firestoreInstance = FirebaseFirestore.instance;
-
+  void generateHistoryList() async {
     historyList = new List<History>();
 
-    _firestoreInstance.collection("users").get().then((querySnapshot) {
-      _firestoreInstance
+    var result = await _firestoreInstance
           .collection("users")
           .doc(checkUser)
           .collection("history")
           .orderBy("date", descending: true)
-          .get()
-          .then((querySnapshot) {
-        querySnapshot.docs.forEach((result) {
-          setState(() {
-            historyList.add(new History(
-              (result.data()['type'] != null) ? result.data()['type'] : -1,
-              (result.data()['certificateId'] != null)
-                  ? result.data()['certificateId']
-                  : "",
-              (result.data()['recieverId'] != null)
-                  ? result.data()['recieverId']
-                  : "",
-              (result.data()['senderId'] != null)
-                  ? result.data()['senderId']
-                  : "",
-              (result.data()['date'] != null)
-                  ? result.data()['date'].toDate()
-                  : null,
-            ));
-          });
-        });
+          .get();
+
+    result.docs.forEach((values) {
+      setState(() {
+        historyList.add(new History(
+          (values.data()['type'] != null) ? values.data()['type'] : -1,
+          (values.data()['certificateId'] != null) ? values.data()['certificateId'] : "",
+          (values.data()['recieverId'] != null) ? values.data()['recieverId'] : "",
+          (values.data()['senderId'] != null) ? values.data()['senderId'] : "",
+          (values.data()['date'] != null) ? values.data()['date'].toDate() : null,
+        ));
       });
     });
   }
 
-  Future getUID() async {
-    final checkUser = FirebaseAuth.instance.currentUser.uid;
-    final _firestoreInstance = FirebaseFirestore.instance;
-
+  void getUID() async {
     historyList = new List<History>();
 
-    _firestoreInstance.collection("users").get().then((querySnapshot) {
-      _firestoreInstance.collection("users").doc(checkUser).get().then((value) {
-        uid =
-            (value.data()['uniqueId'] != null) ? value.data()['uniqueId'] : "";
-        qrCode = (value.data()['userId'] != null) ? value.data()['userId'] : "";
-        print(value.data()['userId']);
-      });
-    });
+    var result = await _firestoreInstance.collection("users").doc(checkUser).get();
+    uid = (result.data()['uniqueId'] != null) ? result.data()['uniqueId'] : "";
+    qrCode = (result.data()['userId'] != null) ? result.data()['userId'] : "";
   }
 
   void signOut() {
@@ -401,6 +369,12 @@ class _MyMainPageState extends State<MyMainPage> {
       ),
     );
 
+    Widget emptyAmuletScreen = Container(
+      child: Center(
+        child: Text('คุณยังไม่มีพระในครอบครอง', style: MyConfig.normalBoldText4),
+      ),
+    );
+
     //-------------------------------------------------------------------------------------------------------- Page [0]
 
     Widget page_0 = Scaffold(
@@ -410,7 +384,7 @@ class _MyMainPageState extends State<MyMainPage> {
         enablePullDown: true,
         controller: refreshAmuletListController,
         onRefresh: refreshAmuletList,
-        child: amuletGrid, //(amuletList.isNotEmpty) ? amuletGrid : loadingEffect,
+        child: (amuletList.isNotEmpty) ? amuletGrid : (_isLoadedAmuletList) ? emptyAmuletScreen : loadingEffect,
       ),
     );
 

@@ -27,9 +27,9 @@ class _MyLoginPageState extends State<MyLoginPage> {
     super.initState();
   }
 
-  Future signIn() async {
+  void signIn() async {
     try {
-      final user = await _auth.signInWithEmailAndPassword(
+      var user = await _auth.signInWithEmailAndPassword(
           email: emailController.text.trim(),
           password: passwordController.text.trim());
       if (user != null) {

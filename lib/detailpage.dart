@@ -25,9 +25,13 @@ class _MyDetailPageState extends State<MyDetailPage> {
   int currentIndex;
   List<String> currentPaths;
 
+  //-- Firebase
+  final checkUser = FirebaseAuth.instance.currentUser.uid;
+  final _firestoreInstance = FirebaseFirestore.instance;
+
   //-- Item
   Amulet amulet = new Amulet("", [], "", "", "", "");
-  Certificate certificate= new Certificate("", "", "", null);
+  Certificate certificate = new Certificate("", "", "", null);
 
   //-------------------------------------------------------------------------------------------------------- Functions
 
@@ -37,47 +41,60 @@ class _MyDetailPageState extends State<MyDetailPage> {
     getAmulet();
   }
 
-  Future getAmulet() async {
+  void getAmulet() async {
     String id = widget.id;
-    final checkUser = FirebaseAuth.instance.currentUser.uid;
-    final _firestoreInstance = FirebaseFirestore.instance;
 
-      _firestoreInstance
-          .collection("users")
-          .doc(checkUser)
-          .collection("amulet")
-          .doc(id)
-          .get()
-          .then((value) {
-            setState(() {
-              amulet = new Amulet(
-                (value.data()['amuletId'] != null) ? value.data()['amuletId'] : "",
-                (value.data()['amuletImageList'] != null) ? HashMap<String, dynamic>.from(value.data()['amuletImageList']).values.toList().cast<String>() : [],
-                (value.data()['name'] != null) ? value.data()['name'] : "",
-                (value.data()['categories'] != null) ? value.data()['categories'] : "",
-                (value.data()['texture'] != null) ? value.data()['texture'] : "",
-                (value.data()['information'] != null) ? value.data()['information'] : "",
-              );
+    var result = await _firestoreInstance
+        .collection("users")
+        .doc(checkUser)
+        .collection("amulet")
+        .doc(id)
+        .get();
 
-              certificate = new Certificate(
-                (value.data()['certificateId'] != null) ? value.data()['certificateId'] : "",
-                (value.data()['certificateImage'] != null) ? value.data()['certificateImage'] : "",
-                (value.data()['confirmBy'] != null) ? value.data()['confirmBy'] : "",
-                (value.data()['confirmDate'] != null) ? value.data()['confirmDate'].toDate() : null,
-              );
-            });
-      });
+    setState(() {
+      amulet = new Amulet(
+        (result.data()['amuletId'] != null) ? result.data()['amuletId'] : "",
+        (result.data()['amuletImageList'] != null)
+            ? HashMap<String, dynamic>.from(result.data()['amuletImageList'])
+                .values
+                .toList()
+                .cast<String>()
+            : [],
+        (result.data()['name'] != null) ? result.data()['name'] : "",
+        (result.data()['categories'] != null)
+            ? result.data()['categories']
+            : "",
+        (result.data()['texture'] != null) ? result.data()['texture'] : "",
+        (result.data()['information'] != null)
+            ? result.data()['information']
+            : "",
+      );
+
+      certificate = new Certificate(
+        (result.data()['certificateId'] != null)
+            ? result.data()['certificateId']
+            : "",
+        (result.data()['certificateImage'] != null)
+            ? result.data()['certificateImage']
+            : "",
+        (result.data()['confirmBy'] != null) ? result.data()['confirmBy'] : "",
+        (result.data()['confirmDate'] != null)
+            ? result.data()['confirmDate'].toDate()
+            : null,
+      );
+    });
   }
 
   void transfer() {
-    Navigator.push(context, MaterialPageRoute(builder: (context) => MyTransferPage(widget.id)));
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => MyTransferPage(widget.id)));
   }
 
   void back() {
     Navigator.pop(context);
   }
 
-  void certificateFullScreen(){
+  void certificateFullScreen() {
     if (certificate.image != "") enterFullScreenImage([certificate.image], 0);
   }
 
@@ -132,7 +149,9 @@ class _MyDetailPageState extends State<MyDetailPage> {
 
     // double desireWidth = (screenWidth < minWidth) ? screenWidth : minWidth;
     double desireHeight = (screenHeight < minHeight) ? screenHeight : minHeight;
-    double screenEdge = (screenWidth <= minWidth) ? screenMinEdge : min(screenWidth - minWidth, screenMaxEdge);
+    double screenEdge = (screenWidth <= minWidth)
+        ? screenMinEdge
+        : min(screenWidth - minWidth, screenMaxEdge);
     double carouselHeight = screenHeight * imageHeightRatio;
     double carouselWidth = screenWidth;
     double buttonWidth = screenWidth - (screenEdge * 4);
@@ -171,7 +190,9 @@ class _MyDetailPageState extends State<MyDetailPage> {
       return List<Widget>.generate(
         paths.length,
         (index) => GestureDetector(
-          child: (paths[index].isNotEmpty) ? Image.network(paths[index]) : Image(image: AssetImage("assets/images/notfound.png")),
+          child: (paths[index].isNotEmpty)
+              ? Image.network(paths[index])
+              : Image(image: AssetImage("assets/images/notfound.png")),
           onDoubleTap: () => enterFullScreenImage(paths, index),
         ),
       );
@@ -330,7 +351,8 @@ class _MyDetailPageState extends State<MyDetailPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text("วันที่รับรอง", style: MyConfig.smallBoldText1),
-                  Text(MyConfig.dateText(certificate.confirmDate), style: MyConfig.smallText1),
+                  Text(MyConfig.dateText(certificate.confirmDate),
+                      style: MyConfig.smallText1),
                 ],
               ),
               Row(
@@ -417,12 +439,13 @@ class Amulet {
   String info;
 
   Amulet(
-      this.id,
-      this.images,
-      this.name,
-      this.category,
-      this.texture,
-      this.info,);
+    this.id,
+    this.images,
+    this.name,
+    this.category,
+    this.texture,
+    this.info,
+  );
 }
 
 class Certificate {
@@ -432,9 +455,9 @@ class Certificate {
   DateTime confirmDate;
 
   Certificate(
-      this.id,
-      this.image,
-      this.confirmBy,
-      this.confirmDate,
-      );
+    this.id,
+    this.image,
+    this.confirmBy,
+    this.confirmDate,
+  );
 }

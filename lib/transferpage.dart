@@ -19,12 +19,15 @@ class _MyTransferPageState extends State<MyTransferPage> {
   //-- Controller
   TextEditingController idController = TextEditingController();
 
+  //-- Firebase
+  final _firestoreInstance = FirebaseFirestore.instance;
+
   //-- Item
   String scanner = "";
 
   //-------------------------------------------------------------------------------------------------------- Functions
 
-  Future scan() async {
+  void scan() async {
     scanner = await FlutterBarcodeScanner.scanBarcode(
         "#" + MyConfig.colorTheme1, "Cancel", true, ScanMode.QR);
     approve(2, scanner);
@@ -38,8 +41,7 @@ class _MyTransferPageState extends State<MyTransferPage> {
     }
   }
 
-  Future approve(int type, String id) async {
-    final _firestoreInstance = FirebaseFirestore.instance;
+  void approve(int type, String id) async {
     String userId = "";
 
     if (type == 1) {
