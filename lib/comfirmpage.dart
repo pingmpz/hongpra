@@ -4,18 +4,48 @@ import 'package:flutter/material.dart';
 import 'package:hongpra/myconfig.dart';
 
 class MyConfirmPage extends StatefulWidget {
-  final String recieverId;
+  final String receiverId;
   final String amuletId;
-  const MyConfirmPage(this.recieverId, this.amuletId);
+  const MyConfirmPage(this.receiverId, this.amuletId);
 
   @override
   _MyConfirmPageState createState() => _MyConfirmPageState();
 }
 
 class _MyConfirmPageState extends State<MyConfirmPage> {
-
+  String senderName = "";
+  String receiverName = "";
+  String certificateId = "";
 
   //-------------------------------------------------------------------------------------------------------- Functions
+
+  @override
+  void initState() {
+    super.initState();
+    getMyInfo();
+    getReceiverInfo();
+    getAmuletInfo();
+  }
+
+  Future getMyInfo() async{
+    senderName = "";
+  }
+
+  Future getReceiverInfo() async {
+    receiverName = "";
+  }
+
+  Future getAmuletInfo() async {
+    certificateId = "";
+  }
+
+  void confirm(){
+    //-- Create History of Sender
+    //-- Create History of Receiver
+    //-- Add Amulet to Receiver
+    //-- Remove Amulet of Sender
+  }
+
 
   void back(){
     Navigator.pop(context);
@@ -39,21 +69,6 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
     double screenEdge = (screenWidth <= minWidth) ? screenMinEdge : min(screenWidth - minWidth, screenMaxEdge);
     double buttonWidth = (screenWidth - (screenEdge * 3)) / 2;
     double buttonHeight = 40.0;
-
-    //-- Sample
-    List<String> headers = [
-      'วันที่',
-      'ผู้ส่งมอบ',
-      'ผู้รับ',
-      'รหัสใบรับรอง',
-    ];
-
-    List<String> texts = [
-      '24 ตุลาคม 2563',
-      'สมศักดิ์',
-      'ธนกร',
-      '19945A007',
-    ];
 
     //-------------------------------------------------------------------------------------------------------- Widgets
 
@@ -94,29 +109,29 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(headers[0], style: MyConfig.smallBoldText1),
-                  Text(texts[0], style: MyConfig.smallText1),
+                  Text('วันที่', style: MyConfig.smallBoldText1),
+                  Text(MyConfig.dateText(DateTime.now()), style: MyConfig.smallText1),
                 ],
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(headers[1], style: MyConfig.smallBoldText1),
-                  Text(texts[1], style: MyConfig.smallText1),
+                  Text('ผู้ส่ง', style: MyConfig.smallBoldText1),
+                  Text(senderName, style: MyConfig.smallText1),
                 ],
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(headers[2], style: MyConfig.smallBoldText1),
-                  Text(texts[2], style: MyConfig.smallText1),
+                  Text('ผู้รับ', style: MyConfig.smallBoldText1),
+                  Text(receiverName, style: MyConfig.smallText1),
                 ],
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(headers[3], style: MyConfig.smallBoldText1),
-                  Text(texts[3], style: MyConfig.smallText1),
+                  Text('รหัสใบรับรอง', style: MyConfig.smallBoldText1),
+                  Text(certificateId, style: MyConfig.smallText1),
                 ],
               ),
             ],
@@ -135,8 +150,7 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
             child: RaisedButton(
               color: MyConfig.greenColor,
               child: Text('ตกลง', style: MyConfig.buttonText),
-              onPressed: () => {
-              },
+              onPressed: () => confirm(),
             ),
           ),
           SizedBox(width: screenEdge),
@@ -146,8 +160,7 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
             child: RaisedButton(
               color: MyConfig.redColor,
               child: Text('ยกเลิก', style: MyConfig.buttonText),
-              onPressed: () => {
-              },
+              onPressed: () => back(),
             ),
           ),
         ],

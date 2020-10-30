@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:hongpra/comfirmpage.dart';
@@ -24,53 +25,76 @@ class _MyTransferPageState extends State<MyTransferPage> {
   //-------------------------------------------------------------------------------------------------------- Functions
 
   Future scan() async {
-    scanner = await FlutterBarcodeScanner.scanBarcode("#" + MyConfig.colorTheme1, "Cancel", true, ScanMode.QR);
+    scanner = await FlutterBarcodeScanner.scanBarcode(
+        "#" + MyConfig.colorTheme1, "Cancel", true, ScanMode.QR);
     approve(2, scanner);
+  }
+
+  void prepare(){
+    if(idController.text.isEmpty){
+      buildAlertDialog('เกิดข้อผิดพลาด', 'โปรดระบุ UID ของผู้รับ');
+    } else {
+      approve(1, idController.text);
+    }
   }
 
   Future approve(int type, String id) async {
     final _firestoreInstance = FirebaseFirestore.instance;
     String userId = "";
 
-
-    setState(() async {
-
-      if (type == 1) {
-        //-- Check By uniqueId
-
-        var result = await _firestoreInstance
-            .collection("users")
-            .where("uniqueId", isEqualTo: id)
-            .get();
-
-        result.docs.forEach((res) {
-          userId = res.data()['userId'];
-        });
-
-      } else if (type == 2) {
-        //-- Check By userId
-
-        var result = await _firestoreInstance
-            .collection("users")
-            .where("userId", isEqualTo: id)
-            .get();
-
-        result.docs.forEach((res) {
-          userId = res.data()['userId'];
-        });
-
-
-      }
-      if (userId != "") {
-
-        Navigator.push(context, MaterialPageRoute(builder: (context) => MyConfirmPage(userId, widget.amuletId)));
-      } else {
-        //-- AlertDialog
-      }
-    });
+    if (type == 1) {
+      //-- Check By uniqueId
+      var result = await _firestoreInstance
+          .collection("users")
+          .where("uniqueId", isEqualTo: id)
+          .get();
+      result.docs.forEach((res) {
+        userId = res.data()['userId'];
+      });
+    } else if (type == 2) {
+      //-- Check By userId
+      var result = await _firestoreInstance
+          .collection("users")
+          .where("userId", isEqualTo: id)
+          .get();
+      result.docs.forEach((res) {
+        userId = res.data()['userId'];
+      });
+    }
+    if (userId == FirebaseAuth.instance.currentUser.uid) {
+      buildAlertDialog('เกิดข้อผิดพลาด', 'ไม่สามารถส่งมอบให้ตัวเองได้');
+    } else if (userId != "") {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => MyConfirmPage(userId, widget.amuletId)));
+    } else {
+      buildAlertDialog('เกิดข้อผิดพลาด', 'ไม่พบบัญชีผู้ใช้งาน');
+    }
   }
 
-  void back(){
+  void buildAlertDialog(String title, String content) {
+    Widget okButton = FlatButton(
+      child: Text("ยืนยัน", style: MyConfig.linkText),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    );
+
+    Widget result = AlertDialog(
+      title: Center(child: Text(title, style: MyConfig.normalBoldText1)),
+      content: Text(content, style: MyConfig.normalText1),
+      actions: [
+        okButton,
+      ],
+    );
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return result;
+      },
+    );
+  }
+
+  void back() {
     Navigator.pop(context);
   }
 
@@ -92,10 +116,14 @@ class _MyTransferPageState extends State<MyTransferPage> {
 
     double desireWidth = (screenWidth < minWidth) ? screenWidth : minWidth;
     double desireHeight = (screenHeight < minHeight) ? screenHeight : minHeight;
-    double screenEdge = (screenWidth <= minWidth) ? screenMinEdge : min(screenWidth - minWidth, screenMaxEdge);
+    double screenEdge = (screenWidth <= minWidth)
+        ? screenMinEdge
+        : min(screenWidth - minWidth, screenMaxEdge);
     double buttonWidth = (screenWidth - (screenEdge * 2));
     double buttonHeight = 40.0;
-    double textFieldEdge = (screenWidth < minWidth) ? screenWidth / minWidth * maxTextFieldEdge : maxTextFieldEdge;
+    double textFieldEdge = (screenWidth < minWidth)
+        ? screenWidth / minWidth * maxTextFieldEdge
+        : maxTextFieldEdge;
 
     //-------------------------------------------------------------------------------------------------------- Widgets
 
@@ -131,7 +159,7 @@ class _MyTransferPageState extends State<MyTransferPage> {
         minWidth: buttonWidth,
         height: buttonHeight,
         child: RaisedButton(
-          onPressed: () => approve(1, idController.text),
+          onPressed: () => prepare(),
           color: MyConfig.themeColor1,
           child: Text('ยืนยัน', style: MyConfig.buttonText),
         ),
@@ -217,6 +245,7 @@ class _MyTransferPageState extends State<MyTransferPage> {
     return Scaffold(
       backgroundColor: MyConfig.themeColor2,
       extendBodyBehindAppBar: true,
+      resizeToAvoidBottomInset: false,
       appBar: myAppBar,
       body: Container(
         height: screenHeight,

@@ -45,9 +45,7 @@ class _MyMainPageState extends State<MyMainPage> {
   @override
   void initState() {
     super.initState();
-    setState(() {
-      getCurrentUser();
-    });
+    getCurrentUser();
   }
 
   @override
@@ -484,7 +482,7 @@ class _MyMainPageState extends State<MyMainPage> {
       );
     }
 
-    Widget historyCard(int type, String certificateId, String reciever,
+    Widget historyCard(int type, String certificateId, String receiver,
         String sender, int hour, int minute) {
       String typeName = (type == 1) ? "ส่งมอบ" : "รับมอบ";
       String hourText = (hour < 10) ? "0" + hour.toString() : hour.toString();
@@ -503,7 +501,7 @@ class _MyMainPageState extends State<MyMainPage> {
               Text("รหัสใบรับรอง : " + certificateId,
                   style: MyConfig.smallText1),
               (type == 1)
-                  ? Text("ผู้รับมอบ : " + reciever, style: MyConfig.smallText1)
+                  ? Text("ผู้รับมอบ : " + receiver, style: MyConfig.smallText1)
                   : SizedBox(),
               (type == 2)
                   ? Text("ผู้ส่งมอบ : " + sender, style: MyConfig.smallText1)
@@ -532,7 +530,7 @@ class _MyMainPageState extends State<MyMainPage> {
           resultList.add(historyCard(
               showingList[i].type,
               showingList[i].certificateId,
-              showingList[i].reciever,
+              showingList[i].receiver,
               showingList[i].sender,
               showingList[i].timestamp.hour,
               showingList[i].timestamp.minute));
@@ -666,10 +664,10 @@ class Amulet {
 class History {
   int type;
   String certificateId;
-  String reciever;
+  String receiver;
   String sender;
   DateTime timestamp;
 
-  History(this.type, this.certificateId, this.reciever, this.sender,
+  History(this.type, this.certificateId, this.receiver, this.sender,
       this.timestamp);
 }

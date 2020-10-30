@@ -34,9 +34,7 @@ class _MyDetailPageState extends State<MyDetailPage> {
   @override
   void initState() {
     super.initState();
-    setState(() {
-      getAmulet();
-    });
+    getAmulet();
   }
 
   Future getAmulet() async {
