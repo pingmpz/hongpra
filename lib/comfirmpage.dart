@@ -1,10 +1,11 @@
-import 'dart:collection';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hongpra/myconfig.dart';
+
+import 'mainpage.dart';
 
 class MyConfirmPage extends StatefulWidget {
   final String receiverId;
@@ -120,7 +121,7 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
     });
 
     //-- Create History of Sender
-    _firestoreInstance.collection("users").doc(checkUser).collection("history")
+    await _firestoreInstance.collection("users").doc(checkUser).collection("history")
         .add({
       "certificateId": certificateId,
       "date": FieldValue.serverTimestamp(),
@@ -130,7 +131,7 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
     });
 
     //-- Create History of Receiver
-    _firestoreInstance.collection("users").doc(widget.receiverId).collection("history")
+    await _firestoreInstance.collection("users").doc(widget.receiverId).collection("history")
         .add({
       "certificateId": certificateId,
       "date": FieldValue.serverTimestamp(),
@@ -160,9 +161,8 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
     name = (resultAmulet.data()['name'] != null) ? resultAmulet.data()['name'] : "";
     texture = (resultAmulet.data()['texture'] != null) ? resultAmulet.data()['texture'] : "";
 
-
     //-- Add Amulet to Receiver
-    _firestoreInstance.collection("users").doc(widget.receiverId).collection("amulet").doc(widget.amuletId)
+    await _firestoreInstance.collection("users").doc(widget.receiverId).collection("amulet").doc(widget.amuletId)
         .set({
       "amuletId": amuletId,
       "amuletImageList": {
@@ -182,8 +182,11 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
     });
 
     //-- Remove Amulet of Sender
-    _firestoreInstance.collection("users").doc(checkUser).collection("amulet").doc(widget.amuletId)
+    await _firestoreInstance.collection("users").doc(checkUser).collection("amulet").doc(widget.amuletId)
         .delete().then((value) => print("Delete Successful!!"));
+
+    //--  Navigate
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyMainPage()));
   }
 
   void back() {
