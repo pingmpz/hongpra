@@ -64,7 +64,7 @@ class _MyMainPageState extends State<MyMainPage> {
 
   void getCurrentUser() async {
     try {
-      var user = await FirebaseAuth.instance.currentUser;
+      var user = FirebaseAuth.instance.currentUser;
       if (user != null) {
         loginUser = user;
         print("# Login User ID : " + loginUser.uid);

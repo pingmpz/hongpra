@@ -15,6 +15,7 @@ class MyRegisterPage extends StatefulWidget {
 class _MyRegisterPageState extends State<MyRegisterPage> {
   //-- Firebase
   FirebaseAuth _auth = FirebaseAuth.instance;
+  final _firestoreInstance = FirebaseFirestore.instance;
 
   //-- Controller
   TextEditingController emailController = TextEditingController();
@@ -110,7 +111,7 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
         String userId = user.user.uid;
         String uniqueId = createUniqueId();
 
-        Firestore.instance.collection('users').doc(userId).set({
+        _firestoreInstance.collection('users').doc(userId).set({
           'userId': userId,
           'firstname': firstname,
           'lastname': lastname,

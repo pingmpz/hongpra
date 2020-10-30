@@ -23,6 +23,7 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
   final _firestoreInstance = FirebaseFirestore.instance;
   final checkUser = FirebaseAuth.instance.currentUser.uid;
 
+
   //-------------------------------------------------------------------------------------------------------- Functions
 
   @override
