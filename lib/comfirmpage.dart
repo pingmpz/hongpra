@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hongpra/myconfig.dart';
 
@@ -17,6 +19,10 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
   String receiverName = "";
   String certificateId = "";
 
+  // FireStore and FireAuth instance
+  final _firestoreInstance = FirebaseFirestore.instance;
+  final checkUser = FirebaseAuth.instance.currentUser.uid;
+
   //-------------------------------------------------------------------------------------------------------- Functions
 
   @override
@@ -29,21 +35,48 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
 
   Future getMyInfo() async{
     senderName = "";
+    var result = await _firestoreInstance
+        .collection("users")
+        .where("userId", isEqualTo: checkUser)
+        .get();
+    result.docs.forEach((res) {
+      senderName = res.data()['firstname'];
+    });
   }
 
   Future getReceiverInfo() async {
     receiverName = "";
+    var result = await _firestoreInstance
+        .collection("users")
+        .where("userId", isEqualTo: widget.receiverId)
+        .get();
+    result.docs.forEach((res) {
+      receiverName = res.data()['firstname'];
+    });
   }
 
   Future getAmuletInfo() async {
     certificateId = "";
+    var result = await _firestoreInstance
+        .collection("users")
+        .doc(checkUser)
+        .collection("amulet")
+        .where("amuletId", isEqualTo: widget.amuletId)
+        .get();
+    result.docs.forEach((res) {
+      certificateId = res.data()['certificateId'];
+    });
   }
 
   void confirm(){
     //-- Create History of Sender
+
     //-- Create History of Receiver
+
     //-- Add Amulet to Receiver
+
     //-- Remove Amulet of Sender
+
   }
 
 
