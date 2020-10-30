@@ -13,24 +13,27 @@ class MyLoginPage extends StatefulWidget {
 }
 
 class _MyLoginPageState extends State<MyLoginPage> {
+  //-- Firebase
   final _auth = FirebaseAuth.instance;
+
+  //-- Controller
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+
+  //-------------------------------------------------------------------------------------------------------- Functions
 
   @override
   void initState() {
     super.initState();
   }
 
-  //------------------ Custom Functions ------------------
   Future<User> signIn() async {
     try {
       final user = await _auth.signInWithEmailAndPassword(
           email: emailController.text.trim(),
           password: passwordController.text.trim());
       if (user != null) {
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => MyMainPage()));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyMainPage()));
       }
     } catch (e) {
       print(e.code);
@@ -51,10 +54,6 @@ class _MyLoginPageState extends State<MyLoginPage> {
           print("User has been disabled!, Try again");
           buildAlertDialog("เข้าสู่ระบบล้มเหลว", 'บัญชีนี้ถูกระงับ');
           break;
-        // case "operation-not-allowed":
-        //   print("Too many requests to log into this account., Try again");
-        //   buildAlertDialog("เข้าสู่ระบบล้มเหลว", "");
-        //   break;
         case "operation-not-allowed":
           print(
               "Operation not allowed!, Please enable it in the firebase console");
@@ -66,6 +65,10 @@ class _MyLoginPageState extends State<MyLoginPage> {
           break;
       }
     }
+  }
+
+  void register(){
+    Navigator.push(context, MaterialPageRoute(builder: (context) => MyRegisterPage()));
   }
 
   void buildAlertDialog(String title, String content) {
@@ -94,7 +97,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    //------------------ Custom Variables ------------------
+    //-- Sizing Variables
     double minWidth = 360.0;
     double minHeight = 600.0;
     double minEdge = 9.0;
@@ -114,21 +117,14 @@ class _MyLoginPageState extends State<MyLoginPage> {
 
     double desireWidth = (screenWidth < minWidth) ? screenWidth : minWidth;
     double desireHeight = (screenHeight < minHeight) ? screenHeight : minHeight;
-    double screenEdge = (screenWidth <= minWidth)
-        ? minEdge
-        : min(screenWidth - minWidth, maxEdge);
-    double textFieldEdge = (screenWidth < minWidth)
-        ? screenWidth / minWidth * maxTextFieldEdge
-        : maxTextFieldEdge;
+    double screenEdge = (screenWidth <= minWidth) ? minEdge : min(screenWidth - minWidth, maxEdge);
+    double textFieldEdge = (screenWidth < minWidth) ? screenWidth / minWidth * maxTextFieldEdge : maxTextFieldEdge;
 
-    //------------------ Custom Widgets ------------------
+    //-------------------------------------------------------------------------------------------------------- Widgets
 
-    Widget headerText =
-        Center(child: Text('ห้องพระ', style: MyConfig.logoText));
-    Widget titleText = Center(
-        child: Text('ยินดีต้อนรับสู่ ห้องพระ', style: MyConfig.largeBoldText1));
-    Widget subtitleText = Center(
-        child: Text('เข้าสู่ระบบเพื่อใช้งาน', style: MyConfig.smallText5));
+    Widget headerText = Center(child: Text('ห้องพระ', style: MyConfig.logoText));
+    Widget titleText = Center(child: Text('ยินดีต้อนรับสู่ ห้องพระ', style: MyConfig.largeBoldText1));
+    Widget subtitleText = Center(child: Text('เข้าสู่ระบบเพื่อใช้งาน', style: MyConfig.smallText5));
     Widget emailLabel = Text('อีเมล', style: MyConfig.normalText1);
 
     Widget emailTextField = TextField(
@@ -166,7 +162,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
         minWidth: loginButtonWidth,
         height: loginButtonHeight,
         child: RaisedButton(
-          onPressed: () => {signIn()},
+          onPressed: () => signIn(),
           color: MyConfig.blackColor,
           child: Text('เข้าสู่ระบบ', style: MyConfig.buttonText),
         ),
@@ -178,10 +174,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
         minWidth: registerButtonWidth,
         height: registerButtonHeight,
         child: FlatButton(
-          onPressed: () => {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => MyRegisterPage()))
-          },
+          onPressed: () => register(),
           child: Text('สมัครสมาชิก', style: MyConfig.linkText),
         ),
       ),
@@ -191,10 +184,11 @@ class _MyLoginPageState extends State<MyLoginPage> {
       height: footerHeight,
       color: MyConfig.blackColor,
       child: Center(
-        child: Text('@HongPra.com 2020, All right Reserved.',
-            style: MyConfig.normalText2),
+        child: Text('@HongPra.com 2020, All right Reserved.', style: MyConfig.normalText2),
       ),
     );
+
+    //-------------------------------------------------------------------------------------------------------- Page
 
     return Scaffold(
       backgroundColor: MyConfig.themeColor1,
@@ -211,8 +205,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
               headerText,
               SizedBox(height: desireHeight * 0.01),
               Container(
-                padding: EdgeInsets.symmetric(
-                    horizontal: boxEdgeWidth, vertical: boxEdgeHeight),
+                padding: EdgeInsets.symmetric(horizontal: boxEdgeWidth, vertical: boxEdgeHeight),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(boxCurve)),
                   color: MyConfig.whiteColor,

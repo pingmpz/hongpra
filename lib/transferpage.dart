@@ -14,14 +14,16 @@ class MyTransferPage extends StatefulWidget {
 }
 
 class _MyTransferPageState extends State<MyTransferPage> {
+  //-- Controller
   TextEditingController idController = TextEditingController();
+
+  //-- Item
   String scanner = "";
 
-  //------------------ Custom Functions ------------------
+  //-------------------------------------------------------------------------------------------------------- Functions
 
   Future scan() async {
-    scanner = await FlutterBarcodeScanner.scanBarcode("#" +
-        MyConfig.colorTheme1, "Cancel", true, ScanMode.QR);
+    scanner = await FlutterBarcodeScanner.scanBarcode("#" + MyConfig.colorTheme1, "Cancel", true, ScanMode.QR);
     approve(2, scanner);
   }
 
@@ -43,9 +45,13 @@ class _MyTransferPageState extends State<MyTransferPage> {
     });
   }
 
+  void back(){
+    Navigator.pop(context);
+  }
+
   @override
   Widget build(BuildContext context) {
-    //------------------ Custom Variables ------------------
+    //-- Sizing Variables
     double minWidth = 360.0;
     double minHeight = 600.0;
     double screenMinEdge = 9.0;
@@ -61,16 +67,13 @@ class _MyTransferPageState extends State<MyTransferPage> {
 
     double desireWidth = (screenWidth < minWidth) ? screenWidth : minWidth;
     double desireHeight = (screenHeight < minHeight) ? screenHeight : minHeight;
-    double screenEdge = (screenWidth <= minWidth)
-        ? screenMinEdge
-        : min(screenWidth - minWidth, screenMaxEdge);
+    double screenEdge = (screenWidth <= minWidth) ? screenMinEdge : min(screenWidth - minWidth, screenMaxEdge);
     double buttonWidth = (screenWidth - (screenEdge * 2));
     double buttonHeight = 40.0;
-    double textFieldEdge = (screenWidth < minWidth)
-        ? screenWidth / minWidth * maxTextFieldEdge
-        : maxTextFieldEdge;
+    double textFieldEdge = (screenWidth < minWidth) ? screenWidth / minWidth * maxTextFieldEdge : maxTextFieldEdge;
 
-    //------------------ Custom Widgets ------------------
+    //-------------------------------------------------------------------------------------------------------- Widgets
+
     Widget myAppBar = AppBar(
       elevation: 0.0,
       backgroundColor: MyConfig.themeColor1,
@@ -84,9 +87,7 @@ class _MyTransferPageState extends State<MyTransferPage> {
               child: IconButton(
                 icon: Icon(Icons.arrow_back_rounded),
                 color: MyConfig.whiteColor,
-                onPressed: () {
-                  Navigator.pop(context);
-                },
+                onPressed: () => back(),
               ),
             ),
           ),
@@ -105,7 +106,7 @@ class _MyTransferPageState extends State<MyTransferPage> {
         minWidth: buttonWidth,
         height: buttonHeight,
         child: RaisedButton(
-          onPressed: () => {approve(1, idController.text)},
+          onPressed: () => approve(1, idController.text),
           color: MyConfig.themeColor1,
           child: Text('ยืนยัน', style: MyConfig.buttonText),
         ),
@@ -131,7 +132,7 @@ class _MyTransferPageState extends State<MyTransferPage> {
         minWidth: buttonWidth,
         height: buttonHeight,
         child: RaisedButton(
-          onPressed: () => {scan()},
+          onPressed: () => scan(),
           color: MyConfig.themeColor1,
           child: Text('สแกนด้วย QR Code', style: MyConfig.buttonText),
         ),
@@ -185,6 +186,8 @@ class _MyTransferPageState extends State<MyTransferPage> {
         ),
       ),
     );
+
+    //-------------------------------------------------------------------------------------------------------- Page
 
     return Scaffold(
       backgroundColor: MyConfig.themeColor2,

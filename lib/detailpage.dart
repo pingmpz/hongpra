@@ -18,15 +18,19 @@ class MyDetailPage extends StatefulWidget {
 }
 
 class _MyDetailPageState extends State<MyDetailPage> {
+  //-- Fullscreen
   bool _isImageShown = false;
   bool _isArrowLeftShown = false;
   bool _isArrowRightShown = false;
   int currentIndex;
   List<String> currentPaths;
+
+  //-- Item
   Amulet amulet = new Amulet("", [], "", "", "", "");
   Certificate certificate= new Certificate("", "", "", null);
 
-  //------------------ Custom Functions ------------------
+  //-------------------------------------------------------------------------------------------------------- Functions
+
   @override
   void initState() {
     super.initState();
@@ -65,7 +69,18 @@ class _MyDetailPageState extends State<MyDetailPage> {
               );
             });
       });
+  }
 
+  void transfer() {
+    Navigator.push(context, MaterialPageRoute(builder: (context) => MyTransferPage(widget.id)));
+  }
+
+  void back() {
+    Navigator.pop(context);
+  }
+
+  void certificateFullScreen(){
+    if (certificate.image != "") enterFullScreenImage([certificate.image], 0);
   }
 
   void enterFullScreenImage(List<String> paths, int index) {
@@ -104,7 +119,7 @@ class _MyDetailPageState extends State<MyDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    //------------------ Custom Variables ------------------
+    //-- Sizing Variables
     double minWidth = 360.0;
     double minHeight = 600.0;
     double screenMinEdge = 9.0;
@@ -117,17 +132,16 @@ class _MyDetailPageState extends State<MyDetailPage> {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
 
-    double desireWidth = (screenWidth < minWidth) ? screenWidth : minWidth;
+    // double desireWidth = (screenWidth < minWidth) ? screenWidth : minWidth;
     double desireHeight = (screenHeight < minHeight) ? screenHeight : minHeight;
-    double screenEdge = (screenWidth <= minWidth)
-        ? screenMinEdge
-        : min(screenWidth - minWidth, screenMaxEdge);
+    double screenEdge = (screenWidth <= minWidth) ? screenMinEdge : min(screenWidth - minWidth, screenMaxEdge);
     double carouselHeight = screenHeight * imageHeightRatio;
     double carouselWidth = screenWidth;
     double buttonWidth = screenWidth - (screenEdge * 4);
     double buttonHeight = 40.0;
 
-    //------------------ Custom Widgets ------------------
+    //-------------------------------------------------------------------------------------------------------- Widgets
+
     Widget myAppBar = AppBar(
       elevation: 0.0,
       backgroundColor: MyConfig.themeColor1,
@@ -141,9 +155,7 @@ class _MyDetailPageState extends State<MyDetailPage> {
               child: IconButton(
                 icon: Icon(Icons.arrow_back_rounded),
                 color: MyConfig.whiteColor,
-                onPressed: () {
-                  Navigator.pop(context);
-                },
+                onPressed: () => back(),
               ),
             ),
           ),
@@ -161,9 +173,8 @@ class _MyDetailPageState extends State<MyDetailPage> {
       return List<Widget>.generate(
         paths.length,
         (index) => GestureDetector(
-          //child: Image.network(paths[index]),
-          child: (paths[index] != null && paths[index] != "" && paths[index].isNotEmpty) ? Image.network(paths[index]) : Image(image: AssetImage("assets/images/notfound.png")),
-          onDoubleTap: () => {enterFullScreenImage(paths, index)},
+          child: (paths[index].isNotEmpty) ? Image.network(paths[index]) : Image(image: AssetImage("assets/images/notfound.png")),
+          onDoubleTap: () => enterFullScreenImage(paths, index),
         ),
       );
     }
@@ -206,7 +217,7 @@ class _MyDetailPageState extends State<MyDetailPage> {
                   child: IconButton(
                     icon: Icon(Icons.clear),
                     color: Colors.white,
-                    onPressed: () => {exitFullScreenImage()},
+                    onPressed: () => exitFullScreenImage(),
                   ),
                 ),
               ),
@@ -225,7 +236,7 @@ class _MyDetailPageState extends State<MyDetailPage> {
                               child: IconButton(
                                 icon: Icon(Icons.chevron_left),
                                 color: MyConfig.whiteColor,
-                                onPressed: () => {previousImage()},
+                                onPressed: () => previousImage(),
                               ),
                             ),
                           ),
@@ -240,7 +251,7 @@ class _MyDetailPageState extends State<MyDetailPage> {
                               child: IconButton(
                                 icon: Icon(Icons.chevron_right),
                                 color: MyConfig.whiteColor,
-                                onPressed: () => {nextImage()},
+                                onPressed: () => nextImage(),
                               ),
                             ),
                           ),
@@ -341,9 +352,7 @@ class _MyDetailPageState extends State<MyDetailPage> {
                         ? MyConfig.greenColor
                         : MyConfig.greyColor,
                     child: Text('ดูใบรับรอง', style: MyConfig.buttonText),
-                    onPressed: () => {
-                      if (certificate.image != "") enterFullScreenImage([certificate.image], 0)
-                    },
+                    onPressed: () => certificateFullScreen(),
                   ),
                 ),
               ),
@@ -360,13 +369,12 @@ class _MyDetailPageState extends State<MyDetailPage> {
         child: RaisedButton(
           color: MyConfig.themeColor1,
           child: Text('ส่งมอบ', style: MyConfig.buttonText),
-          onPressed: () => {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => MyTransferPage(widget.id)))
-          },
+          onPressed: () => transfer(),
         ),
       ),
     );
+
+    //-------------------------------------------------------------------------------------------------------- Page
 
     return Stack(
       children: [
@@ -399,6 +407,8 @@ class _MyDetailPageState extends State<MyDetailPage> {
     );
   }
 }
+
+//-------------------------------------------------------------------------------------------------------- Class
 
 class Amulet {
   String id;

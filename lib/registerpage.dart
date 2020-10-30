@@ -13,13 +13,17 @@ class MyRegisterPage extends StatefulWidget {
 }
 
 class _MyRegisterPageState extends State<MyRegisterPage> {
+  //-- Firebase
   FirebaseAuth _auth = FirebaseAuth.instance;
 
+  //-- Controller
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
   TextEditingController firstNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
+
+  //-------------------------------------------------------------------------------------------------------- Functions
 
   @override
   void dispose() {
@@ -31,22 +35,16 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
     super.dispose();
   }
 
-  //------------------ Custom Functions ------------------
   String validateEmail(String value) {
-    Pattern pattern =
-        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+    Pattern pattern = r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
     RegExp regex = new RegExp(pattern);
-
-    if (!regex.hasMatch(value))
-      return 'Enter Valid Email';
-    else
-      return null;
+    if (!regex.hasMatch(value)) return 'Enter Valid Email';
+    else return null;
   }
 
   String validatePassword(String value) {
     Pattern pattern = r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])$';
     RegExp regex = new RegExp(pattern);
-    print(value);
     if (value.isEmpty) {
       return 'Please enter password';
     } else {
@@ -59,7 +57,7 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
 
   String validateName(String value) {
     if (value.length < 3)
-      return 'Name must be more than 2 charater';
+      return 'Name must be more than 2 characters';
     else
       return null;
   }
@@ -107,11 +105,8 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
     validatePassword(password);
 
     if (password == confirmPassword && password.length >= 6) {
-      _auth
-          .createUserWithEmailAndPassword(email: email, password: password)
-          .then((user) {
+      _auth.createUserWithEmailAndPassword(email: email, password: password).then((user) {
         print("Register Success");
-
         String userId = user.user.uid;
         String uniqueId = createUniqueId();
 
@@ -121,9 +116,8 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
           'lastname': lastname,
           'uniqueId': uniqueId,
         });
-        // NAVIGATE
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => MyLoginPage()));
+
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyLoginPage()));
       }).catchError((error) {
         print(error.message);
         buildAlertDialog("สมัครสมาชิกล้มเหลว", "");
@@ -159,9 +153,13 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
     );
   }
 
+  void back(){
+    Navigator.pop(context);
+  }
+
   @override
   Widget build(BuildContext context) {
-    //------------------ Custom Variables ------------------
+    //-- Sizing Variables
     double minWidth = 360.0;
     double minHeight = 600.0;
     double screenMinEdge = 9.0;
@@ -174,24 +172,15 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
     double registerButtonHeight = 40;
     double footerHeight = 30;
 
-    double screenWidth = MediaQuery
-        .of(context)
-        .size
-        .width;
-    double screenHeight = MediaQuery
-        .of(context)
-        .size
-        .height;
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
     double desireWidth = (screenWidth < minWidth) ? screenWidth : minWidth;
     double desireHeight = (screenHeight < minHeight) ? screenHeight : minHeight;
-    double screenEdge = (screenWidth <= minWidth)
-        ? screenMinEdge
-        : min(screenWidth - minWidth, screenMaxEdge);
-    double textFieldEdge = (screenWidth < minWidth)
-        ? screenWidth / minWidth * maxTextFieldEdge
-        : maxTextFieldEdge;
+    double screenEdge = (screenWidth <= minWidth) ? screenMinEdge : min(screenWidth - minWidth, screenMaxEdge);
+    double textFieldEdge = (screenWidth < minWidth) ? screenWidth / minWidth * maxTextFieldEdge : maxTextFieldEdge;
 
-    //------------------ Custom Widgets ------------------
+    //-------------------------------------------------------------------------------------------------------- Widgets
+
     Widget myAppBar = AppBar(
       elevation: 0.0,
       backgroundColor: MyConfig.themeColor1,
@@ -205,9 +194,7 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
               child: IconButton(
                 icon: Icon(Icons.arrow_back_rounded),
                 color: MyConfig.whiteColor,
-                onPressed: () {
-                  Navigator.pop(context);
-                },
+                onPressed: () => back(),
               ),
             ),
           ),
@@ -248,8 +235,7 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
           border: OutlineInputBorder()),
     );
 
-    Widget rePasswordLabel =
-    Text('ยืนยันรหัสผ่าน', style: MyConfig.normalText1);
+    Widget rePasswordLabel = Text('ยืนยันรหัสผ่าน', style: MyConfig.normalText1);
 
     Widget rePasswordField = TextField(
       controller: confirmPasswordController,
@@ -264,9 +250,9 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
           border: OutlineInputBorder()),
     );
 
-    Widget firstnameLabel = Text('ชื่อ', style: MyConfig.normalText1);
+    Widget firstNameLabel = Text('ชื่อ', style: MyConfig.normalText1);
 
-    Widget firstnameField = TextField(
+    Widget firstNameField = TextField(
       controller: firstNameController,
       obscureText: false,
       style: MyConfig.normalText1,
@@ -279,9 +265,9 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
           border: OutlineInputBorder()),
     );
 
-    Widget lastnameLabel = Text('นามสกุล', style: MyConfig.normalText1);
+    Widget lastNameLabel = Text('นามสกุล', style: MyConfig.normalText1);
 
-    Widget lastnameField = TextField(
+    Widget lastNameField = TextField(
       controller: lastNameController,
       obscureText: false,
       style: MyConfig.normalText1,
@@ -299,7 +285,7 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
         minWidth: registerButtonWidth,
         height: registerButtonHeight,
         child: RaisedButton(
-          onPressed: () => {signUp()},
+          onPressed: () => signUp(),
           color: MyConfig.blackColor,
           child: Text('สมัครสมาชิก', style: MyConfig.buttonText),
         ),
@@ -309,11 +295,11 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
     Widget footerBar = Container(
       height: footerHeight,
       color: MyConfig.blackColor,
-      child: Center(
-        child: Text('@HongPra.com 2020, All right Reserved.',
-            style: MyConfig.normalText2),
+      child: Center(child: Text('@HongPra.com 2020, All right Reserved.', style: MyConfig.normalText2),
       ),
     );
+
+    //-------------------------------------------------------------------------------------------------------- Page
 
     return Scaffold(
       backgroundColor: MyConfig.themeColor1,
@@ -346,13 +332,13 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
               SizedBox(height: desireHeight * 0.005),
               rePasswordField,
               SizedBox(height: desireHeight * 0.01),
-              firstnameLabel,
+              firstNameLabel,
               SizedBox(height: desireHeight * 0.005),
-              firstnameField,
+              firstNameField,
               SizedBox(height: desireHeight * 0.01),
-              lastnameLabel,
+              lastNameLabel,
               SizedBox(height: desireHeight * 0.005),
-              lastnameField,
+              lastNameField,
               SizedBox(height: desireHeight * 0.03),
               registerButton,
             ],

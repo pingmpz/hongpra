@@ -13,9 +13,17 @@ class MyConfirmPage extends StatefulWidget {
 }
 
 class _MyConfirmPageState extends State<MyConfirmPage> {
+
+
+  //-------------------------------------------------------------------------------------------------------- Functions
+
+  void back(){
+    Navigator.pop(context);
+  }
+
   @override
   Widget build(BuildContext context) {
-    //------------------ Custom Variables ------------------
+    //-- Sizing Variables
     double minWidth = 360.0;
     double minHeight = 600.0;
     double screenMinEdge = 9.0;
@@ -26,15 +34,13 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
 
-    double desireWidth = (screenWidth < minWidth) ? screenWidth : minWidth;
+    // double desireWidth = (screenWidth < minWidth) ? screenWidth : minWidth;
     double desireHeight = (screenHeight < minHeight) ? screenHeight : minHeight;
-    double screenEdge = (screenWidth <= minWidth)
-        ? screenMinEdge
-        : min(screenWidth - minWidth, screenMaxEdge);
+    double screenEdge = (screenWidth <= minWidth) ? screenMinEdge : min(screenWidth - minWidth, screenMaxEdge);
     double buttonWidth = (screenWidth - (screenEdge * 3)) / 2;
     double buttonHeight = 40.0;
 
-    //------------------ Sample Variables ------------------
+    //-- Sample
     List<String> headers = [
       'วันที่',
       'ผู้ส่งมอบ',
@@ -49,7 +55,8 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
       '19945A007',
     ];
 
-    //------------------ Custom Widgets ------------------
+    //-------------------------------------------------------------------------------------------------------- Widgets
+
     Widget myAppBar = AppBar(
       elevation: 0.0,
       backgroundColor: MyConfig.themeColor1,
@@ -63,9 +70,7 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
               child: IconButton(
                 icon: Icon(Icons.arrow_back_rounded),
                 color: MyConfig.whiteColor,
-                onPressed: () {
-                  Navigator.pop(context);
-                },
+                onPressed: () => back(),
               ),
             ),
           ),
@@ -148,6 +153,8 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
         ],
       ),
     );
+
+    //-------------------------------------------------------------------------------------------------------- Page
 
     return Scaffold(
       backgroundColor: MyConfig.themeColor2,

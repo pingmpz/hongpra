@@ -21,21 +21,26 @@ class MyMainPage extends StatefulWidget {
 class _MyMainPageState extends State<MyMainPage> {
   int selectedPage = 0;
 
+  //-- Controller
   final searchController = new TextEditingController();
-  RefreshController refreshAmuletListController =
-      new RefreshController(initialRefresh: false);
-  RefreshController refreshHistoryListController =
-      new RefreshController(initialRefresh: false);
+  RefreshController refreshAmuletListController = new RefreshController(initialRefresh: false);
+  RefreshController refreshHistoryListController = new RefreshController(initialRefresh: false);
   TabController tabController;
 
+  //-- Animation & Switch
   Widget searchTitle = Text("", style: MyConfig.normalText1);
   Icon searchIcon = new Icon(Icons.search, color: MyConfig.whiteColor);
 
+  //-- Firebase
   User loginUser;
+
+  //-- Items
   List<Amulet> amuletList = new List<Amulet>();
   List<History> historyList = new List<History>();
   String uid = "";
   String qrCode = "";
+
+  //-------------------------------------------------------------------------------------------------------- Functions
 
   @override
   void initState() {
@@ -49,12 +54,11 @@ class _MyMainPageState extends State<MyMainPage> {
   void dispose() {
     super.dispose();
     searchController.dispose();
-    // refreshAmuletListController.dispose();
-    // refreshHistoryListController.dispose();
+    //refreshAmuletListController.dispose();
+    //refreshHistoryListController.dispose();
     //tabController.dispose();
   }
 
-  //------------------ Custom Functions ------------------
   void getCurrentUser() async {
     try {
       final user = await FirebaseAuth.instance.currentUser;
@@ -168,7 +172,7 @@ class _MyMainPageState extends State<MyMainPage> {
     });
   }
 
-  void signOut(BuildContext context) {
+  void signOut() {
     FirebaseAuth.instance.signOut();
     Navigator.pushAndRemoveUntil(
         context,
@@ -222,7 +226,7 @@ class _MyMainPageState extends State<MyMainPage> {
 
   @override
   Widget build(BuildContext context) {
-    //------------------ Custom Variables ------------------
+    //-- Sizing Variables
     double minWidth = 360.0;
     double minHeight = 600.0;
     double screenMinEdge = 9.0;
@@ -236,18 +240,14 @@ class _MyMainPageState extends State<MyMainPage> {
 
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
-    double desireWidth = (screenWidth < minWidth) ? screenWidth : minWidth;
+    //double desireWidth = (screenWidth < minWidth) ? screenWidth : minWidth;
     double desireHeight = (screenHeight < minHeight) ? screenHeight : minHeight;
-    double screenEdge = (screenWidth <= minWidth)
-        ? screenMinEdge
-        : min(screenWidth - minWidth, screenMaxEdge);
+    double screenEdge = (screenWidth <= minWidth) ? screenMinEdge : min(screenWidth - minWidth, screenMaxEdge);
 
-    int gridCount = minGridCount +
-        ((screenWidth < minWidth)
-            ? 0
-            : ((screenWidth - minWidth) / (minWidth / minGridCount)).floor());
+    int gridCount = minGridCount + ((screenWidth < minWidth) ? 0 : ((screenWidth - minWidth) / (minWidth / minGridCount)).floor());
 
-    //------------------ Custom Widgets ------------------
+    //-------------------------------------------------------------------------------------------------------- Widgets [ALL]
+
     Widget myAppBar = AppBar(
       backgroundColor: MyConfig.themeColor1,
       elevation: 0.0,
@@ -255,9 +255,6 @@ class _MyMainPageState extends State<MyMainPage> {
         icon: Icon(Icons.account_circle),
         color: MyConfig.whiteColor,
         onPressed: () {
-          setState(() {
-            print(amuletList.length);
-          });
         },
       ),
       title: Text('ห้องพระ', style: MyConfig.appBarTitleText),
@@ -265,14 +262,13 @@ class _MyMainPageState extends State<MyMainPage> {
       actions: [
         IconButton(
           icon: Icon(Icons.notifications),
-          onPressed: () {
-            signOut(context);
-          },
+          onPressed: () => signOut(),
         ),
       ],
     );
 
-    //----------------- Page 0 -------------------
+    //-------------------------------------------------------------------------------------------------------- Widgets [PAGE : 0]
+
     Widget mySearchBar = PreferredSize(
       preferredSize: Size.fromHeight(searchBarHeight),
       child: AppBar(
@@ -407,6 +403,8 @@ class _MyMainPageState extends State<MyMainPage> {
       ),
     );
 
+    //-------------------------------------------------------------------------------------------------------- Page [0]
+
     Widget page_0 = Scaffold(
       backgroundColor: MyConfig.themeColor2,
       appBar: mySearchBar,
@@ -418,7 +416,7 @@ class _MyMainPageState extends State<MyMainPage> {
       ),
     );
 
-    //----------------- Page 1 -------------------
+    //-------------------------------------------------------------------------------------------------------- Page [1]
 
     Widget page_1 = Container(
       color: MyConfig.themeColor2,
@@ -453,7 +451,7 @@ class _MyMainPageState extends State<MyMainPage> {
       ),
     );
 
-    //----------------- Page 2 -------------------
+    //-------------------------------------------------------------------------------------------------------- Widgets [PAGE : 1]
 
     Widget myTabBar = AppBar(
       elevation: 0.0,
@@ -542,6 +540,8 @@ class _MyMainPageState extends State<MyMainPage> {
       }
       return resultList;
     }
+
+    //-------------------------------------------------------------------------------------------------------- Page [2]
 
     Widget page_2 = DefaultTabController(
       length: 3,
@@ -647,6 +647,8 @@ class _MyMainPageState extends State<MyMainPage> {
     );
   }
 }
+
+//-------------------------------------------------------------------------------------------------------- Class
 
 class Amulet {
   String id;
