@@ -116,7 +116,7 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
         .add({
       "certificateId": certificateId,
       "date": FieldValue.serverTimestamp(),
-      "recieverTd": recieverUserId,
+      "receiverTd": recieverUserId,
       "senderId": senderUserId,
       "type": 2
     });
@@ -149,7 +149,7 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
         .set({
       "amuletId": amuletId,
       "amuletImageList": {
-        for(int i = 0;i < amuletImageList.length - 1; i++) "image" + (i + 1).toString() : amuletImageList[i],
+        for(int i = 0;i < amuletImageList.length; i++) "image" + (i + 1).toString() : amuletImageList[i],
       },
       "categories": categories,
       "certificateId": certificateIdResult,

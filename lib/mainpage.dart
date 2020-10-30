@@ -122,7 +122,7 @@ class _MyMainPageState extends State<MyMainPage> {
         historyList.add(new History(
           (values.data()['type'] != null) ? values.data()['type'] : -1,
           (values.data()['certificateId'] != null) ? values.data()['certificateId'] : "",
-          (values.data()['recieverId'] != null) ? values.data()['recieverId'] : "",
+          (values.data()['receiverId'] != null) ? values.data()['receiverId'] : "",
           (values.data()['senderId'] != null) ? values.data()['senderId'] : "",
           (values.data()['date'] != null) ? values.data()['date'].toDate() : null,
         ));
