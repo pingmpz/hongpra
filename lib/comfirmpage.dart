@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -83,9 +84,7 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
 
     //-- Get amulet data
     String amuletId = "";
-    String amuletImageList1 = "";
-    String amuletImageList2 = "";
-    String amuletImageList3 = "";
+    List<String> amuletImageList = [];
     String categories = "";
     String certificateIdResult = "";
     String certificateImage = "";
@@ -129,48 +128,17 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
         .doc(widget.amuletId)
         .get();
 
-    amuletId = (resultAmulet.data()['amuletId'] != null)
-        ? resultAmulet.data()['amuletId']
-        : "";
-    amuletImageList1 =
-        (resultAmulet.data()['amuletImageList']['image1'] != null)
-            ? resultAmulet.data()['amuletImageList']['image1']
-            : "";
-    amuletImageList2 =
-        (resultAmulet.data()['amuletImageList']['image1'] != null)
-            ? resultAmulet.data()['amuletImageList']['image2']
-            : "";
-    amuletImageList3 =
-        (resultAmulet.data()['amuletImageList']['image1'] != null)
-            ? resultAmulet.data()['amuletImageList']['image3']
-            : "";
-    categories = (resultAmulet.data()['categories'] != null)
-        ? resultAmulet.data()['categories']
-        : "";
-    certificateIdResult = (resultAmulet.data()['certificateId'] != null)
-        ? resultAmulet.data()['certificateId']
-        : "";
-    certificateImage = (resultAmulet.data()['certificateImage'] != null)
-        ? resultAmulet.data()['certificateImage']
-        : "";
-    confirmDate = (resultAmulet.data()['confirmDate'] != null)
-        ? resultAmulet.data()['confirmDate'].toDate()
-        : "";
-    confirmBy = (resultAmulet.data()['confirmBy'] != null)
-        ? resultAmulet.data()['confirmBy']
-        : "";
-    image = (resultAmulet.data()['image'] != null)
-        ? resultAmulet.data()['image']
-        : "";
-    information = (resultAmulet.data()['information'] != null)
-        ? resultAmulet.data()['information']
-        : "";
-    name = (resultAmulet.data()['name'] != null)
-        ? resultAmulet.data()['name']
-        : "";
-    texture = (resultAmulet.data()['texture'] != null)
-        ? resultAmulet.data()['texture']
-        : "";
+    amuletId = (resultAmulet.data()['amuletId'] != null) ? resultAmulet.data()['amuletId'] : "";
+    amuletImageList = (resultAmulet.data()['amuletImageList'] != null) ? HashMap<String, dynamic>.from(resultAmulet.data()['amuletImageList']).values.toList().cast<String>() : [];
+    categories = (resultAmulet.data()['categories'] != null) ? resultAmulet.data()['categories'] : "";
+    certificateIdResult = (resultAmulet.data()['certificateId'] != null) ? resultAmulet.data()['certificateId'] : "";
+    certificateImage = (resultAmulet.data()['certificateImage'] != null) ? resultAmulet.data()['certificateImage'] : "";
+    confirmDate = (resultAmulet.data()['confirmDate'] != null) ? resultAmulet.data()['confirmDate'].toDate() : "";
+    confirmBy = (resultAmulet.data()['confirmBy'] != null) ? resultAmulet.data()['confirmBy'] : "";
+    image = (resultAmulet.data()['image'] != null) ? resultAmulet.data()['image'] : "";
+    information = (resultAmulet.data()['information'] != null) ? resultAmulet.data()['information'] : "";
+    name = (resultAmulet.data()['name'] != null) ? resultAmulet.data()['name'] : "";
+    texture = (resultAmulet.data()['texture'] != null) ? resultAmulet.data()['texture'] : "";
 
     //-- Add Amulet to Receiver
     await _firestoreInstance
@@ -181,9 +149,7 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
         .set({
       "amuletId": amuletId,
       "amuletImageList": {
-        "image1": amuletImageList1,
-        "image2": amuletImageList2,
-        "image3": amuletImageList3
+        for(int i = 0;i < amuletImageList.length - 1; i++) "image" + (i + 1).toString() : amuletImageList[i],
       },
       "categories": categories,
       "certificateId": certificateIdResult,
