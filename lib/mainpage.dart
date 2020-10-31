@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'dart:ui';
+import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:hongpra/myconfig.dart';
@@ -13,6 +14,11 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:intl/intl.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
+import 'Data/Amulet.dart';
+import 'Data/Certificate.dart';
+import 'Data/AmuletCard.dart';
+import 'Data/History.dart';
+
 class MyMainPage extends StatefulWidget {
   @override
   _MyMainPageState createState() => _MyMainPageState();
@@ -23,28 +29,29 @@ class _MyMainPageState extends State<MyMainPage> {
 
   //-- Controller
   final searchController = new TextEditingController();
-  RefreshController refreshAmuletListController = new RefreshController(initialRefresh: false);
-  RefreshController refreshHistoryListController = new RefreshController(initialRefresh: false);
+  RefreshController refreshAmuletListController =
+      new RefreshController(initialRefresh: false);
+  RefreshController refreshHistoryListController =
+      new RefreshController(initialRefresh: false);
   TabController tabController;
 
-  //-- Animation & Switch
+  //-- Widget -> Animation & Switch
   Widget searchTitle = Text("", style: MyConfig.normalText1);
   Icon searchIcon = new Icon(Icons.search, color: MyConfig.whiteColor);
 
   //-- Firebase
   User loginUser;
-  final checkUser = FirebaseAuth.instance.currentUser.uid;
   final _firestoreInstance = FirebaseFirestore.instance;
 
   //-- Items
-  List<Amulet> amuletList = new List<Amulet>();
+  List<AmuletCard> amuletList = new List<AmuletCard>();
   List<History> historyList = new List<History>();
   String uid = "";
   String qrCode = "";
 
   //-- Items State
-  bool _isLoadedAmuletList = false;
-  bool _isLoadedHistoryList = false;
+  bool _isAmuletListLoaded = false;
+  bool _isHistoryListLoaded = false;
 
   //-------------------------------------------------------------------------------------------------------- Functions
 
@@ -65,18 +72,16 @@ class _MyMainPageState extends State<MyMainPage> {
 
   void getCurrentUser() async {
     try {
-      var user = FirebaseAuth.instance.currentUser;
-      if (user != null) {
-        loginUser = user;
+      if (FirebaseAuth.instance.currentUser != null) {
+        loginUser = FirebaseAuth.instance.currentUser;
         print("# Login User ID : " + loginUser.uid);
         generateAmuletList();
         generateHistoryList();
         getUID();
       } else {
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => MyLoginPage()),
-            ModalRoute.withName('/'));
+        Future(() {
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => MyLoginPage()), ModalRoute.withName('/'));
+        });
       }
     } catch (e) {
       print(e.toString());
@@ -85,29 +90,38 @@ class _MyMainPageState extends State<MyMainPage> {
 
   void generateAmuletList() async {
     setState(() {
-      amuletList = new List<Amulet>();
-      _isLoadedAmuletList = false;
+      amuletList = new List<AmuletCard>();
+      _isAmuletListLoaded = false;
     });
 
-    var result = await _firestoreInstance.collection("users")
-          .doc(checkUser)
-          .collection("amulet")
-          .get();
+    var result = await _firestoreInstance
+        .collection("users")
+        .doc(loginUser.uid)
+        .collection("amulet")
+        .get();
 
-    if(result.size == 0) setState(() => _isLoadedAmuletList = true);
+    if (result.size == 0) setState(() => _isAmuletListLoaded = true);
 
     result.docs.forEach((values) {
       setState(() {
         amuletList.add(
-          new Amulet(
-              (values.data()['amuletId'] != null) ? values.data()['amuletId'] : "",
-              (values.data()['amuletImageList']['image1'] != null) ? values.data()['amuletImageList']['image1'] : "",
-              (values.data()['name'] != null) ? values.data()['name'] : "",
-              (values.data()['categories'] != null) ? values.data()['categories'] : "",
-              (values.data()['texture'] != null) ? values.data()['texture'] : "",
-              (values.data()['information'] != null) ? values.data()['information'] : ""),
-        );
-        _isLoadedAmuletList = true;
+          new AmuletCard(
+              Amulet(
+                (values.data()['amuletId'] != null) ? values.data()['amuletId'] : "",
+                (values.data()['amuletImageList'] != null) ? HashMap<String, dynamic>.from(values.data()['amuletImageList']).values.toList().cast<String>() : [],
+                (values.data()['name'] != null) ? values.data()['name'] : "",
+                (values.data()['categories'] != null) ? values.data()['categories'] : "",
+                (values.data()['texture'] != null) ? values.data()['texture'] : "",
+                (values.data()['information'] != null) ? values.data()['information'] : "",
+              ),
+              Certificate(
+                (values.data()['certificateId'] != null) ? values.data()['certificateId'] : "",
+                (values.data()['certificateImage'] != null) ? values.data()['certificateImage'] : "",
+                (values.data()['confirmBy'] != null) ? values.data()['confirmBy'] : "",
+                (values.data()['confirmDate'] != null) ? values.data()['confirmDate'].toDate() : null,
+              ),
+          ));
+        _isAmuletListLoaded = true;
       });
     });
   }
@@ -115,44 +129,64 @@ class _MyMainPageState extends State<MyMainPage> {
   void generateHistoryList() async {
     setState(() {
       historyList = new List<History>();
-      _isLoadedHistoryList = false;
+      _isHistoryListLoaded = false;
     });
 
     var result = await _firestoreInstance
-          .collection("users")
-          .doc(checkUser)
-          .collection("history")
-          .orderBy("date", descending: true)
-          .get();
+        .collection("users")
+        .doc(loginUser.uid)
+        .collection("history")
+        .orderBy("date", descending: true)
+        .get();
 
-    if(result.size == 0) setState(() => _isLoadedHistoryList = true);
+    if (result.size == 0) setState(() => _isHistoryListLoaded = true);
 
     result.docs.forEach((values) async {
       String receiverName = "";
       String senderName = "";
-      if(values.data()['receiverId'] != null) {
-        var result1 = await _firestoreInstance.collection("users").doc(values.data()['receiverId']).get();
-        String firstName = (result1.data()['firstName'] != null) ? result1.data()['firstName'] : "";
-        String lastName = (result1.data()['lastName'] != null) ? result1.data()['lastName'] : "";
+      if (values.data()['receiverId'] != null) {
+        var result1 = await _firestoreInstance
+            .collection("users")
+            .doc(values.data()['receiverId'])
+            .get();
+        String firstName = (result1.data()['firstName'] != null)
+            ? result1.data()['firstName']
+            : "";
+        String lastName = (result1.data()['lastName'] != null)
+            ? result1.data()['lastName']
+            : "";
         receiverName = firstName + " " + lastName;
       }
-      if(values.data()['senderId'] != null) {
-        var result1 = await _firestoreInstance.collection("users").doc(values.data()['senderId']).get();
-        String firstName = (result1.data()['firstName'] != null) ? result1.data()['firstName'] : "";
-        String lastName = (result1.data()['lastName'] != null) ? result1.data()['lastName'] : "";
+      if (values.data()['senderId'] != null) {
+        var result1 = await _firestoreInstance
+            .collection("users")
+            .doc(values.data()['senderId'])
+            .get();
+        String firstName = (result1.data()['firstName'] != null)
+            ? result1.data()['firstName']
+            : "";
+        String lastName = (result1.data()['lastName'] != null)
+            ? result1.data()['lastName']
+            : "";
         senderName = firstName + " " + lastName;
       }
       setState(() {
         historyList.add(new History(
           (values.data()['type'] != null) ? values.data()['type'] : -1,
-          (values.data()['certificateId'] != null) ? values.data()['certificateId'] : "",
-          (values.data()['receiverId'] != null) ? values.data()['receiverId'] : "",
+          (values.data()['certificateId'] != null)
+              ? values.data()['certificateId']
+              : "",
+          (values.data()['receiverId'] != null)
+              ? values.data()['receiverId']
+              : "",
           receiverName,
           (values.data()['senderId'] != null) ? values.data()['senderId'] : "",
           senderName,
-          (values.data()['date'] != null) ? values.data()['date'].toDate() : null,
+          (values.data()['date'] != null)
+              ? values.data()['date'].toDate()
+              : null,
         ));
-        _isLoadedHistoryList = true;
+        _isHistoryListLoaded = true;
       });
     });
   }
@@ -160,27 +194,28 @@ class _MyMainPageState extends State<MyMainPage> {
   void getUID() async {
     historyList = new List<History>();
 
-    var result = await _firestoreInstance.collection("users").doc(checkUser).get();
+    var result =
+        await _firestoreInstance.collection("users").doc(loginUser.uid).get();
     uid = (result.data()['uniqueId'] != null) ? result.data()['uniqueId'] : "";
     qrCode = (result.data()['userId'] != null) ? result.data()['userId'] : "";
   }
 
   void signOut() {
     FirebaseAuth.instance.signOut();
-    Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => MyLoginPage()),
-        ModalRoute.withName('/'));
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => MyLoginPage()));
   }
 
   void search() {
     setState(() {
       String result = searchController.text;
-      for (Amulet item in amuletList) {
-        if (item.name.toLowerCase().contains(result.toLowerCase())) {
-          item.isActive = true;
-        } else {
-          item.isActive = false;
+      for (AmuletCard item in amuletList) {
+        if (item.amulet.name.toLowerCase().contains(result.toLowerCase())) {
+          item.isShowing = true;
+        } else if(item.certificate.confirmBy.toLowerCase().contains(result.toLowerCase())) {
+          item.isShowing = true;
+        }  else {
+          item.isShowing = false;
         }
       }
     });
@@ -188,8 +223,8 @@ class _MyMainPageState extends State<MyMainPage> {
 
   void reset() {
     setState(() {
-      for (Amulet item in amuletList) {
-        item.isActive = true;
+      for (AmuletCard item in amuletList) {
+        item.isShowing = true;
       }
     });
   }
@@ -213,8 +248,10 @@ class _MyMainPageState extends State<MyMainPage> {
 
   bool historyListIsNotEmpty(int type) {
     List<History> showingList = historyList;
-    if(type != 0) showingList = historyList.where((element) => element.type == type).toList();
-    if(showingList.isNotEmpty) return true;
+    if (type != 0)
+      showingList =
+          historyList.where((element) => element.type == type).toList();
+    if (showingList.isNotEmpty) return true;
     return false;
   }
 
@@ -242,9 +279,14 @@ class _MyMainPageState extends State<MyMainPage> {
     double screenHeight = MediaQuery.of(context).size.height;
     //double desireWidth = (screenWidth < minWidth) ? screenWidth : minWidth;
     double desireHeight = (screenHeight < minHeight) ? screenHeight : minHeight;
-    double screenEdge = (screenWidth <= minWidth) ? screenMinEdge : min(screenWidth - minWidth, screenMaxEdge);
+    double screenEdge = (screenWidth <= minWidth)
+        ? screenMinEdge
+        : min(screenWidth - minWidth, screenMaxEdge);
 
-    int gridCount = minGridCount + ((screenWidth < minWidth) ? 0 : ((screenWidth - minWidth) / (minWidth / minGridCount)).floor());
+    int gridCount = minGridCount +
+        ((screenWidth < minWidth)
+            ? 0
+            : ((screenWidth - minWidth) / (minWidth / minGridCount)).floor());
 
     //-------------------------------------------------------------------------------------------------------- Widgets [ALL]
 
@@ -330,8 +372,7 @@ class _MyMainPageState extends State<MyMainPage> {
       ),
     );
 
-    Widget buildAmuletCard(
-        String id, String image, amuletName, amuletCategories, texture, info) {
+    Widget buildAmuletCard(AmuletCard amuletCard) {
       return Container(
         margin: EdgeInsets.all(cardInnerEdge),
         child: Card(
@@ -347,8 +388,8 @@ class _MyMainPageState extends State<MyMainPage> {
                     flex: 3,
                     child: Container(
                       margin: EdgeInsets.all(cardInnerEdge),
-                      child: (image != "")
-                          ? Image.network(image)
+                      child: (amuletCard.amulet.images[0] != "")
+                          ? Image.network(amuletCard.amulet.images[0])
                           : Image(
                               image: AssetImage("assets/images/notfound.png")),
                     ),
@@ -359,12 +400,12 @@ class _MyMainPageState extends State<MyMainPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Text(amuletName, style: MyConfig.normalBoldText1),
-                        Text("ประเภท : " + amuletCategories,
+                        Text(amuletCard.amulet.name, style: MyConfig.normalBoldText1),
+                        Text("ประเภท : " + amuletCard.amulet.categories,
                             style: MyConfig.smallText1),
-                        Text("เนื้อพระ : " + texture,
+                        Text("วันที่รับรอง : " + MyConfig.dateText(amuletCard.certificate.confirmDate),
                             style: MyConfig.smallText1),
-                        Text("รายละเอียด : " + info,
+                        Text("รับรองโดย : " + amuletCard.certificate.confirmBy,
                             style: MyConfig.smallText1),
                       ],
                     ),
@@ -374,7 +415,7 @@ class _MyMainPageState extends State<MyMainPage> {
             ),
             onTap: () => {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => MyDetailPage(id)))
+                  MaterialPageRoute(builder: (context) => MyDetailPage(amuletCard.amulet.id)))
             },
           ),
         ),
@@ -382,16 +423,10 @@ class _MyMainPageState extends State<MyMainPage> {
     }
 
     List<Widget> amuletCardBuilder() {
-      List<Amulet> showingList =
-          amuletList.where((element) => element.isActive == true).toList();
+      List<AmuletCard> showingList =
+          amuletList.where((element) => element.isShowing == true).toList();
       return List<Widget>.generate(showingList.length, (index) {
-        return buildAmuletCard(
-            showingList[index].id,
-            showingList[index].image,
-            showingList[index].name,
-            showingList[index].category,
-            showingList[index].texture,
-            showingList[index].info);
+        return buildAmuletCard(showingList[index]);
       });
     }
 
@@ -403,7 +438,8 @@ class _MyMainPageState extends State<MyMainPage> {
 
     Widget emptyAmuletScreen = Container(
       child: Center(
-        child: Text('คุณยังไม่มีพระในครอบครอง', style: MyConfig.normalBoldText4),
+        child:
+            Text('คุณยังไม่มีพระในครอบครอง', style: MyConfig.normalBoldText4),
       ),
     );
 
@@ -416,7 +452,11 @@ class _MyMainPageState extends State<MyMainPage> {
         enablePullDown: true,
         controller: refreshAmuletListController,
         onRefresh: refreshAmuletList,
-        child: (amuletList.isNotEmpty) ? amuletGrid : (_isLoadedAmuletList) ? emptyAmuletScreen : loadingEffect,
+        child: (amuletList.isNotEmpty)
+            ? amuletGrid
+            : (_isAmuletListLoaded)
+                ? emptyAmuletScreen
+                : loadingEffect,
       ),
     );
 
@@ -441,14 +481,18 @@ class _MyMainPageState extends State<MyMainPage> {
                         ? QrImage(
                             data: qrCode,
                             version: QrVersions.auto,
-                            size: min(300.0, 300.0 * (screenWidth/minWidth)),
+                            size: min(300.0, 300.0 * (screenWidth / minWidth)),
                           )
-                        : Image(image: AssetImage('assets/images/notfound.png')),
+                        : Image(
+                            image: AssetImage('assets/images/notfound.png')),
                   )),
               SizedBox(height: screenHeight * 0.005),
               Text('UID', style: MyConfig.largeBoldText4),
               SizedBox(height: screenHeight * 0.01),
-              Center(child: Text(uid, style: MyConfig.largeBoldText1.copyWith(letterSpacing: 2))),
+              Center(
+                  child: Text(uid,
+                      style:
+                          MyConfig.largeBoldText1.copyWith(letterSpacing: 2))),
             ],
           ),
         ),
@@ -488,12 +532,11 @@ class _MyMainPageState extends State<MyMainPage> {
       );
     }
 
-    Widget historyCard(int type, String certificateId, String receiverName,
-        String senderName, int hour, int minute) {
-      String typeName = (type == 1) ? "ส่งมอบ" : "รับมอบ";
-      String hourText = (hour < 10) ? "0" + hour.toString() : hour.toString();
+    Widget historyCard(History history) {
+      String typeName = (history.type == 1) ? "ส่งมอบ" : "รับมอบ";
+      String hourText = (history.timestamp.hour < 10) ? "0" + history.timestamp.hour.toString() : history.timestamp.hour.toString();
       String minuteText =
-          (minute < 10) ? "0" + minute.toString() : minute.toString();
+          (history.timestamp.minute < 10) ? "0" + history.timestamp.minute.toString() : history.timestamp.minute.toString();
       String time = hourText + "." + minuteText;
       return Card(
         color: MyConfig.whiteColor,
@@ -504,13 +547,15 @@ class _MyMainPageState extends State<MyMainPage> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Text(typeName, style: MyConfig.normalBoldText1),
-              Text("รหัสใบรับรอง : " + certificateId,
+              Text("รหัสใบรับรอง : " + history.certificateId,
                   style: MyConfig.smallText1),
-              (type == 1)
-                  ? Text("ผู้รับมอบ : " + receiverName, style: MyConfig.smallText1)
+              (history.type == 1)
+                  ? Text("ผู้รับมอบ : " + history.receiverName,
+                      style: MyConfig.smallText1)
                   : SizedBox(),
-              (type == 2)
-                  ? Text("ผู้ส่งมอบ : " + senderName, style: MyConfig.smallText1)
+              (history.type == 2)
+                  ? Text("ผู้ส่งมอบ : " + history.senderName,
+                      style: MyConfig.smallText1)
                   : SizedBox(),
               Text("เวลา : " + time, style: MyConfig.smallText1),
             ],
@@ -522,7 +567,9 @@ class _MyMainPageState extends State<MyMainPage> {
     List<Widget> buildHistoryCard(int type) {
       List<Widget> resultList = new List<Widget>();
       List<History> showingList = historyList;
-      if (type != 0) showingList = historyList.where((element) => element.type == type).toList();
+      if (type != 0)
+        showingList =
+            historyList.where((element) => element.type == type).toList();
       if (showingList.isNotEmpty) {
         String selectedDate = DateFormat('dd-MM-yyyy')
             .format(new DateTime.now().subtract(Duration(hours: 999999)));
@@ -533,13 +580,14 @@ class _MyMainPageState extends State<MyMainPage> {
             selectedDate = showingDate;
             resultList.add(historyHeader(showingList[i].timestamp));
           }
-          resultList.add(historyCard(
-              showingList[i].type,
-              showingList[i].certificateId,
-              showingList[i].receiverName,
-              showingList[i].senderName,
-              showingList[i].timestamp.hour,
-              showingList[i].timestamp.minute));
+          resultList.add(historyCard(showingList[i]));
+          // resultList.add(historyCard(
+          //     showingList[i].type,
+          //     showingList[i].certificateId,
+          //     showingList[i].receiverName,
+          //     showingList[i].senderName,
+          //     showingList[i].timestamp.hour,
+          //     showingList[i].timestamp.minute));
         }
       }
       return resultList;
@@ -547,11 +595,11 @@ class _MyMainPageState extends State<MyMainPage> {
 
     Widget buildEmptyHistoryScreen(int type) {
       String text = "";
-      if(type == 0) {
+      if (type == 0) {
         text = "คุณยังไม่มีประวัติกิจกรรม";
-      } else if(type == 1) {
+      } else if (type == 1) {
         text = "คุณยังไม่มีประวัติการส่งมอบ";
-      } else if(type == 2) {
+      } else if (type == 2) {
         text = "คุณยังไม่มีประวัติการรับมอบ";
       }
       return Container(
@@ -561,143 +609,127 @@ class _MyMainPageState extends State<MyMainPage> {
       );
     }
 
-      //-------------------------------------------------------------------------------------------------------- Page [2]
+    //-------------------------------------------------------------------------------------------------------- Page [2]
 
-      Widget page_2 = DefaultTabController(
-        length: 3,
-        child: Stack(
-          children: [
-            Scaffold(
-              appBar: myTabBar,
-              body: Container(
-                padding: EdgeInsets.only(top: screenEdge),
-                color: MyConfig.themeColor2,
-                child: TabBarView(
-                  children: [
-                    Container(
-                      height: screenHeight,
-                      color: MyConfig.themeColor2,
-                      child: SmartRefresher(
-                        enablePullDown: true,
-                        controller: refreshHistoryListController,
-                        onRefresh: refreshHistoryList,
-                        child: (historyListIsNotEmpty(0)) ? ListView(
-                          children: buildHistoryCard(0),
-                        ) : (_isLoadedHistoryList) ? buildEmptyHistoryScreen(0) : loadingEffect,
-                      ),
+    Widget page_2 = DefaultTabController(
+      length: 3,
+      child: Stack(
+        children: [
+          Scaffold(
+            appBar: myTabBar,
+            body: Container(
+              padding: EdgeInsets.only(top: screenEdge),
+              color: MyConfig.themeColor2,
+              child: TabBarView(
+                children: [
+                  Container(
+                    height: screenHeight,
+                    color: MyConfig.themeColor2,
+                    child: SmartRefresher(
+                      enablePullDown: true,
+                      controller: refreshHistoryListController,
+                      onRefresh: refreshHistoryList,
+                      child: (historyListIsNotEmpty(0))
+                          ? ListView(
+                              children: buildHistoryCard(0),
+                            )
+                          : (_isHistoryListLoaded)
+                              ? buildEmptyHistoryScreen(0)
+                              : loadingEffect,
                     ),
-                    Container(
-                      height: screenHeight,
-                      color: MyConfig.themeColor2,
-                      child: SmartRefresher(
-                        enablePullDown: true,
-                        controller: refreshHistoryListController,
-                        onRefresh: refreshHistoryList,
-                        child: (historyListIsNotEmpty(1)) ? ListView(
-                          children: buildHistoryCard(1),
-                        ) : (_isLoadedHistoryList) ? buildEmptyHistoryScreen(1) : loadingEffect,
-                      ),
+                  ),
+                  Container(
+                    height: screenHeight,
+                    color: MyConfig.themeColor2,
+                    child: SmartRefresher(
+                      enablePullDown: true,
+                      controller: refreshHistoryListController,
+                      onRefresh: refreshHistoryList,
+                      child: (historyListIsNotEmpty(1))
+                          ? ListView(
+                              children: buildHistoryCard(1),
+                            )
+                          : (_isHistoryListLoaded)
+                              ? buildEmptyHistoryScreen(1)
+                              : loadingEffect,
                     ),
-                    Container(
-                      height: screenHeight,
-                      color: MyConfig.themeColor2,
-                      child: SmartRefresher(
-                        enablePullDown: true,
-                        controller: refreshHistoryListController,
-                        onRefresh: refreshHistoryList,
-                        child: (historyListIsNotEmpty(2)) ? ListView(
-                          children: buildHistoryCard(2),
-                        ) : (_isLoadedHistoryList) ? buildEmptyHistoryScreen(2) : loadingEffect,
-                      ),
+                  ),
+                  Container(
+                    height: screenHeight,
+                    color: MyConfig.themeColor2,
+                    child: SmartRefresher(
+                      enablePullDown: true,
+                      controller: refreshHistoryListController,
+                      onRefresh: refreshHistoryList,
+                      child: (historyListIsNotEmpty(2))
+                          ? ListView(
+                              children: buildHistoryCard(2),
+                            )
+                          : (_isHistoryListLoaded)
+                              ? buildEmptyHistoryScreen(2)
+                              : loadingEffect,
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
-      );
-
-
-      Widget buildPage() {
-        Widget currentPage = SizedBox();
-        setState(() {
-          if (selectedPage == 0) {
-            currentPage = page_0;
-          } else if (selectedPage == 1) {
-            currentPage = page_1;
-          } else if (selectedPage == 2) {
-            currentPage = page_2;
-          }
-        });
-        return currentPage;
-      }
-
-      Widget myBottomNavBar = BottomNavigationBar(
-        backgroundColor: MyConfig.themeColor1,
-        selectedItemColor: MyConfig.whiteColor,
-        unselectedItemColor: MyConfig.whiteColor.withOpacity(0.5),
-        selectedLabelStyle: MyConfig.normalText1,
-        unselectedLabelStyle: MyConfig.normalText1,
-        currentIndex: selectedPage,
-        onTap: onPageChanged,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'หน้าหลัก',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.qr_code),
-            label: 'QR Code',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.history),
-            label: 'ประวัติกิจกรรม',
-          ),
-          // BottomNavigationBarItem(
-          //   icon: Icon(Icons.settings),
-          //   label: 'ตั้งค่า',
-          // ),
         ],
-      );
+      ),
+    );
 
-      return WillPopScope(
-        onWillPop: () async {
-          return false;
-        },
-        child: Scaffold(
-          appBar: myAppBar,
-          backgroundColor: MyConfig.themeColor1,
-          body: buildPage(),
-          bottomNavigationBar: myBottomNavBar,
-        ),
-      );
+    Widget buildPage() {
+      Widget currentPage = SizedBox();
+      setState(() {
+        if (selectedPage == 0) {
+          currentPage = page_0;
+        } else if (selectedPage == 1) {
+          currentPage = page_1;
+        } else if (selectedPage == 2) {
+          currentPage = page_2;
+        }
+      });
+      return currentPage;
     }
+
+    Widget myBottomNavBar = BottomNavigationBar(
+      backgroundColor: MyConfig.themeColor1,
+      selectedItemColor: MyConfig.whiteColor,
+      unselectedItemColor: MyConfig.whiteColor.withOpacity(0.5),
+      selectedLabelStyle: MyConfig.normalText1,
+      unselectedLabelStyle: MyConfig.normalText1,
+      currentIndex: selectedPage,
+      onTap: onPageChanged,
+      items: const <BottomNavigationBarItem>[
+        BottomNavigationBarItem(
+          icon: Icon(Icons.home),
+          label: 'หน้าหลัก',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.qr_code),
+          label: 'QR Code',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.history),
+          label: 'ประวัติกิจกรรม',
+        ),
+        // BottomNavigationBarItem(
+        //   icon: Icon(Icons.settings),
+        //   label: 'ตั้งค่า',
+        // ),
+      ],
+    );
+
+    return WillPopScope(
+      onWillPop: () async {
+        return false;
+      },
+      child: Scaffold(
+        appBar: myAppBar,
+        backgroundColor: MyConfig.themeColor1,
+        body: buildPage(),
+        bottomNavigationBar: myBottomNavBar,
+      ),
+    );
   }
-
-//-------------------------------------------------------------------------------------------------------- Class
-
-class Amulet {
-  String id;
-  String image;
-  String name;
-  String category;
-  String texture;
-  String info;
-  bool isActive = true;
-
-  Amulet(
-      this.id, this.image, this.name, this.category, this.texture, this.info);
-}
-
-class History {
-  int type;
-  String certificateId;
-  String receiverId;
-  String receiverName;
-  String senderId;
-  String senderName;
-  DateTime timestamp;
-
-  History(this.type, this.certificateId, this.receiverId, this.receiverName, this.senderId, this.senderName, this.timestamp);
 }

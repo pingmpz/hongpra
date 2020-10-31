@@ -135,8 +135,4 @@ class MyConfig {
   /- [Confirm] On confirm add animation loading ****
   /- [Confirm] Query Optimize ***
   /- [Detail Page] Slider Fullscreen Images
-  /- [Main Page] Search by confirmBy
-
-  / AmuletList in Main
-  - Name / cat / confirmDate / confirmBy
  */

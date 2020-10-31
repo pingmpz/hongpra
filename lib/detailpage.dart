@@ -9,6 +9,9 @@ import 'package:carousel_pro/carousel_pro.dart';
 import 'package:hongpra/transferpage.dart';
 import 'package:photo_view/photo_view.dart';
 
+import 'Data/Amulet.dart';
+import 'Data/Certificate.dart';
+
 class MyDetailPage extends StatefulWidget {
   final String id;
   const MyDetailPage(this.id);
@@ -305,7 +308,7 @@ class _MyDetailPageState extends State<MyDetailPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text("พิมพ์พระ", style: MyConfig.smallBoldText1),
-                  Text(amulet.category, style: MyConfig.smallText1),
+                  Text(amulet.categories, style: MyConfig.smallText1),
                 ],
               ),
               Row(
@@ -426,38 +429,4 @@ class _MyDetailPageState extends State<MyDetailPage> {
       ],
     );
   }
-}
-
-//-------------------------------------------------------------------------------------------------------- Class
-
-class Amulet {
-  String id;
-  List<String> images;
-  String name;
-  String category;
-  String texture;
-  String info;
-
-  Amulet(
-    this.id,
-    this.images,
-    this.name,
-    this.category,
-    this.texture,
-    this.info,
-  );
-}
-
-class Certificate {
-  String id;
-  String image;
-  String confirmBy;
-  DateTime confirmDate;
-
-  Certificate(
-    this.id,
-    this.image,
-    this.confirmBy,
-    this.confirmDate,
-  );
 }
