@@ -122,3 +122,15 @@ class MyConfig {
     return result;
   }
 }
+
+/*
+  PROBLEMS
+  - [Detail Page] ImageList -> Not correct sorting.
+  - [Main Page : History] Time of History Card -> Emulator not correct, but on real phone is correct.
+  - [Overall] Card Text Overflow
+  - [Overall] Keyboard Overflow
+  UNFINISHED
+  - [Main Page : History] Loading History Animation
+  - [Detail Page] Slider Fullscreen Images
+  - [Confirm] On confirm add animation loading
+ */
