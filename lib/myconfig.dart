@@ -115,23 +115,28 @@ class MyConfig {
   static String dateText(DateTime dateTime) {
     if (dateTime == null) return "";
     int day = dateTime.day;
-    int month = dateTime.month - 1;
+    int month = dateTime.month;
     int year = dateTime.year + 543;
     String result =
-        day.toString() + " " + monthName[month] + " " + year.toString();
+        day.toString() + " " + monthName[month - 1] + " " + year.toString();
     return result;
   }
 }
 
 /*
   PROBLEMS
-  - [Detail Page] ImageList -> Not correct sorting. **
+  /- [Main Page : History] History time sorting problem ****
+  /- [Detail Page] ImageList -> Not correct sorting. **
   - [Main Page : History] Time of History Card -> Emulator not correct, but on real phone is correct. *
   - [Overall] Card Text Overflow ***
   - [Overall] Keyboard Overflow ***
-  - [Main Page : History] History time sorting problem ***
   - [Main Page : History] Change tab while refreshing list coz some error (not fatal) *
   UNFINISHED
-  - [Detail Page] Slider Fullscreen Images
-  - [Confirm] On confirm add animation loading
+  /- [Confirm] On confirm add animation loading ****
+  /- [Confirm] Query Optimize ***
+  /- [Detail Page] Slider Fullscreen Images
+  /- [Main Page] Search by confirmBy
+
+  / AmuletList in Main
+  - Name / cat / confirmDate / confirmBy
  */

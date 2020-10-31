@@ -251,20 +251,18 @@ class _MyMainPageState extends State<MyMainPage> {
     Widget myAppBar = AppBar(
       backgroundColor: MyConfig.themeColor1,
       elevation: 0.0,
-      leading: IconButton(
-        icon: Icon(Icons.account_circle),
-        color: MyConfig.whiteColor,
-        onPressed: () {
-        },
-      ),
+      automaticallyImplyLeading: false,
       title: Text('ห้องพระ', style: MyConfig.appBarTitleText),
-      centerTitle: true,
       actions: [
         IconButton(
-          icon: Icon(Icons.notifications),
-          onPressed: () => signOut(),
+          icon: const Icon(Icons.add_alert),
+          tooltip: 'Show Snackbar',
+          onPressed: () {
+            signOut();
+          },
         ),
       ],
+      centerTitle: true,
     );
 
     Widget loadingEffect = Container(
@@ -656,6 +654,10 @@ class _MyMainPageState extends State<MyMainPage> {
             icon: Icon(Icons.history),
             label: 'ประวัติกิจกรรม',
           ),
+          // BottomNavigationBarItem(
+          //   icon: Icon(Icons.settings),
+          //   label: 'ตั้งค่า',
+          // ),
         ],
       );
 

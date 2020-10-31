@@ -304,7 +304,7 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
 
     return Scaffold(
       backgroundColor: MyConfig.themeColor1,
-      //resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: false,
       appBar: myAppBar,
       body: Center(
         child: Container(
