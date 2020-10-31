@@ -129,6 +129,7 @@ class MyConfig {
   - [Main Page : History] Time of History Card -> Emulator not correct, but on real phone is correct.
   - [Overall] Card Text Overflow
   - [Overall] Keyboard Overflow
+  - [Main Page : History] History time sorting problem
   UNFINISHED
   - [Main Page : History] Loading History Animation
   - [Detail Page] Slider Fullscreen Images
