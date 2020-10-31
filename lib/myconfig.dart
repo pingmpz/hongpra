@@ -125,13 +125,13 @@ class MyConfig {
 
 /*
   PROBLEMS
-  - [Detail Page] ImageList -> Not correct sorting.
-  - [Main Page : History] Time of History Card -> Emulator not correct, but on real phone is correct.
-  - [Overall] Card Text Overflow
-  - [Overall] Keyboard Overflow
-  - [Main Page : History] History time sorting problem
+  - [Detail Page] ImageList -> Not correct sorting. **
+  - [Main Page : History] Time of History Card -> Emulator not correct, but on real phone is correct. *
+  - [Overall] Card Text Overflow ***
+  - [Overall] Keyboard Overflow ***
+  - [Main Page : History] History time sorting problem ***
+  - [Main Page : History] Change tab while refreshing list coz some error (not fatal) *
   UNFINISHED
-  - [Main Page : History] Loading History Animation
   - [Detail Page] Slider Fullscreen Images
   - [Confirm] On confirm add animation loading
  */

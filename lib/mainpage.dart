@@ -44,6 +44,7 @@ class _MyMainPageState extends State<MyMainPage> {
 
   //-- Items State
   bool _isLoadedAmuletList = false;
+  bool _isLoadedHistoryList = false;
 
   //-------------------------------------------------------------------------------------------------------- Functions
 
@@ -57,9 +58,9 @@ class _MyMainPageState extends State<MyMainPage> {
   void dispose() {
     super.dispose();
     searchController.dispose();
-    //refreshAmuletListController.dispose();
-    //refreshHistoryListController.dispose();
-    //tabController.dispose();
+    refreshAmuletListController.dispose();
+    refreshHistoryListController.dispose();
+    // tabController.dispose();
   }
 
   void getCurrentUser() async {
@@ -93,6 +94,8 @@ class _MyMainPageState extends State<MyMainPage> {
           .collection("amulet")
           .get();
 
+    if(result.size == 0) setState(() => _isLoadedAmuletList = true);
+
     result.docs.forEach((values) {
       setState(() {
         amuletList.add(
@@ -104,14 +107,15 @@ class _MyMainPageState extends State<MyMainPage> {
               (values.data()['texture'] != null) ? values.data()['texture'] : "",
               (values.data()['information'] != null) ? values.data()['information'] : ""),
         );
+        _isLoadedAmuletList = true;
       });
     });
-    setState(() => _isLoadedAmuletList = true);
   }
 
   void generateHistoryList() async {
     setState(() {
       historyList = new List<History>();
+      _isLoadedHistoryList = false;
     });
 
     var result = await _firestoreInstance
@@ -120,6 +124,8 @@ class _MyMainPageState extends State<MyMainPage> {
           .collection("history")
           .orderBy("date", descending: true)
           .get();
+
+    if(result.size == 0) setState(() => _isLoadedHistoryList = true);
 
     result.docs.forEach((values) async {
       String receiverName = "";
@@ -146,6 +152,7 @@ class _MyMainPageState extends State<MyMainPage> {
           senderName,
           (values.data()['date'] != null) ? values.data()['date'].toDate() : null,
         ));
+        _isLoadedHistoryList = true;
       });
     });
   }
@@ -560,56 +567,59 @@ class _MyMainPageState extends State<MyMainPage> {
 
       Widget page_2 = DefaultTabController(
         length: 3,
-        child: Scaffold(
-          appBar: myTabBar,
-          body: Container(
-            padding: EdgeInsets.only(top: screenEdge),
-            color: MyConfig.themeColor2,
-            child: TabBarView(
-              children: [
-                Container(
-                  height: screenHeight,
-                  color: MyConfig.themeColor2,
-                  child: SmartRefresher(
-                    enablePullDown: true,
-                    controller: refreshHistoryListController,
-                    onRefresh: refreshHistoryList,
-                    child: (historyListIsNotEmpty(0)) ? ListView(
-                      children: buildHistoryCard(0),
-                    ) : buildEmptyHistoryScreen(0),
-                  ),
+        child: Stack(
+          children: [
+            Scaffold(
+              appBar: myTabBar,
+              body: Container(
+                padding: EdgeInsets.only(top: screenEdge),
+                color: MyConfig.themeColor2,
+                child: TabBarView(
+                  children: [
+                    Container(
+                      height: screenHeight,
+                      color: MyConfig.themeColor2,
+                      child: SmartRefresher(
+                        enablePullDown: true,
+                        controller: refreshHistoryListController,
+                        onRefresh: refreshHistoryList,
+                        child: (historyListIsNotEmpty(0)) ? ListView(
+                          children: buildHistoryCard(0),
+                        ) : (_isLoadedHistoryList) ? buildEmptyHistoryScreen(0) : loadingEffect,
+                      ),
+                    ),
+                    Container(
+                      height: screenHeight,
+                      color: MyConfig.themeColor2,
+                      child: SmartRefresher(
+                        enablePullDown: true,
+                        controller: refreshHistoryListController,
+                        onRefresh: refreshHistoryList,
+                        child: (historyListIsNotEmpty(1)) ? ListView(
+                          children: buildHistoryCard(1),
+                        ) : (_isLoadedHistoryList) ? buildEmptyHistoryScreen(1) : loadingEffect,
+                      ),
+                    ),
+                    Container(
+                      height: screenHeight,
+                      color: MyConfig.themeColor2,
+                      child: SmartRefresher(
+                        enablePullDown: true,
+                        controller: refreshHistoryListController,
+                        onRefresh: refreshHistoryList,
+                        child: (historyListIsNotEmpty(2)) ? ListView(
+                          children: buildHistoryCard(2),
+                        ) : (_isLoadedHistoryList) ? buildEmptyHistoryScreen(2) : loadingEffect,
+                      ),
+                    ),
+                  ],
                 ),
-                Container(
-                  height: screenHeight,
-                  color: MyConfig.themeColor2,
-                  child: SmartRefresher(
-                    enablePullDown: true,
-                    controller: refreshHistoryListController,
-                    onRefresh: refreshHistoryList,
-                    child: (historyListIsNotEmpty(1)) ? ListView(
-                      children: buildHistoryCard(1),
-                    ) : buildEmptyHistoryScreen(1),
-                  ),
-                ),
-                Container(
-                  height: screenHeight,
-                  color: MyConfig.themeColor2,
-                  child: SmartRefresher(
-                    enablePullDown: true,
-                    controller: refreshHistoryListController,
-                    onRefresh: refreshHistoryList,
-                    child: (historyListIsNotEmpty(2)) ? ListView(
-                      children: buildHistoryCard(2),
-                    ) : buildEmptyHistoryScreen(2),
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
+          ],
         ),
       );
 
-      //--------------------------------------------
 
       Widget buildPage() {
         Widget currentPage = SizedBox();
