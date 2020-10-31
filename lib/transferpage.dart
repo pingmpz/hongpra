@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:hongpra/comfirmpage.dart';
 import 'package:hongpra/myconfig.dart';
@@ -33,8 +34,8 @@ class _MyTransferPageState extends State<MyTransferPage> {
     approve(2, scanner);
   }
 
-  void prepare(){
-    if(idController.text.isEmpty){
+  void prepare() {
+    if (idController.text.isEmpty) {
       buildAlertDialog('เกิดข้อผิดพลาด', 'โปรดระบุ UID ของผู้รับ');
     } else {
       approve(1, idController.text);
@@ -66,7 +67,10 @@ class _MyTransferPageState extends State<MyTransferPage> {
     if (userId == FirebaseAuth.instance.currentUser.uid) {
       buildAlertDialog('เกิดข้อผิดพลาด', 'ไม่สามารถส่งมอบให้ตัวเองได้');
     } else if (userId != "" && userId != null) {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => MyConfirmPage(userId, widget.amuletId)));
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => MyConfirmPage(userId, widget.amuletId)));
     } else {
       buildAlertDialog('เกิดข้อผิดพลาด', 'ไม่พบบัญชีผู้ใช้งาน');
     }
@@ -170,6 +174,12 @@ class _MyTransferPageState extends State<MyTransferPage> {
 
     Widget idTextField = TextField(
       controller: idController,
+      maxLength: 12,
+      keyboardType: TextInputType.number,
+      inputFormatters: <TextInputFormatter>[
+        FilteringTextInputFormatter.allow(RegExp(r'[0-9]'))
+      ],
+      textAlign: TextAlign.center,
       obscureText: false,
       style: MyConfig.normalText1,
       decoration: InputDecoration(

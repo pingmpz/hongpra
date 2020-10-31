@@ -204,6 +204,13 @@ class _MyMainPageState extends State<MyMainPage> {
     });
   }
 
+  bool historyListIsNotEmpty(int type) {
+    List<History> showingList = historyList;
+    if(type != 0) showingList = historyList.where((element) => element.type == type).toList();
+    if(showingList.isNotEmpty) return true;
+    return false;
+  }
+
   void onPageChanged(int index) {
     setState(() {
       selectedPage = index;
@@ -251,6 +258,15 @@ class _MyMainPageState extends State<MyMainPage> {
           onPressed: () => signOut(),
         ),
       ],
+    );
+
+    Widget loadingEffect = Container(
+      child: Center(
+        child: Loading(
+            indicator: BallPulseIndicator(),
+            size: 50.0,
+            color: MyConfig.themeColor1),
+      ),
     );
 
     //-------------------------------------------------------------------------------------------------------- Widgets [PAGE : 0]
@@ -380,15 +396,6 @@ class _MyMainPageState extends State<MyMainPage> {
       children: amuletCardBuilder(),
     );
 
-    Widget loadingEffect = Container(
-      child: Center(
-        child: Loading(
-            indicator: BallPulseIndicator(),
-            size: 50.0,
-            color: MyConfig.themeColor1),
-      ),
-    );
-
     Widget emptyAmuletScreen = Container(
       child: Center(
         child: Text('คุณยังไม่มีพระในครอบครอง', style: MyConfig.normalBoldText4),
@@ -436,14 +443,14 @@ class _MyMainPageState extends State<MyMainPage> {
               SizedBox(height: screenHeight * 0.005),
               Text('UID', style: MyConfig.largeBoldText4),
               SizedBox(height: screenHeight * 0.01),
-              Center(child: Text(uid, style: MyConfig.largeBoldText1)),
+              Center(child: Text(uid, style: MyConfig.largeBoldText1.copyWith(letterSpacing: 2))),
             ],
           ),
         ),
       ),
     );
 
-    //-------------------------------------------------------------------------------------------------------- Widgets [PAGE : 1]
+    //-------------------------------------------------------------------------------------------------------- Widgets [PAGE : 2]
 
     Widget myTabBar = AppBar(
       elevation: 0.0,
@@ -533,112 +540,128 @@ class _MyMainPageState extends State<MyMainPage> {
       return resultList;
     }
 
-    //-------------------------------------------------------------------------------------------------------- Page [2]
-
-    Widget page_2 = DefaultTabController(
-      length: 3,
-      child: Scaffold(
-        appBar: myTabBar,
-        body: Container(
-          padding: EdgeInsets.only(top: screenEdge),
-          color: MyConfig.themeColor2,
-          child: TabBarView(
-            children: [
-              Container(
-                height: screenHeight,
-                color: MyConfig.themeColor2,
-                child: SmartRefresher(
-                  enablePullDown: true,
-                  controller: refreshHistoryListController,
-                  onRefresh: refreshHistoryList,
-                  child: ListView(
-                    children: buildHistoryCard(0),
-                  ),
-                ),
-              ),
-              Container(
-                height: screenHeight,
-                color: MyConfig.themeColor2,
-                child: SmartRefresher(
-                  enablePullDown: true,
-                  controller: refreshHistoryListController,
-                  onRefresh: refreshHistoryList,
-                  child: ListView(
-                    children: buildHistoryCard(1),
-                  ),
-                ),
-              ),
-              Container(
-                height: screenHeight,
-                color: MyConfig.themeColor2,
-                child: SmartRefresher(
-                  enablePullDown: true,
-                  controller: refreshHistoryListController,
-                  onRefresh: refreshHistoryList,
-                  child: ListView(
-                    children: buildHistoryCard(2),
-                  ),
-                ),
-              ),
-            ],
-          ),
+    Widget buildEmptyHistoryScreen(int type) {
+      String text = "";
+      if(type == 0) {
+        text = "คุณยังไม่มีประวัติกิจกรรม";
+      } else if(type == 1) {
+        text = "คุณยังไม่มีประวัติการส่งมอบ";
+      } else if(type == 2) {
+        text = "คุณยังไม่มีประวัติการรับมอบ";
+      }
+      return Container(
+        child: Center(
+          child: Text(text, style: MyConfig.normalBoldText4),
         ),
-      ),
-    );
-
-    //--------------------------------------------
-
-    Widget buildPage() {
-      Widget currentPage = SizedBox();
-      setState(() {
-        if (selectedPage == 0) {
-          currentPage = page_0;
-        } else if (selectedPage == 1) {
-          currentPage = page_1;
-        } else if (selectedPage == 2) {
-          currentPage = page_2;
-        }
-      });
-      return currentPage;
+      );
     }
 
-    Widget myBottomNavBar = BottomNavigationBar(
-      backgroundColor: MyConfig.themeColor1,
-      selectedItemColor: MyConfig.whiteColor,
-      unselectedItemColor: MyConfig.whiteColor.withOpacity(0.5),
-      selectedLabelStyle: MyConfig.normalText1,
-      unselectedLabelStyle: MyConfig.normalText1,
-      currentIndex: selectedPage,
-      onTap: onPageChanged,
-      items: const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(
-          icon: Icon(Icons.home),
-          label: 'หน้าหลัก',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.qr_code),
-          label: 'QR Code',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.history),
-          label: 'ประวัติกิจกรรม',
-        ),
-      ],
-    );
+      //-------------------------------------------------------------------------------------------------------- Page [2]
 
-    return WillPopScope(
-      onWillPop: () async {
-        return false;
-      },
-      child: Scaffold(
-        appBar: myAppBar,
+      Widget page_2 = DefaultTabController(
+        length: 3,
+        child: Scaffold(
+          appBar: myTabBar,
+          body: Container(
+            padding: EdgeInsets.only(top: screenEdge),
+            color: MyConfig.themeColor2,
+            child: TabBarView(
+              children: [
+                Container(
+                  height: screenHeight,
+                  color: MyConfig.themeColor2,
+                  child: SmartRefresher(
+                    enablePullDown: true,
+                    controller: refreshHistoryListController,
+                    onRefresh: refreshHistoryList,
+                    child: (historyListIsNotEmpty(0)) ? ListView(
+                      children: buildHistoryCard(0),
+                    ) : buildEmptyHistoryScreen(0),
+                  ),
+                ),
+                Container(
+                  height: screenHeight,
+                  color: MyConfig.themeColor2,
+                  child: SmartRefresher(
+                    enablePullDown: true,
+                    controller: refreshHistoryListController,
+                    onRefresh: refreshHistoryList,
+                    child: (historyListIsNotEmpty(1)) ? ListView(
+                      children: buildHistoryCard(1),
+                    ) : buildEmptyHistoryScreen(1),
+                  ),
+                ),
+                Container(
+                  height: screenHeight,
+                  color: MyConfig.themeColor2,
+                  child: SmartRefresher(
+                    enablePullDown: true,
+                    controller: refreshHistoryListController,
+                    onRefresh: refreshHistoryList,
+                    child: (historyListIsNotEmpty(2)) ? ListView(
+                      children: buildHistoryCard(2),
+                    ) : buildEmptyHistoryScreen(2),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+
+      //--------------------------------------------
+
+      Widget buildPage() {
+        Widget currentPage = SizedBox();
+        setState(() {
+          if (selectedPage == 0) {
+            currentPage = page_0;
+          } else if (selectedPage == 1) {
+            currentPage = page_1;
+          } else if (selectedPage == 2) {
+            currentPage = page_2;
+          }
+        });
+        return currentPage;
+      }
+
+      Widget myBottomNavBar = BottomNavigationBar(
         backgroundColor: MyConfig.themeColor1,
-        body: buildPage(),
-        bottomNavigationBar: myBottomNavBar,
-      ),
-    );
+        selectedItemColor: MyConfig.whiteColor,
+        unselectedItemColor: MyConfig.whiteColor.withOpacity(0.5),
+        selectedLabelStyle: MyConfig.normalText1,
+        unselectedLabelStyle: MyConfig.normalText1,
+        currentIndex: selectedPage,
+        onTap: onPageChanged,
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'หน้าหลัก',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.qr_code),
+            label: 'QR Code',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.history),
+            label: 'ประวัติกิจกรรม',
+          ),
+        ],
+      );
+
+      return WillPopScope(
+        onWillPop: () async {
+          return false;
+        },
+        child: Scaffold(
+          appBar: myAppBar,
+          backgroundColor: MyConfig.themeColor1,
+          body: buildPage(),
+          bottomNavigationBar: myBottomNavBar,
+        ),
+      );
+    }
   }
-}
 
 //-------------------------------------------------------------------------------------------------------- Class
 
