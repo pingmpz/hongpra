@@ -24,8 +24,6 @@ class MyDetailPage extends StatefulWidget {
 class _MyDetailPageState extends State<MyDetailPage> {
   //-- Fullscreen
   bool _isImageShown = false;
-  bool _isArrowLeftShown = false;
-  bool _isArrowRightShown = false;
   int currentIndex;
   List<String> currentPaths;
 
@@ -107,8 +105,6 @@ class _MyDetailPageState extends State<MyDetailPage> {
       currentPaths = paths;
       currentIndex = index;
       _isImageShown = true;
-      _isArrowLeftShown = (index == 0) ? false : true;
-      _isArrowRightShown = (index == paths.length - 1) ? false : true;
     });
   }
 
