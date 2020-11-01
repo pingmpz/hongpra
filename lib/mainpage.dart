@@ -46,8 +46,7 @@ class _MyMainPageState extends State<MyMainPage> {
   //-- Items
   List<AmuletCard> amuletList = new List<AmuletCard>();
   List<History> historyList = new List<History>();
-  String uid = "";
-  String qrCode = "";
+  String uniqueId = "";
 
   //-- Items State
   bool _isAmuletListLoaded = false;
@@ -77,7 +76,7 @@ class _MyMainPageState extends State<MyMainPage> {
         print("# Login User ID : " + loginUser.uid);
         generateAmuletList();
         generateHistoryList();
-        getUID();
+        getUniqueId();
       } else {
         Future(() {
           Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => MyLoginPage()), ModalRoute.withName('/'));
@@ -191,13 +190,11 @@ class _MyMainPageState extends State<MyMainPage> {
     });
   }
 
-  void getUID() async {
+  void getUniqueId() async {
     historyList = new List<History>();
 
-    var result =
-        await _firestoreInstance.collection("users").doc(loginUser.uid).get();
-    uid = (result.data()['uniqueId'] != null) ? result.data()['uniqueId'] : "";
-    qrCode = (result.data()['userId'] != null) ? result.data()['userId'] : "";
+    var result = await _firestoreInstance.collection("users").doc(loginUser.uid).get();
+    uniqueId = (result.data()['uniqueId'] != null) ? result.data()['uniqueId'] : "";
   }
 
   void signOut() {
@@ -477,9 +474,9 @@ class _MyMainPageState extends State<MyMainPage> {
               Container(
                   height: desireHeight / 2,
                   child: Center(
-                    child: (qrCode != "")
+                    child: (loginUser.uid != "")
                         ? QrImage(
-                            data: qrCode,
+                            data: loginUser.uid,
                             version: QrVersions.auto,
                             size: min(300.0, 300.0 * (screenWidth / minWidth)),
                           )
@@ -490,7 +487,7 @@ class _MyMainPageState extends State<MyMainPage> {
               Text('UID', style: MyConfig.largeBoldText4),
               SizedBox(height: screenHeight * 0.01),
               Center(
-                  child: Text(uid,
+                  child: Text(uniqueId,
                       style:
                           MyConfig.largeBoldText1.copyWith(letterSpacing: 2))),
             ],
