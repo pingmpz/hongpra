@@ -1,8 +1,7 @@
-import 'dart:collection';
 import 'dart:math';
 
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hongpra/myconfig.dart';
@@ -30,7 +29,7 @@ class _MyDetailPageState extends State<MyDetailPage> {
 
   //-- Firebase
   final loginUser = FirebaseAuth.instance.currentUser;
-  final _firestoreInstance = FirebaseFirestore.instance;
+  //final _firestoreInstance = FirebaseFirestore.instance;
 
   //-- Item
   Amulet amulet;
