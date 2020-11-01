@@ -441,7 +441,7 @@ class _MyMainPageState extends State<MyMainPage> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => MyDetailPage(amuletCard.amulet.id)))
+                      builder: (context) => MyDetailPage(amuletCard.amulet, amuletCard.certificate)))
             },
           ),
         ),

@@ -14,8 +14,9 @@ import 'Data/Amulet.dart';
 import 'Data/Certificate.dart';
 
 class MyDetailPage extends StatefulWidget {
-  final String id;
-  const MyDetailPage(this.id);
+  final Amulet amuletF;
+  final Certificate certificateF;
+  const MyDetailPage(this.amuletF, this.certificateF);
 
   @override
   _MyDetailPageState createState() => _MyDetailPageState();
@@ -32,64 +33,21 @@ class _MyDetailPageState extends State<MyDetailPage> {
   final _firestoreInstance = FirebaseFirestore.instance;
 
   //-- Item
-  Amulet amulet = new Amulet("", [], "", "", "", "");
-  Certificate certificate = new Certificate("", "", "", null);
+  Amulet amulet;
+  Certificate certificate;
 
   //-------------------------------------------------------------------------------------------------------- Functions
 
   @override
   void initState() {
     super.initState();
-    getAmulet();
-  }
-
-  void getAmulet() async {
-    String id = widget.id;
-
-    var result = await _firestoreInstance
-        .collection("users")
-        .doc(loginUser.uid)
-        .collection("amulet")
-        .doc(id)
-        .get();
-
-    setState(() {
-      amulet = new Amulet(
-        (result.data()['amuletId'] != null) ? result.data()['amuletId'] : "",
-        (result.data()['amuletImageList'] != null)
-            ? HashMap<String, dynamic>.from(result.data()['amuletImageList'])
-                .values
-                .toList()
-                .cast<String>()
-            : [],
-        (result.data()['name'] != null) ? result.data()['name'] : "",
-        (result.data()['categories'] != null)
-            ? result.data()['categories']
-            : "",
-        (result.data()['texture'] != null) ? result.data()['texture'] : "",
-        (result.data()['information'] != null)
-            ? result.data()['information']
-            : "",
-      );
-
-      certificate = new Certificate(
-        (result.data()['certificateId'] != null)
-            ? result.data()['certificateId']
-            : "",
-        (result.data()['certificateImage'] != null)
-            ? result.data()['certificateImage']
-            : "",
-        (result.data()['confirmBy'] != null) ? result.data()['confirmBy'] : "",
-        (result.data()['confirmDate'] != null)
-            ? result.data()['confirmDate'].toDate()
-            : null,
-      );
-    });
+    amulet = widget.amuletF;
+    certificate = widget.certificateF;
   }
 
   void transfer() {
     Navigator.push(context,
-        MaterialPageRoute(builder: (context) => MyTransferPage(widget.id)));
+        MaterialPageRoute(builder: (context) => MyTransferPage(widget.amuletF.id)));
   }
 
   void back() {
