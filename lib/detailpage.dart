@@ -29,7 +29,7 @@ class _MyDetailPageState extends State<MyDetailPage> {
   List<String> currentPaths;
 
   //-- Firebase
-  final checkUser = FirebaseAuth.instance.currentUser.uid;
+  final loginUser = FirebaseAuth.instance.currentUser;
   final _firestoreInstance = FirebaseFirestore.instance;
 
   //-- Item
@@ -49,7 +49,7 @@ class _MyDetailPageState extends State<MyDetailPage> {
 
     var result = await _firestoreInstance
         .collection("users")
-        .doc(checkUser)
+        .doc(loginUser.uid)
         .collection("amulet")
         .doc(id)
         .get();

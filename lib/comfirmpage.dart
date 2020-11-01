@@ -23,8 +23,8 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
   String certificateId = "";
 
   // FireStore and FireAuth instance
+  final loginUser = FirebaseAuth.instance.currentUser;
   final _firestoreInstance = FirebaseFirestore.instance;
-  final checkUser = FirebaseAuth.instance.currentUser.uid;
 
   //-------------------------------------------------------------------------------------------------------- Functions
 
@@ -38,7 +38,7 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
 
   void getMyInfo() async {
     senderName = "";
-    var result = await _firestoreInstance.collection("users").where("userId", isEqualTo: checkUser).get();
+    var result = await _firestoreInstance.collection("users").where("userId", isEqualTo: loginUser.uid).get();
     result.docs.forEach((res) {
       setState(() {
         String firstName = (res.data()['firstName'] != null) ? res.data()['firstName'] : "";
@@ -62,7 +62,7 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
 
   void getAmuletInfo() async {
     certificateId = "";
-    var result = await _firestoreInstance.collection("users").doc(checkUser).collection("amulet").where("amuletId", isEqualTo: widget.amuletId).get();
+    var result = await _firestoreInstance.collection("users").doc(loginUser.uid).collection("amulet").where("amuletId", isEqualTo: widget.amuletId).get();
     result.docs.forEach((res) {
       setState(() {
         certificateId = (res.data()['certificateId'] != null) ? res.data()['certificateId'] : "";
@@ -73,7 +73,7 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
   void confirm() async {
     //-- Get Receiever and Sender Unique ID
     String recieverUserId = widget.receiverId;
-    String senderUserId = checkUser;
+    String senderUserId = loginUser.uid;
 
     //-- Get amulet data
     String amuletId = "";
@@ -91,7 +91,7 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
     //-- Create History of Sender
     await _firestoreInstance
         .collection("users")
-        .doc(checkUser)
+        .doc(loginUser.uid)
         .collection("history")
         .add({
       "certificateId": certificateId,
@@ -116,7 +116,7 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
 
     var resultAmulet = await _firestoreInstance
         .collection("users")
-        .doc(checkUser)
+        .doc(loginUser.uid)
         .collection("amulet")
         .doc(widget.amuletId)
         .get();
@@ -158,7 +158,7 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
     //-- Remove Amulet of Sender
     await _firestoreInstance
         .collection("users")
-        .doc(checkUser)
+        .doc(loginUser.uid)
         .collection("amulet")
         .doc(widget.amuletId)
         .delete()

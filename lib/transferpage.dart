@@ -21,6 +21,7 @@ class _MyTransferPageState extends State<MyTransferPage> {
   TextEditingController idController = TextEditingController();
 
   //-- Firebase
+  final loginUser = FirebaseAuth.instance.currentUser;
   final _firestoreInstance = FirebaseFirestore.instance;
 
   //-- Item
