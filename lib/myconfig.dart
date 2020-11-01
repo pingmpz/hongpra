@@ -69,6 +69,12 @@ class MyConfig {
       fontSize: largeSize,
       color: blackColor,
       fontWeight: bold);
+  static TextStyle largeBoldText3 = TextStyle(
+      fontFamily: fontFamily1,
+      fontSize: largeSize,
+      color: redColor,
+      fontWeight: bold
+  );
   static TextStyle largeBoldText4 = TextStyle(
       fontFamily: fontFamily1,
       fontSize: largeSize,

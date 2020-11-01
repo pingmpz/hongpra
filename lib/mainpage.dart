@@ -707,29 +707,49 @@ class _MyMainPageState extends State<MyMainPage> {
       ),
     );
 
+    //-------------------------------------------------------------------------------------------------------- Page [3]
+
+    Widget page_3 = Container(
+      color: MyConfig.themeColor2,
+      height: screenHeight,
+      child: Container(
+        margin: EdgeInsets.all(screenEdge),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+            ],
+          ),
+        ),
+      ),
+    );
+
+    //-------------------------------------------------------------------------------------------------------- Page [ALL]
+
     Widget buildPage() {
       Widget currentPage = SizedBox();
       setState(() {
-        if (selectedPage == 0) {
-          currentPage = page_0;
-        } else if (selectedPage == 1) {
-          currentPage = page_1;
-        } else if (selectedPage == 2) {
-          currentPage = page_2;
+        switch(selectedPage){
+          case 0: currentPage = page_0; break;
+          case 1: currentPage = page_1; break;
+          case 2: currentPage = page_2; break;
+          case 3: currentPage = page_3; break;
         }
       });
       return currentPage;
     }
 
     Widget myBottomNavBar = BottomNavigationBar(
+      type: BottomNavigationBarType.fixed,
       backgroundColor: MyConfig.themeColor1,
       selectedItemColor: MyConfig.whiteColor,
-      unselectedItemColor: MyConfig.whiteColor.withOpacity(0.5),
+      unselectedItemColor: MyConfig.whiteColor.withOpacity(0.3),
       selectedLabelStyle: MyConfig.normalText1,
       unselectedLabelStyle: MyConfig.normalText1,
       currentIndex: selectedPage,
       onTap: onPageChanged,
-      items: const <BottomNavigationBarItem>[
+      items: <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           icon: Icon(Icons.home),
           label: 'หน้าหลัก',
@@ -742,10 +762,10 @@ class _MyMainPageState extends State<MyMainPage> {
           icon: Icon(Icons.history),
           label: 'ประวัติกิจกรรม',
         ),
-        // BottomNavigationBarItem(
-        //   icon: Icon(Icons.settings),
-        //   label: 'ตั้งค่า',
-        // ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.settings),
+          label: 'ตั้งค่า',
+        ),
       ],
     );
 
