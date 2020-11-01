@@ -125,14 +125,17 @@ class MyConfig {
 
 /*
   PROBLEMS
-  /- [Main Page : History] History time sorting problem ****
-  /- [Detail Page] ImageList -> Not correct sorting. **
-  - [Main Page : History] Time of History Card -> Emulator not correct, but on real phone is correct. *
-  - [Overall] Card Text Overflow ***
-  - [Overall] Keyboard Overflow ***
-  - [Main Page : History] Change tab while refreshing list coz some error (not fatal) *
+  - [History] 5* History time sorting problem.
+  - [Detail] 4* ImageList not correct sorting.
+  - [History] 3* Emulator not showing correct time (real device show correct time)
+  - [Overall] 3* Card Text Overflow
+  - [Overall] 3* Keyboard Overflow
+  - [History] 2* Change tab while refreshing list get error message (not fatal ?)
+  - [Detail] 1* Fullscreen Images, When zoom, horizontal slider change image.
   UNFINISHED
-  /- [Confirm] On confirm add animation loading ****
-  /- [Confirm] Query Optimize ***
-  /- [Detail Page] Slider Fullscreen Images
- */
+  - [Confirm] On confirm add loading animation.
+  - [Overall] Query optimization.
+  - [Setting] add setting page [with logout button]
+  DONE
+  - [Detail] Fullscreen Images slidable.
+*/

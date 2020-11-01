@@ -1,6 +1,7 @@
 import 'dart:collection';
 import 'dart:math';
 
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -117,24 +118,6 @@ class _MyDetailPageState extends State<MyDetailPage> {
     });
   }
 
-  void nextImage() {
-    setState(() {
-      currentIndex = currentIndex + 1;
-      _isArrowLeftShown = (currentIndex == 0) ? false : true;
-      _isArrowRightShown =
-          (currentIndex == currentPaths.length - 1) ? false : true;
-    });
-  }
-
-  void previousImage() {
-    setState(() {
-      currentIndex = currentIndex - 1;
-      _isArrowLeftShown = (currentIndex == 0) ? false : true;
-      _isArrowRightShown =
-          (currentIndex == currentPaths.length - 1) ? false : true;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     //-- Sizing Variables
@@ -152,9 +135,7 @@ class _MyDetailPageState extends State<MyDetailPage> {
 
     // double desireWidth = (screenWidth < minWidth) ? screenWidth : minWidth;
     double desireHeight = (screenHeight < minHeight) ? screenHeight : minHeight;
-    double screenEdge = (screenWidth <= minWidth)
-        ? screenMinEdge
-        : min(screenWidth - minWidth, screenMaxEdge);
+    double screenEdge = (screenWidth <= minWidth) ? screenMinEdge : min(screenWidth - minWidth, screenMaxEdge);
     double carouselHeight = screenHeight * imageHeightRatio;
     double carouselWidth = screenWidth;
     double buttonWidth = screenWidth - (screenEdge * 4);
@@ -222,17 +203,35 @@ class _MyDetailPageState extends State<MyDetailPage> {
       ),
     );
 
-    Widget buildFullScreenImage() {
+    List<Widget> buildFullScreenImages(List<String> paths) {
+      return List<Widget>.generate(
+        paths.length, (index) => PhotoView(imageProvider: NetworkImage(paths[index]),
+            ),
+      );
+    }
+
+    Widget fullScreenImages() {
       return Container(
-        color: MyConfig.greyColor.withOpacity(0.5),
+        color: MyConfig.blackColor,
+        width: screenWidth,
+        height: screenHeight,
         child: Stack(
           alignment: Alignment.topRight,
           children: [
-            PhotoView(
-              imageProvider: NetworkImage(currentPaths[currentIndex]),
+            Center(
+              child: CarouselSlider(
+                items: buildFullScreenImages(currentPaths),
+                options: CarouselOptions(
+                  autoPlay: false,
+                  height: screenHeight,
+                  viewportFraction: 1.0,
+                  initialPage: currentIndex,
+                  enableInfiniteScroll: false,
+                ),
+              ),
             ),
             Padding(
-              padding: EdgeInsets.all(screenEdge),
+              padding: EdgeInsets.only(right: screenEdge, top: screenEdge),
               child: Material(
                 color: MyConfig.transparentColor,
                 child: Ink(
@@ -244,44 +243,6 @@ class _MyDetailPageState extends State<MyDetailPage> {
                 ),
               ),
             ),
-            Center(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  (_isArrowLeftShown)
-                      ? Padding(
-                          padding: EdgeInsets.all(screenEdge),
-                          child: Material(
-                            color: MyConfig.transparentColor,
-                            child: Ink(
-                              child: IconButton(
-                                icon: Icon(Icons.chevron_left),
-                                color: MyConfig.whiteColor,
-                                onPressed: () => previousImage(),
-                              ),
-                            ),
-                          ),
-                        )
-                      : SizedBox(),
-                  (_isArrowRightShown)
-                      ? Padding(
-                          padding: EdgeInsets.all(screenEdge),
-                          child: Material(
-                            color: MyConfig.transparentColor,
-                            child: Ink(
-                              child: IconButton(
-                                icon: Icon(Icons.chevron_right),
-                                color: MyConfig.whiteColor,
-                                onPressed: () => nextImage(),
-                              ),
-                            ),
-                          ),
-                        )
-                      : SizedBox(),
-                ],
-              ),
-            )
           ],
         ),
       );
@@ -399,34 +360,39 @@ class _MyDetailPageState extends State<MyDetailPage> {
 
     //-------------------------------------------------------------------------------------------------------- Page
 
-    return Stack(
-      children: [
-        Scaffold(
-          backgroundColor: MyConfig.themeColor2,
-          appBar: myAppBar,
-          body: SingleChildScrollView(
-            child: Container(
-              margin: EdgeInsets.all(screenEdge),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  amuletTitleText,
-                  SizedBox(height: desireHeight * 0.01),
-                  myCarousel,
-                  SizedBox(height: desireHeight * 0.01),
-                  detailBox,
-                  SizedBox(height: desireHeight * 0.01),
-                  detailBox2,
-                  SizedBox(height: desireHeight * 0.01),
-                  buttonBox,
-                ],
+    return WillPopScope(
+      onWillPop: () async {
+        return false;
+      },
+      child: Stack(
+        children: [
+          Scaffold(
+            backgroundColor: MyConfig.themeColor2,
+            appBar: myAppBar,
+            body: SingleChildScrollView(
+              child: Container(
+                margin: EdgeInsets.all(screenEdge),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    amuletTitleText,
+                    SizedBox(height: desireHeight * 0.01),
+                    myCarousel,
+                    SizedBox(height: desireHeight * 0.01),
+                    detailBox,
+                    SizedBox(height: desireHeight * 0.01),
+                    detailBox2,
+                    SizedBox(height: desireHeight * 0.01),
+                    buttonBox,
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-        if (_isImageShown) buildFullScreenImage(),
-      ],
+          if (_isImageShown) fullScreenImages(),
+        ],
+      ),
     );
   }
 }
