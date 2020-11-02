@@ -1,4 +1,3 @@
-import 'dart:collection';
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -79,19 +78,6 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
     String receiverUserId = widget.receiverId;
     String senderUserId = loginUser.uid;
 
-    //-- Get amulet data
-    String amuletId = "";
-    List<String> amuletImageList = [];
-    String categories = "";
-    String certificateIdResult = "";
-    String certificateImage = "";
-    DateTime confirmDate;
-    String confirmBy = "";
-    String image = "";
-    String information = "";
-    String name = "";
-    String texture = "";
-
     //-- Create History of Sender
     await _firestoreInstance
         .collection("users")
@@ -125,39 +111,13 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
         .doc(widget.amulet.id)
         .get();
 
-    amuletId = (resultAmulet.data()['amuletId'] != null) ? resultAmulet.data()['amuletId'] : "";
-    amuletImageList = (resultAmulet.data()['amuletImageList'] != null) ? HashMap<String, dynamic>.from(resultAmulet.data()['amuletImageList']).values.toList().cast<String>() : [];
-    categories = (resultAmulet.data()['categories'] != null) ? resultAmulet.data()['categories'] : "";
-    certificateIdResult = (resultAmulet.data()['certificateId'] != null) ? resultAmulet.data()['certificateId'] : "";
-    certificateImage = (resultAmulet.data()['certificateImage'] != null) ? resultAmulet.data()['certificateImage'] : "";
-    confirmDate = (resultAmulet.data()['confirmDate'] != null) ? resultAmulet.data()['confirmDate'].toDate() : "";
-    confirmBy = (resultAmulet.data()['confirmBy'] != null) ? resultAmulet.data()['confirmBy'] : "";
-    image = (resultAmulet.data()['image'] != null) ? resultAmulet.data()['image'] : "";
-    information = (resultAmulet.data()['information'] != null) ? resultAmulet.data()['information'] : "";
-    name = (resultAmulet.data()['name'] != null) ? resultAmulet.data()['name'] : "";
-    texture = (resultAmulet.data()['texture'] != null) ? resultAmulet.data()['texture'] : "";
-
     //-- Add Amulet to Receiver
     await _firestoreInstance
         .collection("users")
         .doc(widget.receiverId)
         .collection("amulet")
         .doc(widget.amulet.id)
-        .set({
-      "amuletId": amuletId,
-      "amuletImageList": {
-        for(int i = 0;i < amuletImageList.length; i++) "image" + (i + 1).toString() : amuletImageList[i],
-      },
-      "categories": categories,
-      "certificateId": certificateIdResult,
-      "certificateImage": certificateImage,
-      "confirmDate": confirmDate,
-      "confirmBy": confirmBy,
-      "image": image,
-      "information": information,
-      "name": name,
-      "texture": texture
-    });
+        .set(resultAmulet.data());
 
     //-- Remove Amulet of Sender
     await _firestoreInstance
