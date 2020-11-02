@@ -54,7 +54,7 @@ class _MyTransferPageState extends State<MyTransferPage> {
 
     if (type == 1) {
       //-- Check By uniqueId
-      var result = await _firestoreInstance
+      QuerySnapshot result = await _firestoreInstance
           .collection("users")
           .where("uniqueId", isEqualTo: id)
           .get();
@@ -63,7 +63,7 @@ class _MyTransferPageState extends State<MyTransferPage> {
       });
     } else if (type == 2) {
       //-- Check By userId
-      var result = await _firestoreInstance
+      QuerySnapshot result = await _firestoreInstance
           .collection("users")
           .where("userId", isEqualTo: id)
           .get();
@@ -74,6 +74,7 @@ class _MyTransferPageState extends State<MyTransferPage> {
     if (userId == loginUser.uid) {
       buildAlertDialog('เกิดข้อผิดพลาด', 'ไม่สามารถส่งมอบให้ตัวเองได้');
     } else if (userId != "" && userId != null) {
+
       Navigator.push(
           context,
           MaterialPageRoute(

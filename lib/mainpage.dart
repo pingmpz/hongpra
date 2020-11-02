@@ -96,53 +96,48 @@ class _MyMainPageState extends State<MyMainPage> {
       _isAmuletListLoaded = false;
     });
 
-    await _firestoreInstance
+    QuerySnapshot result = await _firestoreInstance
         .collection("users")
         .doc(loginUser.uid)
         .collection("amulet")
-        .get()
-        .then((result) {
-      if (result.size == 0) setState(() => _isAmuletListLoaded = true);
-      result.docs.forEach((value) {
-        setState(() {
-          amuletList.add(new AmuletCard(
-            Amulet(
-              (value.data()['amuletId'] != null)
-                  ? value.data()['amuletId']
-                  : "",
-              (value.data()['amuletImageList'] != null)
-                  ? HashMap<String, dynamic>.from(
-                          value.data()['amuletImageList'])
-                      .values
-                      .toList()
-                      .cast<String>()
-                  : [],
-              (value.data()['name'] != null) ? value.data()['name'] : "",
-              (value.data()['categories'] != null)
-                  ? value.data()['categories']
-                  : "",
-              (value.data()['texture'] != null) ? value.data()['texture'] : "",
-              (value.data()['information'] != null)
-                  ? value.data()['information']
-                  : "",
-            ),
-            Certificate(
-              (value.data()['certificateId'] != null)
-                  ? value.data()['certificateId']
-                  : "",
-              (value.data()['certificateImage'] != null)
-                  ? value.data()['certificateImage']
-                  : "",
-              (value.data()['confirmBy'] != null)
-                  ? value.data()['confirmBy']
-                  : "",
-              (value.data()['confirmDate'] != null)
-                  ? value.data()['confirmDate'].toDate()
-                  : null,
-            ),
-          ));
-          _isAmuletListLoaded = true;
-        });
+        .get();
+    if (result.size == 0) setState(() => _isAmuletListLoaded = true);
+    result.docs.forEach((value) {
+      setState(() {
+        amuletList.add(new AmuletCard(
+          Amulet(
+            (value.data()['amuletId'] != null) ? value.data()['amuletId'] : "",
+            (value.data()['amuletImageList'] != null)
+                ? HashMap<String, dynamic>.from(value.data()['amuletImageList'])
+                    .values
+                    .toList()
+                    .cast<String>()
+                : [],
+            (value.data()['name'] != null) ? value.data()['name'] : "",
+            (value.data()['categories'] != null)
+                ? value.data()['categories']
+                : "",
+            (value.data()['texture'] != null) ? value.data()['texture'] : "",
+            (value.data()['information'] != null)
+                ? value.data()['information']
+                : "",
+          ),
+          Certificate(
+            (value.data()['certificateId'] != null)
+                ? value.data()['certificateId']
+                : "",
+            (value.data()['certificateImage'] != null)
+                ? value.data()['certificateImage']
+                : "",
+            (value.data()['confirmBy'] != null)
+                ? value.data()['confirmBy']
+                : "",
+            (value.data()['confirmDate'] != null)
+                ? value.data()['confirmDate'].toDate()
+                : null,
+          ),
+        ));
+        _isAmuletListLoaded = true;
       });
     });
   }
@@ -153,66 +148,50 @@ class _MyMainPageState extends State<MyMainPage> {
       _isHistoryListLoaded = false;
     });
 
-    await _firestoreInstance
+    QuerySnapshot result = await _firestoreInstance
         .collection("users")
         .doc(loginUser.uid)
         .collection("history")
         .orderBy("date", descending: true)
-        .get()
-        .then((result) {
-      if (result.size == 0) setState(() => _isAmuletListLoaded = true);
-      result.docs.forEach((value) async {
-        String receiverName = "";
-        String senderName = "";
-        if (value.data()['receiverId'] != null) {
-          var user = await _firestoreInstance
-              .collection("users")
-              .doc(value.data()['receiverId'])
-              .get();
-          String firstName = (user.data()['firstName'] != null)
-              ? user.data()['firstName']
-              : "";
-          String lastName =
-              (user.data()['lastName'] != null) ? user.data()['lastName'] : "";
-          receiverName = firstName + " " + lastName;
-        }
-        if (value.data()['senderId'] != null) {
-          var user = await _firestoreInstance
-              .collection("users")
-              .doc(value.data()['senderId'])
-              .get();
-          String firstName = (user.data()['firstName'] != null)
-              ? user.data()['firstName']
-              : "";
-          String lastName =
-              (user.data()['lastName'] != null) ? user.data()['lastName'] : "";
-          senderName = firstName + " " + lastName;
-        }
-        setState(() {
-          historyList.add(new History(
-            (value.data()['type'] != null) ? value.data()['type'] : -1,
-            (value.data()['certificateId'] != null)
-                ? value.data()['certificateId']
-                : "",
-            (value.data()['receiverId'] != null)
-                ? value.data()['receiverId']
-                : "",
-            receiverName,
-            (value.data()['senderId'] != null) ? value.data()['senderId'] : "",
-            senderName,
-            (value.data()['date'] != null)
-                ? value.data()['date'].toDate()
-                : null,
-          ));
-          _isHistoryListLoaded = true;
-        });
+        .get();
+    if (result.size == 0) setState(() => _isHistoryListLoaded = true);
+    result.docs.forEach((value) async {
+      String receiverName = "";
+      String senderName = "";
+      if (value.data()['receiverId'] != null) {
+        DocumentSnapshot user = await _firestoreInstance.collection("users").doc(value.data()['receiverId']).get();
+        String firstName = (user.data()['firstName'] != null) ? user.data()['firstName'] : "";
+        String lastName = (user.data()['lastName'] != null) ? user.data()['lastName'] : "";
+        receiverName = firstName + " " + lastName;
+      }
+      if (value.data()['senderId'] != null) {
+        DocumentSnapshot user = await _firestoreInstance.collection("users").doc(value.data()['senderId']).get();
+        String firstName = (user.data()['firstName'] != null) ? user.data()['firstName'] : "";
+        String lastName = (user.data()['lastName'] != null) ? user.data()['lastName'] : "";
+        senderName = firstName + " " + lastName;
+      }
+      setState(() {
+        historyList.add(new History(
+          (value.data()['type'] != null) ? value.data()['type'] : -1,
+          (value.data()['certificateId'] != null)
+              ? value.data()['certificateId']
+              : "",
+          (value.data()['receiverId'] != null)
+              ? value.data()['receiverId']
+              : "",
+          receiverName,
+          (value.data()['senderId'] != null) ? value.data()['senderId'] : "",
+          senderName,
+          (value.data()['date'] != null) ? value.data()['date'].toDate() : null,
+        ));
+        // _isHistoryListLoaded = true;
       });
     });
   }
 
   void getUniqueId() async {
     historyList = new List<History>();
-    var result =
+    DocumentSnapshot result =
         await _firestoreInstance.collection("users").doc(loginUser.uid).get();
     uniqueId =
         (result.data()['uniqueId'] != null) ? result.data()['uniqueId'] : "";
@@ -423,7 +402,8 @@ class _MyMainPageState extends State<MyMainPage> {
                                   MyConfig.dateText(
                                       amuletCard.certificate.confirmDate),
                               style: MyConfig.smallTextBlack),
-                          Text("รับรองโดย : " + amuletCard.certificate.confirmBy,
+                          Text(
+                              "รับรองโดย : " + amuletCard.certificate.confirmBy,
                               style: MyConfig.smallTextBlack),
                         ],
                       ),
@@ -436,7 +416,8 @@ class _MyMainPageState extends State<MyMainPage> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => MyDetailPage(amuletCard.amulet, amuletCard.certificate)))
+                      builder: (context) => MyDetailPage(
+                          amuletCard.amulet, amuletCard.certificate)))
             },
           ),
         ),
@@ -459,8 +440,8 @@ class _MyMainPageState extends State<MyMainPage> {
 
     Widget emptyAmuletScreen = Container(
       child: Center(
-        child:
-            Text('คุณยังไม่มีพระในครอบครอง', style: MyConfig.normalBoldTextTheme1),
+        child: Text('คุณยังไม่มีพระในครอบครอง',
+            style: MyConfig.normalBoldTextTheme1),
       ),
     );
 
@@ -512,8 +493,8 @@ class _MyMainPageState extends State<MyMainPage> {
               SizedBox(height: screenHeight * 0.01),
               Center(
                   child: Text(uniqueId,
-                      style:
-                          MyConfig.largeBoldTextBlack.copyWith(letterSpacing: 2))),
+                      style: MyConfig.largeBoldTextBlack
+                          .copyWith(letterSpacing: 2))),
             ],
           ),
         ),
@@ -548,7 +529,8 @@ class _MyMainPageState extends State<MyMainPage> {
         margin: EdgeInsets.zero,
         child: Padding(
           padding: EdgeInsets.all(cardInnerEdge * 3),
-          child: Text(MyConfig.dateText(dateTime), style: MyConfig.normalTextBlack),
+          child: Text(MyConfig.dateText(dateTime),
+              style: MyConfig.normalTextBlack),
         ),
       );
     }
@@ -727,11 +709,19 @@ class _MyMainPageState extends State<MyMainPage> {
     Widget buildPage() {
       Widget currentPage = SizedBox();
       setState(() {
-        switch(selectedPage){
-          case 0: currentPage = page_0; break;
-          case 1: currentPage = page_1; break;
-          case 2: currentPage = page_2; break;
-          case 3: currentPage = page_3; break;
+        switch (selectedPage) {
+          case 0:
+            currentPage = page_0;
+            break;
+          case 1:
+            currentPage = page_1;
+            break;
+          case 2:
+            currentPage = page_2;
+            break;
+          case 3:
+            currentPage = page_3;
+            break;
         }
       });
       return currentPage;

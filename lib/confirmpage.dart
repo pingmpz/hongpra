@@ -47,7 +47,7 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
 
   void getMyInfo() async {
     senderName = "";
-    var result = await _firestoreInstance.collection("users").where("userId", isEqualTo: loginUser.uid).get();
+    QuerySnapshot result = await _firestoreInstance.collection("users").where("userId", isEqualTo: loginUser.uid).get();
     result.docs.forEach((res) {
       setState(() {
         String firstName = (res.data()['firstName'] != null) ? res.data()['firstName'] : "";
@@ -59,7 +59,7 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
 
   void getReceiverInfo() async {
     receiverName = "";
-    var result = await _firestoreInstance.collection("users").where("userId", isEqualTo: widget.receiverId).get();
+    QuerySnapshot result = await _firestoreInstance.collection("users").where("userId", isEqualTo: widget.receiverId).get();
     result.docs.forEach((res) {
       setState(() {
         String firstName = (res.data()['firstName'] != null) ? res.data()['firstName'] : "";
@@ -104,7 +104,7 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
       "type": 2
     });
 
-    var resultAmulet = await _firestoreInstance
+    DocumentSnapshot resultAmulet = await _firestoreInstance
         .collection("users")
         .doc(loginUser.uid)
         .collection("amulet")
