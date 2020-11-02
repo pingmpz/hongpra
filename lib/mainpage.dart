@@ -418,22 +418,24 @@ class _MyMainPageState extends State<MyMainPage> {
                   ),
                   Expanded(
                     flex: 6,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text(amuletCard.amulet.name,
-                            style: MyConfig.normalBoldText1),
-                        Text("ประเภท : " + amuletCard.amulet.categories,
-                            style: MyConfig.smallText1),
-                        Text(
-                            "วันที่รับรอง : " +
-                                MyConfig.dateText(
-                                    amuletCard.certificate.confirmDate),
-                            style: MyConfig.smallText1),
-                        Text("รับรองโดย : " + amuletCard.certificate.confirmBy,
-                            style: MyConfig.smallText1),
-                      ],
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(amuletCard.amulet.name,
+                              style: MyConfig.normalBoldText1),
+                          Text("ประเภท : " + amuletCard.amulet.categories,
+                              style: MyConfig.smallText1),
+                          Text(
+                              "วันที่รับรอง : " +
+                                  MyConfig.dateText(
+                                      amuletCard.certificate.confirmDate),
+                              style: MyConfig.smallText1),
+                          Text("รับรองโดย : " + amuletCard.certificate.confirmBy  + amuletCard.certificate.confirmBy,
+                              style: MyConfig.smallText1),
+                        ],
+                      ),
                     ),
                   ),
                 ],
