@@ -121,7 +121,7 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyLoginPage()));
       }).catchError((error) {
         print(error.message);
-        buildAlertDialog("สมัครสมาชิกล้มเหลว", "");
+        buildAlertDialog("สมัครสมาชิกล้มเหลว", "เกิดปัญหาบ้างอย่าขึ้น กรุณาลองอีกครั้ง");
       });
     } else {
       print("Password and Confirm-password is not match.");
@@ -139,7 +139,7 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
     );
 
     Widget result = AlertDialog(
-      title: Center(child: Text(title, style: MyConfig.normalBoldText1)),
+      title: Center(child: Text(title, style: MyConfig.normalBoldText4)),
       content: Text(content, style: MyConfig.normalText1),
       actions: [
         okButton,

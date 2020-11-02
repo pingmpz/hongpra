@@ -13,9 +13,9 @@ import 'Data/Amulet.dart';
 import 'Data/Certificate.dart';
 
 class MyDetailPage extends StatefulWidget {
-  final Amulet amuletF;
-  final Certificate certificateF;
-  const MyDetailPage(this.amuletF, this.certificateF);
+  final Amulet amulet;
+  final Certificate certificate;
+  const MyDetailPage(this.amulet, this.certificate);
 
   @override
   _MyDetailPageState createState() => _MyDetailPageState();
@@ -31,22 +31,16 @@ class _MyDetailPageState extends State<MyDetailPage> {
   final loginUser = FirebaseAuth.instance.currentUser;
   //final _firestoreInstance = FirebaseFirestore.instance;
 
-  //-- Item
-  Amulet amulet;
-  Certificate certificate;
-
   //-------------------------------------------------------------------------------------------------------- Functions
 
   @override
   void initState() {
     super.initState();
-    amulet = widget.amuletF;
-    certificate = widget.certificateF;
   }
 
   void transfer() {
     Navigator.push(context,
-        MaterialPageRoute(builder: (context) => MyTransferPage(widget.amuletF.id)));
+        MaterialPageRoute(builder: (context) => MyTransferPage(widget.amulet, widget.certificate)));
   }
 
   void back() {
@@ -54,7 +48,7 @@ class _MyDetailPageState extends State<MyDetailPage> {
   }
 
   void certificateFullScreen() {
-    if (certificate.image != "") enterFullScreenImage([certificate.image], 0);
+    if (widget.certificate.image != "") enterFullScreenImage([widget.certificate.image], 0);
   }
 
   void enterFullScreenImage(List<String> paths, int index) {
@@ -121,7 +115,7 @@ class _MyDetailPageState extends State<MyDetailPage> {
     );
 
     Widget amuletTitleText =
-        Center(child: Text(amulet.name, style: MyConfig.largeBoldText1));
+        Center(child: Text(widget.amulet.name, style: MyConfig.largeBoldText1));
 
     List<Widget> buildImages(List<String> paths) {
       return List<Widget>.generate(
@@ -142,13 +136,13 @@ class _MyDetailPageState extends State<MyDetailPage> {
         child: Card(
           child: Padding(
             padding: EdgeInsets.all(cardPadding),
-            child: (amulet.images.isNotEmpty)
+            child: (widget.amulet.images.isNotEmpty)
                 ? Carousel(
                     dotSize: dotSize,
                     dotSpacing: dotSize * 3,
                     indicatorBgPadding: dotSize,
                     autoplay: false,
-                    images: buildImages(amulet.images),
+                    images: buildImages(widget.amulet.images),
                   )
                 : Image(image: AssetImage("assets/images/notfound.png")),
           ),
@@ -215,28 +209,28 @@ class _MyDetailPageState extends State<MyDetailPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text("ชื่อพระ", style: MyConfig.smallBoldText1),
-                  Text(amulet.name, style: MyConfig.smallText1),
+                  Text(widget.amulet.name, style: MyConfig.smallText1),
                 ],
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text("พิมพ์พระ", style: MyConfig.smallBoldText1),
-                  Text(amulet.categories, style: MyConfig.smallText1),
+                  Text(widget.amulet.categories, style: MyConfig.smallText1),
                 ],
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text("เนื้อพระ", style: MyConfig.smallBoldText1),
-                  Text(amulet.texture, style: MyConfig.smallText1),
+                  Text(widget.amulet.texture, style: MyConfig.smallText1),
                 ],
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text("รายละเอียด", style: MyConfig.smallBoldText1),
-                  Text(amulet.info, style: MyConfig.smallText1),
+                  Text(widget.amulet.info, style: MyConfig.smallText1),
                 ],
               ),
             ],
@@ -261,14 +255,14 @@ class _MyDetailPageState extends State<MyDetailPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text("รหัสใบรับรอง", style: MyConfig.smallBoldText1),
-                  Text(certificate.id, style: MyConfig.smallText1),
+                  Text(widget.certificate.id, style: MyConfig.smallText1),
                 ],
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text("วันที่รับรอง", style: MyConfig.smallBoldText1),
-                  Text(MyConfig.dateText(certificate.confirmDate),
+                  Text(MyConfig.dateText(widget.certificate.confirmDate),
                       style: MyConfig.smallText1),
                 ],
               ),
@@ -276,7 +270,7 @@ class _MyDetailPageState extends State<MyDetailPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text("รับรองโดย", style: MyConfig.smallBoldText1),
-                  Text(certificate.confirmBy, style: MyConfig.smallText1),
+                  Text(widget.certificate.confirmBy, style: MyConfig.smallText1),
                 ],
               ),
               SizedBox(height: columnSpace),
@@ -285,7 +279,7 @@ class _MyDetailPageState extends State<MyDetailPage> {
                   minWidth: buttonWidth,
                   height: buttonHeight,
                   child: RaisedButton(
-                    color: (certificate.image != "")
+                    color: (widget.certificate.image != "")
                         ? MyConfig.greenColor
                         : MyConfig.greyColor,
                     child: Text('ดูใบรับรอง', style: MyConfig.buttonText),

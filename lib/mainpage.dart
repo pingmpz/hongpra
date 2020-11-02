@@ -294,6 +294,8 @@ class _MyMainPageState extends State<MyMainPage> {
     double gridRatio = 2.5;
     int minGridCount = 1;
     double cardInnerEdge = 2.5;
+    double loginButtonWidth = double.infinity;
+    double loginButtonHeight = 40.0;
 
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
@@ -503,7 +505,7 @@ class _MyMainPageState extends State<MyMainPage> {
               Container(
                   height: desireHeight / 2,
                   child: Center(
-                    child: (loginUser.uid != "")
+                    child: (loginUser != null)
                         ? QrImage(
                             data: loginUser.uid,
                             version: QrVersions.auto,
@@ -610,13 +612,6 @@ class _MyMainPageState extends State<MyMainPage> {
             resultList.add(historyHeader(showingList[i].timestamp));
           }
           resultList.add(historyCard(showingList[i]));
-          // resultList.add(historyCard(
-          //     showingList[i].type,
-          //     showingList[i].certificateId,
-          //     showingList[i].receiverName,
-          //     showingList[i].senderName,
-          //     showingList[i].timestamp.hour,
-          //     showingList[i].timestamp.minute));
         }
       }
       return resultList;
@@ -716,9 +711,18 @@ class _MyMainPageState extends State<MyMainPage> {
         margin: EdgeInsets.all(screenEdge),
         child: Center(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              ButtonTheme(
+                minWidth: loginButtonWidth,
+                height: loginButtonHeight,
+                child: RaisedButton(
+                  onPressed: () => signOut(),
+                  color: MyConfig.redColor,
+                  child: Text('ออกจากระบบ', style: MyConfig.buttonText),
+                ),
+              ),
             ],
           ),
         ),

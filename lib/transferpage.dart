@@ -5,12 +5,16 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
-import 'package:hongpra/comfirmpage.dart';
+import 'package:hongpra/confirmpage.dart';
 import 'package:hongpra/myconfig.dart';
 
+import 'Data/Amulet.dart';
+import 'Data/Certificate.dart';
+
 class MyTransferPage extends StatefulWidget {
-  final String amuletId;
-  const MyTransferPage(this.amuletId);
+  final Amulet amulet;
+  final Certificate certificate;
+  const MyTransferPage(this.amulet, this.certificate);
 
   @override
   _MyTransferPageState createState() => _MyTransferPageState();
@@ -38,6 +42,8 @@ class _MyTransferPageState extends State<MyTransferPage> {
   void prepare() {
     if (idController.text.isEmpty) {
       buildAlertDialog('เกิดข้อผิดพลาด', 'โปรดระบุ UID ของผู้รับ');
+    } else if (idController.text.length < 12) {
+      buildAlertDialog('เกิดข้อผิดพลาด', 'ไม่พบบัญชีผู้ใช้งาน');
     } else {
       approve(1, idController.text);
     }
@@ -65,13 +71,13 @@ class _MyTransferPageState extends State<MyTransferPage> {
         userId = res.data()['userId'];
       });
     }
-    if (userId == FirebaseAuth.instance.currentUser.uid) {
+    if (userId == loginUser.uid) {
       buildAlertDialog('เกิดข้อผิดพลาด', 'ไม่สามารถส่งมอบให้ตัวเองได้');
     } else if (userId != "" && userId != null) {
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => MyConfirmPage(userId, widget.amuletId)));
+              builder: (context) => MyConfirmPage(userId, widget.amulet, widget.certificate)));
     } else {
       buildAlertDialog('เกิดข้อผิดพลาด', 'ไม่พบบัญชีผู้ใช้งาน');
     }
@@ -86,7 +92,7 @@ class _MyTransferPageState extends State<MyTransferPage> {
     );
 
     Widget result = AlertDialog(
-      title: Center(child: Text(title, style: MyConfig.normalBoldText1)),
+      title: Center(child: Text(title, style: MyConfig.normalBoldText4)),
       content: Text(content, style: MyConfig.normalText1),
       actions: [
         okButton,

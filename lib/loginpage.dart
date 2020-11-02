@@ -40,7 +40,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
       switch (e.code) {
         case "wrong-password":
           print("Wrong Password! Try again.Wrong email/password combination.");
-          buildAlertDialog("เข้าสู่ระบบล้มเหลว", 'อีเมลหรือรหัสผ่านผิด');
+          buildAlertDialog("เข้าสู่ระบบล้มเหลว", 'อีเมลหรือรหัสผ่านไม่ถูกต้อง');
           break;
         case "invalid-email":
           print("Email is not correct!, Try again");
@@ -54,10 +54,14 @@ class _MyLoginPageState extends State<MyLoginPage> {
           print("User has been disabled!, Try again");
           buildAlertDialog("เข้าสู่ระบบล้มเหลว", 'บัญชีนี้ถูกระงับ');
           break;
+        case "too-many-requests":
+          print("Too many requests!, Please wait for a while");
+          buildAlertDialog("เข้าสู่ระบบล้มเหลว", "พยายามเข้าสู่ระบบมากเกินไป โปรดรอสักครู่ ก่อนทำการเข้าสู่ระบบอีกครั้ง");
+          break;
         case "operation-not-allowed":
           print(
               "Operation not allowed!, Please enable it in the firebase console");
-          buildAlertDialog("เข้าสู่ระบบล้มเหลว", "");
+          buildAlertDialog("เข้าสู่ระบบล้มเหลว", "ไม่สามารถใช่งานได้ในขณะนี้");
           break;
         default:
           print("Unknown error");
@@ -80,7 +84,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
     );
 
     Widget result = AlertDialog(
-      title: Center(child: Text(title, style: MyConfig.normalBoldText1)),
+      title: Center(child: Text(title, style: MyConfig.normalBoldText4)),
       content: Text(content, style: MyConfig.normalText1),
       actions: [
         okButton,

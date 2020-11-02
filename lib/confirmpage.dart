@@ -6,12 +6,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hongpra/myconfig.dart';
 
+import 'Data/Amulet.dart';
+import 'Data/Certificate.dart';
 import 'mainpage.dart';
 
 class MyConfirmPage extends StatefulWidget {
   final String receiverId;
-  final String amuletId;
-  const MyConfirmPage(this.receiverId, this.amuletId);
+  final Amulet amulet;
+  final Certificate certificate;
+  const MyConfirmPage(this.receiverId, this.amulet, this.certificate);
 
   @override
   _MyConfirmPageState createState() => _MyConfirmPageState();
@@ -33,7 +36,7 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
     super.initState();
     getMyInfo();
     getReceiverInfo();
-    getAmuletInfo();
+    certificateId = widget.certificate.id;
   }
 
   void getMyInfo() async {
@@ -60,19 +63,9 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
     });
   }
 
-  void getAmuletInfo() async {
-    certificateId = "";
-    var result = await _firestoreInstance.collection("users").doc(loginUser.uid).collection("amulet").where("amuletId", isEqualTo: widget.amuletId).get();
-    result.docs.forEach((res) {
-      setState(() {
-        certificateId = (res.data()['certificateId'] != null) ? res.data()['certificateId'] : "";
-      });
-    });
-  }
-
   void confirm() async {
-    //-- Get Receiever and Sender Unique ID
-    String recieverUserId = widget.receiverId;
+    //-- Get Receiver and Sender Unique ID
+    String receiverUserId = widget.receiverId;
     String senderUserId = loginUser.uid;
 
     //-- Get amulet data
@@ -96,7 +89,7 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
         .add({
       "certificateId": certificateId,
       "date": FieldValue.serverTimestamp(),
-      "receiverId": recieverUserId,
+      "receiverId": receiverUserId,
       "senderId": senderUserId,
       "type": 1
     });
@@ -109,7 +102,7 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
         .add({
       "certificateId": certificateId,
       "date": FieldValue.serverTimestamp(),
-      "receiverId": recieverUserId,
+      "receiverId": receiverUserId,
       "senderId": senderUserId,
       "type": 2
     });
@@ -118,7 +111,7 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
         .collection("users")
         .doc(loginUser.uid)
         .collection("amulet")
-        .doc(widget.amuletId)
+        .doc(widget.amulet.id)
         .get();
 
     amuletId = (resultAmulet.data()['amuletId'] != null) ? resultAmulet.data()['amuletId'] : "";
@@ -138,7 +131,7 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
         .collection("users")
         .doc(widget.receiverId)
         .collection("amulet")
-        .doc(widget.amuletId)
+        .doc(widget.amulet.id)
         .set({
       "amuletId": amuletId,
       "amuletImageList": {
@@ -160,13 +153,12 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
         .collection("users")
         .doc(loginUser.uid)
         .collection("amulet")
-        .doc(widget.amuletId)
+        .doc(widget.amulet.id)
         .delete()
         .then((value) => print("Delete Successful!!"));
 
     //--  Navigate
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => MyMainPage()));
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyMainPage()));
   }
 
   void back() {
