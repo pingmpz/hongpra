@@ -115,7 +115,7 @@ class _MyDetailPageState extends State<MyDetailPage> {
     );
 
     Widget amuletTitleText =
-        Center(child: Text(widget.amulet.name, style: MyConfig.largeBoldText1));
+        Center(child: Text(widget.amulet.name, style: MyConfig.largeBoldTextBlack));
 
     List<Widget> buildImages(List<String> paths) {
       return List<Widget>.generate(
@@ -203,34 +203,34 @@ class _MyDetailPageState extends State<MyDetailPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Center(child: Text("ข้อมูลพระ", style: MyConfig.normalBoldText4)),
+              Center(child: Text("ข้อมูลพระ", style: MyConfig.normalBoldTextTheme1)),
               SizedBox(height: columnSpace),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text("ชื่อพระ", style: MyConfig.smallBoldText1),
-                  Text(widget.amulet.name, style: MyConfig.smallText1),
+                  Text("ชื่อพระ", style: MyConfig.smallBoldTextBlack),
+                  Text(widget.amulet.name, style: MyConfig.smallTextBlack),
                 ],
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text("พิมพ์พระ", style: MyConfig.smallBoldText1),
-                  Text(widget.amulet.categories, style: MyConfig.smallText1),
+                  Text("พิมพ์พระ", style: MyConfig.smallBoldTextBlack),
+                  Text(widget.amulet.categories, style: MyConfig.smallTextBlack),
                 ],
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text("เนื้อพระ", style: MyConfig.smallBoldText1),
-                  Text(widget.amulet.texture, style: MyConfig.smallText1),
+                  Text("เนื้อพระ", style: MyConfig.smallBoldTextBlack),
+                  Text(widget.amulet.texture, style: MyConfig.smallTextBlack),
                 ],
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text("รายละเอียด", style: MyConfig.smallBoldText1),
-                  Text(widget.amulet.info, style: MyConfig.smallText1),
+                  Text("รายละเอียด", style: MyConfig.smallBoldTextBlack),
+                  Text(widget.amulet.info, style: MyConfig.smallTextBlack),
                 ],
               ),
             ],
@@ -249,28 +249,28 @@ class _MyDetailPageState extends State<MyDetailPage> {
             children: [
               Center(
                   child:
-                      Text("ข้อมูลใบรับรอง", style: MyConfig.normalBoldText4)),
+                      Text("ข้อมูลใบรับรอง", style: MyConfig.normalBoldTextTheme1)),
               SizedBox(height: columnSpace),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text("รหัสใบรับรอง", style: MyConfig.smallBoldText1),
-                  Text(widget.certificate.id, style: MyConfig.smallText1),
+                  Text("รหัสใบรับรอง", style: MyConfig.smallBoldTextBlack),
+                  Text(widget.certificate.id, style: MyConfig.smallTextBlack),
                 ],
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text("วันที่รับรอง", style: MyConfig.smallBoldText1),
+                  Text("วันที่รับรอง", style: MyConfig.smallBoldTextBlack),
                   Text(MyConfig.dateText(widget.certificate.confirmDate),
-                      style: MyConfig.smallText1),
+                      style: MyConfig.smallTextBlack),
                 ],
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text("รับรองโดย", style: MyConfig.smallBoldText1),
-                  Text(widget.certificate.confirmBy, style: MyConfig.smallText1),
+                  Text("รับรองโดย", style: MyConfig.smallBoldTextBlack),
+                  Text(widget.certificate.confirmBy, style: MyConfig.smallTextBlack),
                 ],
               ),
               SizedBox(height: columnSpace),

@@ -5,6 +5,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hongpra/myconfig.dart';
+import 'package:loading/indicator/ball_spin_fade_loader_indicator.dart';
+import 'package:loading/loading.dart';
 
 import 'Data/Amulet.dart';
 import 'Data/Certificate.dart';
@@ -21,6 +23,11 @@ class MyConfirmPage extends StatefulWidget {
 }
 
 class _MyConfirmPageState extends State<MyConfirmPage> {
+  //--
+  bool _isLoading = false;
+  bool _isLoaded = false;
+
+  //-- Items
   String senderName = "";
   String receiverName = "";
   String certificateId = "";
@@ -64,6 +71,10 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
   }
 
   void confirm() async {
+    setState(() {
+      _isLoading = true;
+    });
+
     //-- Get Receiver and Sender Unique ID
     String receiverUserId = widget.receiverId;
     String senderUserId = loginUser.uid;
@@ -157,8 +168,12 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
         .delete()
         .then((value) => print("Delete Successful!!"));
 
-    //--  Navigate
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyMainPage()));
+    setState(() {
+      _isLoading = false;
+      _isLoaded = true;
+    });
+
+    Future.delayed(Duration(seconds: 2)).then((value) => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyMainPage())));
   }
 
   void back() {
@@ -195,7 +210,7 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          Align(
+          (! _isLoading && ! _isLoaded) ? Align(
             alignment: Alignment.centerLeft,
             child: Container(
               child: IconButton(
@@ -204,7 +219,7 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
                 onPressed: () => back(),
               ),
             ),
-          ),
+          ) : SizedBox(),
           Text('', style: MyConfig.appBarTitleText)
         ],
       ),
@@ -222,35 +237,35 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
             children: [
               Center(
                   child:
-                      Text("ข้อมูลการส่งมอบ", style: MyConfig.normalBoldText4)),
+                      Text("ข้อมูลการส่งมอบ", style: MyConfig.normalBoldTextGreen)),
               SizedBox(height: columnSpace),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('วันที่', style: MyConfig.smallBoldText1),
+                  Text('วันที่', style: MyConfig.smallBoldTextBlack),
                   Text(MyConfig.dateText(DateTime.now()),
-                      style: MyConfig.smallText1),
+                      style: MyConfig.smallTextBlack),
                 ],
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('ผู้ส่ง', style: MyConfig.smallBoldText1),
-                  Text(senderName, style: MyConfig.smallText1),
+                  Text('ผู้ส่ง', style: MyConfig.smallBoldTextBlack),
+                  Text(senderName, style: MyConfig.smallTextBlack),
                 ],
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('ผู้รับ', style: MyConfig.smallBoldText1),
-                  Text(receiverName, style: MyConfig.smallText1),
+                  Text('ผู้รับ', style: MyConfig.smallBoldTextBlack),
+                  Text(receiverName, style: MyConfig.smallTextBlack),
                 ],
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('รหัสใบรับรอง', style: MyConfig.smallBoldText1),
-                  Text(certificateId, style: MyConfig.smallText1),
+                  Text('รหัสใบรับรอง', style: MyConfig.smallBoldTextBlack),
+                  Text(certificateId, style: MyConfig.smallTextBlack),
                 ],
               ),
             ],
@@ -286,6 +301,42 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
       ),
     );
 
+    Widget loadingEffect = Container(
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(height: desireHeight * 0.02),
+            Loading(
+                indicator: BallSpinFadeLoaderIndicator(),
+                size: 50.0,
+                color: MyConfig.themeColor1),
+            SizedBox(height: desireHeight * 0.02),
+            Text('โปรดรอสักครู่ กำลังทำการส่งมอบ', style: MyConfig.normalBoldTextTheme1),
+          ],
+        ),
+      ),
+    );
+
+    Widget loadedEffect = Container(
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.check_circle_outline,
+              color: MyConfig.greenColor,
+              size: 60.0,
+            ),
+            SizedBox(height: desireHeight * 0.02),
+            Text('ส่งมอบสำเร็จ กลับสู่หน้าหลัก', style: MyConfig.normalBoldTextGreen),
+        ]
+        ),
+      ),
+    );
+
     //-------------------------------------------------------------------------------------------------------- Page
 
     return Scaffold(
@@ -296,7 +347,7 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
         child: Container(
           height: screenHeight,
           margin: EdgeInsets.all(screenEdge),
-          child: Column(
+          child: (_isLoading) ? loadingEffect : (_isLoaded) ? loadedEffect : Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [

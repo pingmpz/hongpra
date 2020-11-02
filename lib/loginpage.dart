@@ -84,8 +84,8 @@ class _MyLoginPageState extends State<MyLoginPage> {
     );
 
     Widget result = AlertDialog(
-      title: Center(child: Text(title, style: MyConfig.normalBoldText4)),
-      content: Text(content, style: MyConfig.normalText1),
+      title: Center(child: Text(title, style: MyConfig.normalBoldTextTheme1)),
+      content: Text(content, style: MyConfig.normalTextBlack),
       actions: [
         okButton,
       ],
@@ -127,14 +127,14 @@ class _MyLoginPageState extends State<MyLoginPage> {
     //-------------------------------------------------------------------------------------------------------- Widgets
 
     Widget headerText = Center(child: Text('ห้องพระ', style: MyConfig.logoText));
-    Widget titleText = Center(child: Text('ยินดีต้อนรับสู่ ห้องพระ', style: MyConfig.largeBoldText1));
-    Widget subtitleText = Center(child: Text('เข้าสู่ระบบเพื่อใช้งาน', style: MyConfig.smallText5));
-    Widget emailLabel = Text('อีเมล', style: MyConfig.normalText1);
+    Widget titleText = Center(child: Text('ยินดีต้อนรับสู่ ห้องพระ', style: MyConfig.largeBoldTextBlack));
+    Widget subtitleText = Center(child: Text('เข้าสู่ระบบเพื่อใช้งาน', style: MyConfig.smallTextGrey));
+    Widget emailLabel = Text('อีเมล', style: MyConfig.normalTextBlack);
 
     Widget emailTextField = TextField(
       controller: emailController,
       obscureText: false,
-      style: MyConfig.normalText1,
+      style: MyConfig.normalTextBlack,
       decoration: InputDecoration(
         isDense: true,
         contentPadding: EdgeInsets.all(textFieldEdge),
@@ -145,12 +145,12 @@ class _MyLoginPageState extends State<MyLoginPage> {
       ),
     );
 
-    Widget passwordLabel = Text('รหัสผ่าน', style: MyConfig.normalText1);
+    Widget passwordLabel = Text('รหัสผ่าน', style: MyConfig.normalTextBlack);
 
     Widget passwordTextField = TextField(
       controller: passwordController,
       obscureText: true,
-      style: MyConfig.normalText1,
+      style: MyConfig.normalTextBlack,
       decoration: InputDecoration(
         isDense: true,
         contentPadding: EdgeInsets.all(textFieldEdge),
@@ -188,7 +188,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
       height: footerHeight,
       color: MyConfig.blackColor,
       child: Center(
-        child: Text('@HongPra.com 2020, All right Reserved.', style: MyConfig.normalText2),
+        child: Text('@HongPra.com 2020, All right Reserved.', style: MyConfig.normalTextWhite),
       ),
     );
 

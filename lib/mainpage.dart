@@ -36,7 +36,7 @@ class _MyMainPageState extends State<MyMainPage> {
   TabController tabController;
 
   //-- Widget -> Animation & Switch
-  Widget searchTitle = Text("", style: MyConfig.normalText1);
+  Widget searchTitle = Text("", style: MyConfig.normalTextBlack);
   Icon searchIcon = new Icon(Icons.search, color: MyConfig.whiteColor);
 
   //-- Firebase
@@ -317,15 +317,6 @@ class _MyMainPageState extends State<MyMainPage> {
       elevation: 0.0,
       automaticallyImplyLeading: false,
       title: Text('ห้องพระ', style: MyConfig.appBarTitleText),
-      actions: [
-        IconButton(
-          icon: const Icon(Icons.add_alert),
-          tooltip: 'Show Snackbar',
-          onPressed: () {
-            signOut();
-          },
-        ),
-      ],
       centerTitle: true,
     );
 
@@ -362,7 +353,7 @@ class _MyMainPageState extends State<MyMainPage> {
                     height: searchBarHeight - searchBardEdge,
                     child: TextField(
                       controller: searchController,
-                      style: MyConfig.normalText1,
+                      style: MyConfig.normalTextBlack,
                       decoration: InputDecoration(
                         filled: true,
                         fillColor: MyConfig.whiteColor,
@@ -376,7 +367,7 @@ class _MyMainPageState extends State<MyMainPage> {
                         prefixIcon:
                             Icon(Icons.search, color: MyConfig.blackColor),
                         hintText: "ค้นหา",
-                        hintStyle: MyConfig.normalText1,
+                        hintStyle: MyConfig.normalTextBlack,
                       ),
                       onChanged: (text) => {search()},
                     ),
@@ -384,7 +375,7 @@ class _MyMainPageState extends State<MyMainPage> {
                 } else {
                   this.searchIcon =
                       Icon(Icons.search, color: MyConfig.whiteColor);
-                  this.searchTitle = Text("", style: MyConfig.normalText1);
+                  this.searchTitle = Text("", style: MyConfig.normalTextBlack);
                   reset();
                 }
               });
@@ -424,16 +415,16 @@ class _MyMainPageState extends State<MyMainPage> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Text(amuletCard.amulet.name,
-                              style: MyConfig.normalBoldText1),
+                              style: MyConfig.normalBoldTextBlack),
                           Text("ประเภท : " + amuletCard.amulet.categories,
-                              style: MyConfig.smallText1),
+                              style: MyConfig.smallTextBlack),
                           Text(
                               "วันที่รับรอง : " +
                                   MyConfig.dateText(
                                       amuletCard.certificate.confirmDate),
-                              style: MyConfig.smallText1),
-                          Text("รับรองโดย : " + amuletCard.certificate.confirmBy  + amuletCard.certificate.confirmBy,
-                              style: MyConfig.smallText1),
+                              style: MyConfig.smallTextBlack),
+                          Text("รับรองโดย : " + amuletCard.certificate.confirmBy,
+                              style: MyConfig.smallTextBlack),
                         ],
                       ),
                     ),
@@ -469,7 +460,7 @@ class _MyMainPageState extends State<MyMainPage> {
     Widget emptyAmuletScreen = Container(
       child: Center(
         child:
-            Text('คุณยังไม่มีพระในครอบครอง', style: MyConfig.normalBoldText4),
+            Text('คุณยังไม่มีพระในครอบครอง', style: MyConfig.normalBoldTextTheme1),
       ),
     );
 
@@ -502,7 +493,7 @@ class _MyMainPageState extends State<MyMainPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text('QR Code', style: MyConfig.largeBoldText4),
+              Text('QR Code', style: MyConfig.largeBoldTextTheme1),
               SizedBox(height: screenHeight * 0.005),
               Container(
                   height: desireHeight / 2,
@@ -517,12 +508,12 @@ class _MyMainPageState extends State<MyMainPage> {
                             image: AssetImage('assets/images/notfound.png')),
                   )),
               SizedBox(height: screenHeight * 0.005),
-              Text('UID', style: MyConfig.largeBoldText4),
+              Text('UID', style: MyConfig.largeBoldTextTheme1),
               SizedBox(height: screenHeight * 0.01),
               Center(
                   child: Text(uniqueId,
                       style:
-                          MyConfig.largeBoldText1.copyWith(letterSpacing: 2))),
+                          MyConfig.largeBoldTextBlack.copyWith(letterSpacing: 2))),
             ],
           ),
         ),
@@ -534,13 +525,13 @@ class _MyMainPageState extends State<MyMainPage> {
     Widget myTabBar = AppBar(
       elevation: 0.0,
       backgroundColor: MyConfig.themeColor2,
-      title: Text('ประวัติกิจกรรม', style: MyConfig.largeBoldText1),
+      title: Text('ประวัติกิจกรรม', style: MyConfig.largeBoldTextBlack),
       bottom: TabBar(
         controller: tabController,
         labelColor: MyConfig.blackColor,
-        labelStyle: MyConfig.normalBoldText1,
+        labelStyle: MyConfig.normalBoldTextBlack,
         unselectedLabelColor: MyConfig.greyColor,
-        unselectedLabelStyle: MyConfig.normalBoldText1,
+        unselectedLabelStyle: MyConfig.normalBoldTextBlack,
         indicatorColor: MyConfig.themeColor1,
         tabs: [
           Tab(text: "ทั้งหมด"),
@@ -557,7 +548,7 @@ class _MyMainPageState extends State<MyMainPage> {
         margin: EdgeInsets.zero,
         child: Padding(
           padding: EdgeInsets.all(cardInnerEdge * 3),
-          child: Text(MyConfig.dateText(dateTime), style: MyConfig.normalText1),
+          child: Text(MyConfig.dateText(dateTime), style: MyConfig.normalTextBlack),
         ),
       );
     }
@@ -579,18 +570,18 @@ class _MyMainPageState extends State<MyMainPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Text(typeName, style: MyConfig.normalBoldText1),
+              Text(typeName, style: MyConfig.normalBoldTextBlack),
               Text("รหัสใบรับรอง : " + history.certificateId,
-                  style: MyConfig.smallText1),
+                  style: MyConfig.smallTextBlack),
               (history.type == 1)
                   ? Text("ผู้รับมอบ : " + history.receiverName,
-                      style: MyConfig.smallText1)
+                      style: MyConfig.smallTextBlack)
                   : SizedBox(),
               (history.type == 2)
                   ? Text("ผู้ส่งมอบ : " + history.senderName,
-                      style: MyConfig.smallText1)
+                      style: MyConfig.smallTextBlack)
                   : SizedBox(),
-              Text("เวลา : " + time, style: MyConfig.smallText1),
+              Text("เวลา : " + time, style: MyConfig.smallTextBlack),
             ],
           ),
         ),
@@ -630,7 +621,7 @@ class _MyMainPageState extends State<MyMainPage> {
       }
       return Container(
         child: Center(
-          child: Text(text, style: MyConfig.normalBoldText4),
+          child: Text(text, style: MyConfig.normalBoldTextTheme1),
         ),
       );
     }
@@ -751,8 +742,8 @@ class _MyMainPageState extends State<MyMainPage> {
       backgroundColor: MyConfig.themeColor1,
       selectedItemColor: MyConfig.whiteColor,
       unselectedItemColor: MyConfig.whiteColor.withOpacity(0.3),
-      selectedLabelStyle: MyConfig.normalText1,
-      unselectedLabelStyle: MyConfig.normalText1,
+      selectedLabelStyle: MyConfig.normalTextBlack,
+      unselectedLabelStyle: MyConfig.normalTextBlack,
       currentIndex: selectedPage,
       onTap: onPageChanged,
       items: <BottomNavigationBarItem>[

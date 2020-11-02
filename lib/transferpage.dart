@@ -92,8 +92,8 @@ class _MyTransferPageState extends State<MyTransferPage> {
     );
 
     Widget result = AlertDialog(
-      title: Center(child: Text(title, style: MyConfig.normalBoldText4)),
-      content: Text(content, style: MyConfig.normalText1),
+      title: Center(child: Text(title, style: MyConfig.normalBoldTextTheme1)),
+      content: Text(content, style: MyConfig.normalTextBlack),
       actions: [
         okButton,
       ],
@@ -165,7 +165,7 @@ class _MyTransferPageState extends State<MyTransferPage> {
     );
 
     Widget titleText =
-        Center(child: Text('เลือกผู้รับ', style: MyConfig.largeBoldText1));
+        Center(child: Text('เลือกผู้รับ', style: MyConfig.largeBoldTextBlack));
 
     Widget idButton = Center(
       child: ButtonTheme(
@@ -188,7 +188,7 @@ class _MyTransferPageState extends State<MyTransferPage> {
       ],
       textAlign: TextAlign.center,
       obscureText: false,
-      style: MyConfig.normalText1,
+      style: MyConfig.normalTextBlack,
       decoration: InputDecoration(
         isDense: true,
         contentPadding: EdgeInsets.all(textFieldEdge),
@@ -221,7 +221,7 @@ class _MyTransferPageState extends State<MyTransferPage> {
               height: dividerHeight,
             )),
       ),
-      Text("หรือ", style: MyConfig.normalText1),
+      Text("หรือ", style: MyConfig.normalTextBlack),
       Expanded(
         child: Container(
             margin: EdgeInsets.only(

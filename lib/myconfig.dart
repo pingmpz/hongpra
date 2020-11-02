@@ -23,59 +23,65 @@ class MyConfig {
   static double smallSize = 12;
   static double largeSize = 24;
 
-  static TextStyle normalText1 = TextStyle(
+  static TextStyle normalTextBlack = TextStyle(
       fontFamily: fontFamily1, fontSize: normalSize, color: blackColor);
-  static TextStyle normalText2 = TextStyle(
+  static TextStyle normalTextWhite = TextStyle(
       fontFamily: fontFamily1, fontSize: normalSize, color: whiteColor);
-  static TextStyle normalText3 =
+  static TextStyle normalTextRed =
       TextStyle(fontFamily: fontFamily1, fontSize: normalSize, color: redColor);
-  static TextStyle normalText4 = TextStyle(
+  static TextStyle normalTextTheme1 = TextStyle(
       fontFamily: fontFamily1, fontSize: normalSize, color: themeColor1);
 
-  static TextStyle normalBoldText1 = TextStyle(
+  static TextStyle normalBoldTextBlack = TextStyle(
       fontFamily: fontFamily1,
       fontSize: normalSize,
       color: blackColor,
       fontWeight: bold);
-  static TextStyle normalBoldText2 = TextStyle(
+  static TextStyle normalBoldTextWhite = TextStyle(
       fontFamily: fontFamily1,
       fontSize: normalSize,
       color: whiteColor,
       fontWeight: bold);
-  static TextStyle normalBoldText3 = TextStyle(
+  static TextStyle normalBoldTextRed = TextStyle(
       fontFamily: fontFamily1,
       fontSize: normalSize,
       color: redColor,
       fontWeight: bold);
-  static TextStyle normalBoldText4 = TextStyle(
+  static TextStyle normalBoldTextTheme1 = TextStyle(
       fontFamily: fontFamily1,
       fontSize: normalSize,
       color: themeColor1,
       fontWeight: bold);
 
-  static TextStyle smallText1 = TextStyle(
+  static TextStyle normalBoldTextGreen = TextStyle(
+      fontFamily: fontFamily1,
+      fontSize: normalSize,
+      color: greenColor,
+      fontWeight: bold);
+
+  static TextStyle smallTextBlack = TextStyle(
       fontFamily: fontFamily1, fontSize: smallSize, color: blackColor);
-  static TextStyle smallText5 =
+  static TextStyle smallTextGrey =
       TextStyle(fontFamily: fontFamily1, fontSize: smallSize, color: greyColor);
 
-  static TextStyle smallBoldText1 = TextStyle(
+  static TextStyle smallBoldTextBlack = TextStyle(
       fontFamily: fontFamily1,
       fontSize: smallSize,
       color: blackColor,
       fontWeight: bold);
 
-  static TextStyle largeBoldText1 = TextStyle(
+  static TextStyle largeBoldTextBlack = TextStyle(
       fontFamily: fontFamily1,
       fontSize: largeSize,
       color: blackColor,
       fontWeight: bold);
-  static TextStyle largeBoldText3 = TextStyle(
+  static TextStyle largeBoldTextRed = TextStyle(
       fontFamily: fontFamily1,
       fontSize: largeSize,
       color: redColor,
       fontWeight: bold
   );
-  static TextStyle largeBoldText4 = TextStyle(
+  static TextStyle largeBoldTextTheme1 = TextStyle(
       fontFamily: fontFamily1,
       fontSize: largeSize,
       color: themeColor1,
@@ -135,15 +141,16 @@ class MyConfig {
   - [Confirm] 4* Confirm navigator push method (may be pop until ?)
   - [Detail] 4* ImageList not correct sorting.
   - [History] 3* Emulator not showing correct time (real device show correct time)
+  - [Overall] 3* Card Text Overflow
   - [Overall] 3* Keyboard Overflow
   - [History] 2* Change tab while refreshing list get error message (not fatal ?)
   - [Detail] 1* Fullscreen Images, When zoom, horizontal slider change image
-
   UNFINISHED
-  - [Confirm] At loading animation when confirm
   - [Overall] Query optimization
+  - [APP] Add splash screen
   DONE
   - [Detail] Fullscreen Images slidable
   - [Setting] Add setting page [with logout button]
-  - [Overall] 3* Card Text Overflow -> Work ?
+  - [Home] 3* Card Text Overflow -> Work ?
+  - [Confirm] At loading animation when confirm -> On fail ?
 */

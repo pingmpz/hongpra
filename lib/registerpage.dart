@@ -139,8 +139,8 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
     );
 
     Widget result = AlertDialog(
-      title: Center(child: Text(title, style: MyConfig.normalBoldText4)),
-      content: Text(content, style: MyConfig.normalText1),
+      title: Center(child: Text(title, style: MyConfig.normalBoldTextTheme1)),
+      content: Text(content, style: MyConfig.normalTextBlack),
       actions: [
         okButton,
       ],
@@ -206,12 +206,12 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
       automaticallyImplyLeading: false,
     );
 
-    Widget emailLabel = Text('อีเมล', style: MyConfig.normalText1);
+    Widget emailLabel = Text('อีเมล', style: MyConfig.normalTextBlack);
 
     Widget emailField = TextField(
       controller: emailController,
       obscureText: false,
-      style: MyConfig.normalText1,
+      style: MyConfig.normalTextBlack,
       decoration: InputDecoration(
           isDense: true,
           contentPadding: EdgeInsets.all(textFieldEdge),
@@ -221,12 +221,12 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
           border: OutlineInputBorder()),
     );
 
-    Widget passwordLabel = Text('รหัสผ่าน', style: MyConfig.normalText1);
+    Widget passwordLabel = Text('รหัสผ่าน', style: MyConfig.normalTextBlack);
 
     Widget passwordField = TextField(
       controller: passwordController,
       obscureText: true,
-      style: MyConfig.normalText1,
+      style: MyConfig.normalTextBlack,
       decoration: InputDecoration(
           isDense: true,
           contentPadding: EdgeInsets.all(textFieldEdge),
@@ -236,12 +236,12 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
           border: OutlineInputBorder()),
     );
 
-    Widget rePasswordLabel = Text('ยืนยันรหัสผ่าน', style: MyConfig.normalText1);
+    Widget rePasswordLabel = Text('ยืนยันรหัสผ่าน', style: MyConfig.normalTextBlack);
 
     Widget rePasswordField = TextField(
       controller: confirmPasswordController,
       obscureText: true,
-      style: MyConfig.normalText1,
+      style: MyConfig.normalTextBlack,
       decoration: InputDecoration(
           isDense: true,
           contentPadding: EdgeInsets.all(textFieldEdge),
@@ -251,12 +251,12 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
           border: OutlineInputBorder()),
     );
 
-    Widget firstNameLabel = Text('ชื่อ', style: MyConfig.normalText1);
+    Widget firstNameLabel = Text('ชื่อ', style: MyConfig.normalTextBlack);
 
     Widget firstNameField = TextField(
       controller: firstNameController,
       obscureText: false,
-      style: MyConfig.normalText1,
+      style: MyConfig.normalTextBlack,
       decoration: InputDecoration(
           isDense: true,
           contentPadding: EdgeInsets.all(textFieldEdge),
@@ -266,12 +266,12 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
           border: OutlineInputBorder()),
     );
 
-    Widget lastNameLabel = Text('นามสกุล', style: MyConfig.normalText1);
+    Widget lastNameLabel = Text('นามสกุล', style: MyConfig.normalTextBlack);
 
     Widget lastNameField = TextField(
       controller: lastNameController,
       obscureText: false,
-      style: MyConfig.normalText1,
+      style: MyConfig.normalTextBlack,
       decoration: InputDecoration(
           isDense: true,
           contentPadding: EdgeInsets.all(textFieldEdge),
@@ -296,7 +296,7 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
     Widget footerBar = Container(
       height: footerHeight,
       color: MyConfig.blackColor,
-      child: Center(child: Text('@HongPra.com 2020, All right Reserved.', style: MyConfig.normalText2),
+      child: Center(child: Text('@HongPra.com 2020, All right Reserved.', style: MyConfig.normalTextWhite),
       ),
     );
 
