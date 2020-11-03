@@ -9,13 +9,16 @@ import 'package:loading/loading.dart';
 
 import 'Data/Amulet.dart';
 import 'Data/Certificate.dart';
+import 'Data/Person.dart';
+
 import 'mainpage.dart';
 
 class MyConfirmPage extends StatefulWidget {
-  final String receiverId;
+  final Person senderUser;
+  final Person receiverUser;
   final Amulet amulet;
   final Certificate certificate;
-  const MyConfirmPage(this.receiverId, this.amulet, this.certificate);
+  const MyConfirmPage(this.senderUser, this.receiverUser, this.amulet, this.certificate);
 
   @override
   _MyConfirmPageState createState() => _MyConfirmPageState();
@@ -26,11 +29,6 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
   bool _isLoading = false;
   bool _isLoaded = false;
 
-  //-- Items
-  String senderName = "";
-  String receiverName = "";
-  String certificateId = "";
-
   // FireStore and FireAuth instance
   final loginUser = FirebaseAuth.instance.currentUser;
   final _firestoreInstance = FirebaseFirestore.instance;
@@ -40,43 +38,13 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
   @override
   void initState() {
     super.initState();
-    getMyInfo();
-    getReceiverInfo();
-    certificateId = widget.certificate.id;
   }
 
-  void getMyInfo() async {
-    senderName = "";
-    QuerySnapshot result = await _firestoreInstance.collection("users").where("userId", isEqualTo: loginUser.uid).get();
-    result.docs.forEach((res) {
-      setState(() {
-        String firstName = (res.data()['firstName'] != null) ? res.data()['firstName'] : "";
-        String lastName = (res.data()['lastName'] != null) ? res.data()['lastName'] : "";
-        senderName = firstName + " " + lastName;
-      });
-    });
-  }
-
-  void getReceiverInfo() async {
-    receiverName = "";
-    QuerySnapshot result = await _firestoreInstance.collection("users").where("userId", isEqualTo: widget.receiverId).get();
-    result.docs.forEach((res) {
-      setState(() {
-        String firstName = (res.data()['firstName'] != null) ? res.data()['firstName'] : "";
-        String lastName = (res.data()['lastName'] != null) ? res.data()['lastName'] : "";
-        receiverName = firstName + " " + lastName;
-      });
-    });
-  }
 
   void confirm() async {
     setState(() {
       _isLoading = true;
     });
-
-    //-- Get Receiver and Sender Unique ID
-    String receiverUserId = widget.receiverId;
-    String senderUserId = loginUser.uid;
 
     //-- Create History of Sender
     await _firestoreInstance
@@ -84,23 +52,23 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
         .doc(loginUser.uid)
         .collection("history")
         .add({
-      "certificateId": certificateId,
+      "certificateId": widget.certificate.id,
       "date": FieldValue.serverTimestamp(),
-      "receiverId": receiverUserId,
-      "senderId": senderUserId,
+      "receiverId": widget.receiverUser.id,
+      "senderId": widget.senderUser.id,
       "type": 1
     });
 
     //-- Create History of Receiver
     await _firestoreInstance
         .collection("users")
-        .doc(widget.receiverId)
+        .doc(widget.receiverUser.id)
         .collection("history")
         .add({
-      "certificateId": certificateId,
+      "certificateId": widget.certificate.id,
       "date": FieldValue.serverTimestamp(),
-      "receiverId": receiverUserId,
-      "senderId": senderUserId,
+      "receiverId": widget.receiverUser.id,
+      "senderId": widget.senderUser.id,
       "type": 2
     });
 
@@ -114,7 +82,7 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
     //-- Add Amulet to Receiver
     await _firestoreInstance
         .collection("users")
-        .doc(widget.receiverId)
+        .doc(widget.receiverUser.id)
         .collection("amulet")
         .doc(widget.amulet.id)
         .set(resultAmulet.data());
@@ -197,7 +165,7 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
             children: [
               Center(
                   child:
-                      Text("ข้อมูลการส่งมอบ", style: MyConfig.normalBoldTextGreen)),
+                      Text("ข้อมูลการส่งมอบ", style: MyConfig.normalBoldTextTheme1)),
               SizedBox(height: columnSpace),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -211,21 +179,21 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text('ผู้ส่ง', style: MyConfig.smallBoldTextBlack),
-                  Text(senderName, style: MyConfig.smallTextBlack),
+                  Text(widget.senderUser.getFullName(), style: MyConfig.smallTextBlack),
                 ],
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text('ผู้รับ', style: MyConfig.smallBoldTextBlack),
-                  Text(receiverName, style: MyConfig.smallTextBlack),
+                  Text(widget.receiverUser.getFullName(), style: MyConfig.smallTextBlack),
                 ],
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text('รหัสใบรับรอง', style: MyConfig.smallBoldTextBlack),
-                  Text(certificateId, style: MyConfig.smallTextBlack),
+                  Text(widget.certificate.id, style: MyConfig.smallTextBlack),
                 ],
               ),
             ],

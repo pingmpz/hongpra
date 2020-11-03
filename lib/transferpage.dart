@@ -10,6 +10,7 @@ import 'package:hongpra/myconfig.dart';
 
 import 'Data/Amulet.dart';
 import 'Data/Certificate.dart';
+import 'Data/Person.dart';
 
 class MyTransferPage extends StatefulWidget {
   final Amulet amulet;
@@ -50,35 +51,47 @@ class _MyTransferPageState extends State<MyTransferPage> {
   }
 
   void approve(int type, String id) async {
-    String userId = "";
+    Person senderUser;
+    Person receiverUser;
+    QuerySnapshot result;
 
+    // Get Receiver Info
     if (type == 1) {
       //-- Check By uniqueId
-      QuerySnapshot result = await _firestoreInstance
-          .collection("users")
-          .where("uniqueId", isEqualTo: id)
-          .get();
-      result.docs.forEach((res) {
-        userId = res.data()['userId'];
-      });
+      result = await _firestoreInstance.collection("users").where("uniqueId", isEqualTo: id).get();
     } else if (type == 2) {
       //-- Check By userId
-      QuerySnapshot result = await _firestoreInstance
-          .collection("users")
-          .where("userId", isEqualTo: id)
-          .get();
-      result.docs.forEach((res) {
-        userId = res.data()['userId'];
-      });
+      result = await _firestoreInstance.collection("users").where("userId", isEqualTo: id).get();
     }
-    if (userId == loginUser.uid) {
-      buildAlertDialog('เกิดข้อผิดพลาด', 'ไม่สามารถส่งมอบให้ตัวเองได้');
-    } else if (userId != "" && userId != null) {
+    if (result != null) {
+      result.docs.forEach((res) {
+        receiverUser = new Person(
+          (res.data()['userId'] != null) ? res.data()['userId'] : "",
+          (res.data()['firstName'] != null) ? res.data()['firstName'] : "",
+          (res.data()['lastName'] != null) ? res.data()['lastName'] : "",
+        );
+      });
+      if (receiverUser.id == loginUser.uid) {
+        buildAlertDialog('เกิดข้อผิดพลาด', 'ไม่สามารถส่งมอบให้ตัวเองได้');
+        return;
+      }
 
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => MyConfirmPage(userId, widget.amulet, widget.certificate)));
+      // Get Sender Info
+      result = null;
+      result = await _firestoreInstance.collection("users").where("userId", isEqualTo: loginUser.uid).get();
+      if (result != null) {
+        result.docs.forEach((res) {
+          senderUser = new Person(
+            (res.data()['userId'] != null) ? res.data()['userId'] : "",
+            (res.data()['firstName'] != null) ? res.data()['firstName'] : "",
+            (res.data()['lastName'] != null) ? res.data()['lastName'] : "",
+          );
+        });
+
+        Navigator.push(context, MaterialPageRoute(builder: (context) => MyConfirmPage(senderUser, receiverUser, widget.amulet, widget.certificate)));
+      } else {
+        buildAlertDialog('เกิดข้อผิดพลาด', 'ระบบขัดข้อง');
+      }
     } else {
       buildAlertDialog('เกิดข้อผิดพลาด', 'ไม่พบบัญชีผู้ใช้งาน');
     }
