@@ -100,8 +100,7 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
       _isLoading = false;
       _isLoaded = true;
     });
-
-    Future.delayed(Duration(seconds: 2)).then((value) => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyMainPage())));
+    Future.delayed(Duration(seconds: 2)).then((value) => Navigator.of(context).popUntil((route) => route.isFirst));
   }
 
   void back() {

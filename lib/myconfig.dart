@@ -138,15 +138,16 @@ class MyConfig {
 /*
   PROBLEMS
   - [History] 5* History time sorting problem.
-  - [Confirm] 4* Confirm navigator push method (may be pop until ?)
   - [Detail] 4* ImageList not correct sorting.
   - [History] 3* Emulator not showing correct time (real device show correct time)
   - [Overall] 3* Card Text Overflow
   - [Overall] 3* Keyboard Overflow
   - [History] 2* Change tab while refreshing list get error message (not fatal ?)
-  - [Detail] 1* Fullscreen Images, When zoom, horizontal slider change image
+  - [Detail] 1* Fullscreen Images -> change lib
   UNFINISHED
   - [Overall] Query optimization
+  - [Setting] UI
+  - [Splash] UI
   DONE
   - [Detail] Fullscreen Images slidable
   - [Setting] Add setting page [with logout button]
