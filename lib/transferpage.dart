@@ -69,6 +69,7 @@ class _MyTransferPageState extends State<MyTransferPage> {
           (res.data()['userId'] != null) ? res.data()['userId'] : "",
           (res.data()['firstName'] != null) ? res.data()['firstName'] : "",
           (res.data()['lastName'] != null) ? res.data()['lastName'] : "",
+          (res.data()['uniqueId'] != null) ? res.data()['uniqueId'] : "",
         );
       });
       if (receiverUser.id == loginUser.uid) {
@@ -85,6 +86,7 @@ class _MyTransferPageState extends State<MyTransferPage> {
             (res.data()['userId'] != null) ? res.data()['userId'] : "",
             (res.data()['firstName'] != null) ? res.data()['firstName'] : "",
             (res.data()['lastName'] != null) ? res.data()['lastName'] : "",
+            (res.data()['uniqueId'] != null) ? res.data()['uniqueId'] : "",
           );
         });
 

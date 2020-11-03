@@ -18,6 +18,7 @@ import 'Data/Amulet.dart';
 import 'Data/Certificate.dart';
 import 'Data/AmuletCard.dart';
 import 'Data/History.dart';
+import 'Data/Person.dart';
 
 class MyMainPage extends StatefulWidget {
   @override
@@ -46,7 +47,7 @@ class _MyMainPageState extends State<MyMainPage> {
   //-- Items
   List<AmuletCard> amuletList = new List<AmuletCard>();
   List<History> historyList = new List<History>();
-  String uniqueId = "";
+  Person currentUser = new Person('', '', '', '');
 
   //-- Items State
   bool _isAmuletListLoaded = false;
@@ -74,20 +75,28 @@ class _MyMainPageState extends State<MyMainPage> {
       if (FirebaseAuth.instance.currentUser != null) {
         loginUser = FirebaseAuth.instance.currentUser;
         print("# Login User ID : " + loginUser.uid);
+        getUserInfo();
         generateAmuletList();
         generateHistoryList();
-        getUniqueId();
       } else {
         Future(() {
-          Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (context) => MyLoginPage()),
-              ModalRoute.withName('/'));
+          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => MyLoginPage()), ModalRoute.withName('/'));
         });
       }
     } catch (e) {
       print(e.toString());
     }
+  }
+
+  void getUserInfo() async {
+    DocumentSnapshot result =
+    await _firestoreInstance.collection("users").doc(loginUser.uid).get();
+    currentUser = new Person(
+      (result.data()['userId'] != null) ? result.data()['userId'] : "",
+      (result.data()['firstName'] != null) ? result.data()['firstName'] : "",
+      (result.data()['lastName'] != null) ? result.data()['lastName'] : "",
+      (result.data()['uniqueId'] != null) ? result.data()['uniqueId'] : "",
+    );
   }
 
   void generateAmuletList() async {
@@ -189,14 +198,6 @@ class _MyMainPageState extends State<MyMainPage> {
     });
   }
 
-  void getUniqueId() async {
-    historyList = new List<History>();
-    DocumentSnapshot result =
-        await _firestoreInstance.collection("users").doc(loginUser.uid).get();
-    uniqueId =
-        (result.data()['uniqueId'] != null) ? result.data()['uniqueId'] : "";
-  }
-
   void signOut() {
     FirebaseAuth.instance.signOut();
     Navigator.pushReplacement(
@@ -248,8 +249,7 @@ class _MyMainPageState extends State<MyMainPage> {
   bool historyListIsNotEmpty(int type) {
     List<History> showingList = historyList;
     if (type != 0)
-      showingList =
-          historyList.where((element) => element.type == type).toList();
+      showingList = historyList.where((element) => element.type == type).toList();
     if (showingList.isNotEmpty) return true;
     return false;
   }
@@ -492,7 +492,7 @@ class _MyMainPageState extends State<MyMainPage> {
               Text('UID', style: MyConfig.largeBoldTextTheme1),
               SizedBox(height: screenHeight * 0.01),
               Center(
-                  child: Text(uniqueId,
+                  child: Text(currentUser.uniqueId,
                       style: MyConfig.largeBoldTextBlack
                           .copyWith(letterSpacing: 2))),
             ],

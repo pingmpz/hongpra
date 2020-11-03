@@ -147,10 +147,10 @@ class MyConfig {
   - [Detail] 1* Fullscreen Images, When zoom, horizontal slider change image
   UNFINISHED
   - [Overall] Query optimization
-  - [APP] Add splash screen
   DONE
   - [Detail] Fullscreen Images slidable
   - [Setting] Add setting page [with logout button]
   - [Home] 3* Card Text Overflow -> Work ?
   - [Confirm] At loading animation when confirm -> On fail ?
+  - [APP] Add splash screen -> Only show animation
 */
