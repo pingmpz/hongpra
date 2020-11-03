@@ -4,17 +4,18 @@ import 'package:hongpra/myconfig.dart';
 import 'package:splashscreen/splashscreen.dart';
 
 class MySplashPage extends StatefulWidget {
+
   @override
   _MySplashPageState createState() => _MySplashPageState();
 }
 
 class _MySplashPageState extends State<MySplashPage> {
+  bool testing = true;
 
   @override
   Widget build(BuildContext context) {
-
     return SplashScreen(
-        seconds: 5,
+        seconds: (testing) ? 0 : 5,
         navigateAfterSeconds: MyMainPage(),
         title: Text('ห้องพระ', style: MyConfig.logoText),
         backgroundColor: MyConfig.themeColor1,

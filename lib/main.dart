@@ -12,9 +12,9 @@ void main() async {
   await Firebase.initializeApp();
 
   //---
-  bool _testing = true;
+  bool testing = true;
 
-  if(_testing) {
+  if(testing) {
     runApp(DevicePreview(
       builder: (context) => MyTestApp(),
     ),
@@ -36,6 +36,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyTestApp extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

@@ -8,6 +8,7 @@ import 'package:hongpra/myconfig.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:hongpra/transferpage.dart';
 import 'package:photo_view/photo_view.dart';
+import 'package:photo_view/photo_view_gallery.dart';
 
 import 'Data/Amulet.dart';
 import 'Data/Certificate.dart';
@@ -39,8 +40,11 @@ class _MyDetailPageState extends State<MyDetailPage> {
   }
 
   void transfer() {
-    Navigator.push(context,
-        MaterialPageRoute(builder: (context) => MyTransferPage(widget.amulet, widget.certificate)));
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                MyTransferPage(widget.amulet, widget.certificate)));
   }
 
   void back() {
@@ -48,7 +52,8 @@ class _MyDetailPageState extends State<MyDetailPage> {
   }
 
   void certificateFullScreen() {
-    if (widget.certificate.image != "") enterFullScreenImage([widget.certificate.image], 0);
+    if (widget.certificate.image != "")
+      enterFullScreenImage([widget.certificate.image], 0);
   }
 
   void enterFullScreenImage(List<String> paths, int index) {
@@ -82,7 +87,9 @@ class _MyDetailPageState extends State<MyDetailPage> {
 
     // double desireWidth = (screenWidth < minWidth) ? screenWidth : minWidth;
     double desireHeight = (screenHeight < minHeight) ? screenHeight : minHeight;
-    double screenEdge = (screenWidth <= minWidth) ? screenMinEdge : min(screenWidth - minWidth, screenMaxEdge);
+    double screenEdge = (screenWidth <= minWidth)
+        ? screenMinEdge
+        : min(screenWidth - minWidth, screenMaxEdge);
     double carouselHeight = screenHeight * imageHeightRatio;
     double carouselWidth = screenWidth;
     double buttonWidth = screenWidth - (screenEdge * 4);
@@ -114,8 +121,8 @@ class _MyDetailPageState extends State<MyDetailPage> {
       automaticallyImplyLeading: false,
     );
 
-    Widget amuletTitleText =
-        Center(child: Text(widget.amulet.name, style: MyConfig.largeBoldTextBlack));
+    Widget amuletTitleText = Center(
+        child: Text(widget.amulet.name, style: MyConfig.largeBoldTextBlack));
 
     List<Widget> buildImages(List<String> paths) {
       return List<Widget>.generate(
@@ -150,12 +157,36 @@ class _MyDetailPageState extends State<MyDetailPage> {
       ),
     );
 
+
     List<Widget> buildFullScreenImages(List<String> paths) {
-      return List<Widget>.generate(
-        paths.length, (index) => PhotoView(imageProvider: NetworkImage(paths[index]),
+      //-- Old Version
+      // return List<Widget>.generate(
+      //   paths.length,
+      //       (index) => PhotoView(imageProvider: NetworkImage(paths[index])),
+      // );
+      return [PhotoViewGallery.builder(
+        scrollPhysics: const BouncingScrollPhysics(),
+        builder: (BuildContext context, int index) {
+          return PhotoViewGalleryPageOptions(
+            imageProvider: NetworkImage(paths[index]),
+            initialScale: PhotoViewComputedScale.contained * 0.8,
+          );
+        },
+        itemCount: paths.length,
+        loadingBuilder: (context, event) => Center(
+          child: Container(
+            width: 20.0,
+            height: 20.0,
+            child: CircularProgressIndicator(
+              value: event == null
+                  ? 0
+                  : event.cumulativeBytesLoaded / event.expectedTotalBytes,
             ),
-      );
+          ),
+        ),
+      )];
     }
+
 
     Widget fullScreenImages() {
       return Container(
@@ -203,7 +234,9 @@ class _MyDetailPageState extends State<MyDetailPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Center(child: Text("ข้อมูลพระ", style: MyConfig.normalBoldTextTheme1)),
+              Center(
+                  child:
+                      Text("ข้อมูลพระ", style: MyConfig.normalBoldTextTheme1)),
               SizedBox(height: columnSpace),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -216,7 +249,8 @@ class _MyDetailPageState extends State<MyDetailPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text("พิมพ์พระ", style: MyConfig.smallBoldTextBlack),
-                  Text(widget.amulet.categories, style: MyConfig.smallTextBlack),
+                  Text(widget.amulet.categories,
+                      style: MyConfig.smallTextBlack),
                 ],
               ),
               Row(
@@ -248,8 +282,8 @@ class _MyDetailPageState extends State<MyDetailPage> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Center(
-                  child:
-                      Text("ข้อมูลใบรับรอง", style: MyConfig.normalBoldTextTheme1)),
+                  child: Text("ข้อมูลใบรับรอง",
+                      style: MyConfig.normalBoldTextTheme1)),
               SizedBox(height: columnSpace),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -270,7 +304,8 @@ class _MyDetailPageState extends State<MyDetailPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text("รับรองโดย", style: MyConfig.smallBoldTextBlack),
-                  Text(widget.certificate.confirmBy, style: MyConfig.smallTextBlack),
+                  Text(widget.certificate.confirmBy,
+                      style: MyConfig.smallTextBlack),
                 ],
               ),
               SizedBox(height: columnSpace),

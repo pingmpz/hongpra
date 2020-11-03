@@ -137,21 +137,21 @@ class MyConfig {
 
 /*
   PROBLEMS
-  - [History] 5* History time sorting problem.
-  - [Detail] 4* ImageList not correct sorting.
-  - [History] 3* Emulator not showing correct time (real device show correct time)
-  - [Overall] 3* Card Text Overflow
-  - [Overall] 3* Keyboard Overflow
-  - [History] 2* Change tab while refreshing list get error message (not fatal ?)
-  - [Detail] 1* Fullscreen Images -> change lib
+  - [History] History time sorting problem.
+  - [Overall] Card Text Overflow
+  - [Overall] Keyboard Overflow
+  - [History] Change tab while refreshing list get error message (not fatal ?)
   UNFINISHED
   - [Overall] Query optimization
   - [Setting] UI
   - [Splash] UI
+  - [Main] Stream builder !!?
   DONE
-  - [Detail] Fullscreen Images slidable
-  - [Setting] Add setting page [with logout button]
   - [Home] 3* Card Text Overflow -> Work ?
   - [Confirm] At loading animation when confirm -> On fail ?
-  - [APP] Add splash screen -> Only show animation
+  - [Detail] 4* ImageList not correct sorting. -> Corrected ?
+  //-- On 04/11 Morning
+  - [Detail] Fullscreen Images -> Working well ?
+  - [Transfer] AlertDialog, Loading -> Need more test
+
 */

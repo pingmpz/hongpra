@@ -11,8 +11,6 @@ import 'Data/Amulet.dart';
 import 'Data/Certificate.dart';
 import 'Data/Person.dart';
 
-import 'mainpage.dart';
-
 class MyConfirmPage extends StatefulWidget {
   final Person senderUser;
   final Person receiverUser;

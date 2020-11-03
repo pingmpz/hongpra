@@ -373,8 +373,8 @@ class _MyMainPageState extends State<MyMainPage> {
             child: Padding(
               padding: EdgeInsets.all(cardInnerEdge * 3),
               child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Expanded(
                     flex: 3,
