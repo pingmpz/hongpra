@@ -39,7 +39,9 @@ class _MyTransferPageState extends State<MyTransferPage> {
 
   void scan() async {
     scanner = await FlutterBarcodeScanner.scanBarcode("#" + MyConfig.colorTheme1, "Cancel", true, ScanMode.QR);
-    if(scanner != null && scanner != "" && scanner.isNotEmpty){
+    if(scanner == "-1"){
+      return;
+    } else if(scanner != null && scanner != "" && scanner.isNotEmpty){
       setState(() => _isLoading = true);
       QuerySnapshot result = await _firestoreInstance.collection("users").where("userId", isEqualTo: scanner).get();
       approve(result);
@@ -69,12 +71,7 @@ class _MyTransferPageState extends State<MyTransferPage> {
 
     if (result != null && result.size != 0) {
       result.docs.forEach((res) {
-        receiverUser = new Person(
-          (res.data()['userId'] != null) ? res.data()['userId'] : "",
-          (res.data()['firstName'] != null) ? res.data()['firstName'] : "",
-          (res.data()['lastName'] != null) ? res.data()['lastName'] : "",
-          (res.data()['uniqueId'] != null) ? res.data()['uniqueId'] : "",
-        );
+        receiverUser = new Person.fromDocumentSnapshot(res);
       });
       if (receiverUser.id == loginUser.uid) {
         setState(() => _isLoading = false);
@@ -87,12 +84,7 @@ class _MyTransferPageState extends State<MyTransferPage> {
       result = await _firestoreInstance.collection("users").where("userId", isEqualTo: loginUser.uid).get();
       if (result != null  && result.size != 0) {
         result.docs.forEach((res) {
-          senderUser = new Person(
-            (res.data()['userId'] != null) ? res.data()['userId'] : "",
-            (res.data()['firstName'] != null) ? res.data()['firstName'] : "",
-            (res.data()['lastName'] != null) ? res.data()['lastName'] : "",
-            (res.data()['uniqueId'] != null) ? res.data()['uniqueId'] : "",
-          );
+          senderUser = new Person.fromDocumentSnapshot(res);
         });
         setState(() => _isLoading = false);
         Navigator.push(context, MaterialPageRoute(builder: (context) => MyConfirmPage(senderUser, receiverUser, widget.amulet, widget.certificate)));

@@ -141,6 +141,7 @@ class MyConfig {
   - [Overall] Card Text Overflow
   - [Overall] Keyboard Overflow
   - [History] Change tab while refreshing list get error message (not fatal ?)
+  - [Transfer] Multi-tap at text field get error message (other text field?)
   UNFINISHED
   - [Overall] Query optimization
   - [Setting] UI

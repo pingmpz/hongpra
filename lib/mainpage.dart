@@ -76,7 +76,6 @@ class _MyMainPageState extends State<MyMainPage> {
         loginUser = FirebaseAuth.instance.currentUser;
         print("# Login User ID : " + loginUser.uid);
         getUserInfo();
-        generateAmuletList();
         generateHistoryList();
       } else {
         Future(() {
@@ -100,26 +99,6 @@ class _MyMainPageState extends State<MyMainPage> {
       (result.data()['lastName'] != null) ? result.data()['lastName'] : "",
       (result.data()['uniqueId'] != null) ? result.data()['uniqueId'] : "",
     );
-  }
-
-  void generateAmuletList() async {
-    setState(() {
-      amuletList = new List<AmuletCard>();
-      _isAmuletListLoaded = false;
-    });
-
-    QuerySnapshot result = await _firestoreInstance
-        .collection("users")
-        .doc(loginUser.uid)
-        .collection("amulet")
-        .get();
-    if (result.size == 0) setState(() => _isAmuletListLoaded = true);
-    result.docs.forEach((value) {
-      setState(() {
-        amuletList.add(new AmuletCard.fromDocumentSnapshot(value));
-        _isAmuletListLoaded = true;
-      });
-    });
   }
 
   void generateHistoryList() async {
@@ -185,15 +164,6 @@ class _MyMainPageState extends State<MyMainPage> {
       for (AmuletCard item in amuletList) {
         item.isShowing = true;
       }
-    });
-  }
-
-  void refreshAmuletList() async {
-    setState(() async {
-      generateAmuletList();
-      searchController.clear();
-      await Future.delayed(Duration(milliseconds: 1000));
-      refreshAmuletListController.refreshCompleted();
     });
   }
 
@@ -308,7 +278,7 @@ class _MyMainPageState extends State<MyMainPage> {
                         hintText: "ค้นหา",
                         hintStyle: MyConfig.normalTextBlack,
                       ),
-                      onChanged: (text) => {search()},
+                      onChanged: (text) => search(),
                     ),
                   );
                 } else {
@@ -384,20 +354,6 @@ class _MyMainPageState extends State<MyMainPage> {
       );
     }
 
-    List<Widget> amuletCardBuilder() {
-      List<AmuletCard> showingList =
-          amuletList.where((element) => element.isShowing == true).toList();
-      return List<Widget>.generate(showingList.length, (index) {
-        return buildAmuletCard(showingList[index]);
-      });
-    }
-
-    Widget amuletGrid = GridView.count(
-      crossAxisCount: gridCount,
-      childAspectRatio: gridRatio,
-      children: amuletCardBuilder(),
-    );
-
     Widget emptyAmuletScreen = Container(
       child: Center(
         child: Text('คุณยังไม่มีพระในครอบครอง',
@@ -405,7 +361,7 @@ class _MyMainPageState extends State<MyMainPage> {
       ),
     );
 
-    Widget amuletGrid2() {
+    Widget amuletGrid() {
       return StreamBuilder<QuerySnapshot>(
         stream: _firestoreInstance.collection("users").doc(loginUser.uid).collection("amulet").snapshots(),
         builder: (context, snapshot) {
@@ -431,16 +387,7 @@ class _MyMainPageState extends State<MyMainPage> {
     Widget page_0 = Scaffold(
       backgroundColor: MyConfig.themeColor2,
       appBar: mySearchBar,
-      body: SmartRefresher(
-        enablePullDown: true,
-        controller: refreshAmuletListController,
-        onRefresh: refreshAmuletList,
-        child: (amuletList.isNotEmpty)
-            ? amuletGrid2()
-            : (_isAmuletListLoaded)
-                ? emptyAmuletScreen
-                : loadingEffect,
-      ),
+      body: amuletGrid(),
     );
 
     //-------------------------------------------------------------------------------------------------------- Page [1]
