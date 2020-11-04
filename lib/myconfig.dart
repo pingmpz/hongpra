@@ -129,15 +129,23 @@ class MyConfig {
     int day = dateTime.day;
     int month = dateTime.month;
     int year = dateTime.year + 543;
-    String result =
-        day.toString() + " " + monthName[month - 1] + " " + year.toString();
+    String result = day.toString() + " " + monthName[month - 1] + " " + year.toString();
+    return result;
+  }
+
+  static String timeText(DateTime dateTime) {
+    if (dateTime == null) return "";
+    String hourText = (dateTime.hour < 10) ? "0" + dateTime.hour.toString() : dateTime.hour.toString();
+    String minuteText = (dateTime.minute < 10) ? "0" + dateTime.minute.toString() : dateTime.minute.toString();
+    String result = hourText + "." + minuteText;
     return result;
   }
 }
 
 /*
   PROBLEMS
-  - [History] History time sorting problem.
+  - [Main] Search function
+  - [History] History time sorting problem / Name generator
   - [Overall] Card Text Overflow
   - [Overall] Keyboard Overflow
   - [History] Change tab while refreshing list get error message (not fatal ?)
@@ -146,7 +154,6 @@ class MyConfig {
   - [Overall] Query optimization
   - [Setting] UI
   - [Splash] UI
-  - [Main] Stream builder !!?
   DONE
   - [Home] 3* Card Text Overflow -> Work ?
   - [Confirm] At loading animation when confirm -> On fail ?
@@ -154,5 +161,6 @@ class MyConfig {
   //-- On 04/11 Morning
   - [Detail] Fullscreen Images -> Working well ?
   - [Transfer] AlertDialog, Loading -> Need more test
+  - [Main] Stream builder -> Done !!
 
 */

@@ -15,6 +15,13 @@ class Person {
     this.uniqueId = (snapshot.data()['uniqueId'] != null) ? snapshot.data()['uniqueId'] : "";
   }
 
+  Person.fromEmpty(){
+    this.id = "";
+    this.firstName = "";
+    this.lastName = "";
+    this.uniqueId = "";
+  }
+
   String getFullName() {
     return firstName + " " + lastName;
   }
