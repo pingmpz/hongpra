@@ -80,7 +80,10 @@ class _MyMainPageState extends State<MyMainPage> {
         generateHistoryList();
       } else {
         Future(() {
-          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => MyLoginPage()), ModalRoute.withName('/'));
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => MyLoginPage()),
+              ModalRoute.withName('/'));
         });
       }
     } catch (e) {
@@ -90,7 +93,7 @@ class _MyMainPageState extends State<MyMainPage> {
 
   void getUserInfo() async {
     DocumentSnapshot result =
-    await _firestoreInstance.collection("users").doc(loginUser.uid).get();
+        await _firestoreInstance.collection("users").doc(loginUser.uid).get();
     currentUser = new Person(
       (result.data()['userId'] != null) ? result.data()['userId'] : "",
       (result.data()['firstName'] != null) ? result.data()['firstName'] : "",
@@ -113,39 +116,7 @@ class _MyMainPageState extends State<MyMainPage> {
     if (result.size == 0) setState(() => _isAmuletListLoaded = true);
     result.docs.forEach((value) {
       setState(() {
-        amuletList.add(new AmuletCard(
-          Amulet(
-            (value.data()['amuletId'] != null) ? value.data()['amuletId'] : "",
-            (value.data()['amuletImageList'] != null)
-                ? HashMap<String, dynamic>.from(value.data()['amuletImageList'])
-                    .values
-                    .toList()
-                    .cast<String>()
-                : [],
-            (value.data()['name'] != null) ? value.data()['name'] : "",
-            (value.data()['categories'] != null)
-                ? value.data()['categories']
-                : "",
-            (value.data()['texture'] != null) ? value.data()['texture'] : "",
-            (value.data()['information'] != null)
-                ? value.data()['information']
-                : "",
-          ),
-          Certificate(
-            (value.data()['certificateId'] != null)
-                ? value.data()['certificateId']
-                : "",
-            (value.data()['certificateImage'] != null)
-                ? value.data()['certificateImage']
-                : "",
-            (value.data()['confirmBy'] != null)
-                ? value.data()['confirmBy']
-                : "",
-            (value.data()['confirmDate'] != null)
-                ? value.data()['confirmDate'].toDate()
-                : null,
-          ),
-        ));
+        amuletList.add(new AmuletCard.fromDocumentSnapshot(value));
         _isAmuletListLoaded = true;
       });
     });
@@ -180,19 +151,7 @@ class _MyMainPageState extends State<MyMainPage> {
         senderName = firstName + " " + lastName;
       }
       setState(() {
-        historyList.add(new History(
-          (value.data()['type'] != null) ? value.data()['type'] : -1,
-          (value.data()['certificateId'] != null)
-              ? value.data()['certificateId']
-              : "",
-          (value.data()['receiverId'] != null)
-              ? value.data()['receiverId']
-              : "",
-          receiverName,
-          (value.data()['senderId'] != null) ? value.data()['senderId'] : "",
-          senderName,
-          (value.data()['date'] != null) ? value.data()['date'].toDate() : null,
-        ));
+        historyList.add(History.fromDocumentSnapshotWithName(value, receiverName, senderName));
         // _isHistoryListLoaded = true;
       });
     });
@@ -249,7 +208,8 @@ class _MyMainPageState extends State<MyMainPage> {
   bool historyListIsNotEmpty(int type) {
     List<History> showingList = historyList;
     if (type != 0)
-      showingList = historyList.where((element) => element.type == type).toList();
+      showingList =
+          historyList.where((element) => element.type == type).toList();
     if (showingList.isNotEmpty) return true;
     return false;
   }
@@ -445,6 +405,27 @@ class _MyMainPageState extends State<MyMainPage> {
       ),
     );
 
+    Widget amuletGrid2() {
+      return StreamBuilder<QuerySnapshot>(
+        stream: _firestoreInstance.collection("users").doc(loginUser.uid).collection("amulet").snapshots(),
+        builder: (context, snapshot) {
+          return !snapshot.hasData
+              ? emptyAmuletScreen
+              : GridView.builder(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: gridCount,
+              childAspectRatio: gridRatio,
+            ),
+            itemCount: snapshot.data.docs.length,
+            itemBuilder: (context, index) {
+              DocumentSnapshot result = snapshot.data.docs[index];
+              return buildAmuletCard(AmuletCard.fromDocumentSnapshot(result));
+            },
+          );
+        },
+      );
+    }
+
     //-------------------------------------------------------------------------------------------------------- Page [0]
 
     Widget page_0 = Scaffold(
@@ -455,7 +436,7 @@ class _MyMainPageState extends State<MyMainPage> {
         controller: refreshAmuletListController,
         onRefresh: refreshAmuletList,
         child: (amuletList.isNotEmpty)
-            ? amuletGrid
+            ? amuletGrid2()
             : (_isAmuletListLoaded)
                 ? emptyAmuletScreen
                 : loadingEffect,
