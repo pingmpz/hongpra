@@ -43,7 +43,7 @@ class _MyTransferPageState extends State<MyTransferPage> {
       return;
     } else if(scanner != null && scanner != "" && scanner.isNotEmpty){
       setState(() => _isLoading = true);
-      QuerySnapshot result = await _firestoreInstance.collection("users").where("userId", isEqualTo: scanner).get();
+      QuerySnapshot result = await _firestoreInstance.collection("users").where("userId", isEqualTo: scanner).limit(1).get();
       approve(result);
     } else {
       setState(() => _isLoading = false);
@@ -60,7 +60,7 @@ class _MyTransferPageState extends State<MyTransferPage> {
       buildAlertDialog('เกิดข้อผิดพลาด', 'ไม่พบบัญชีผู้ใช้งาน');
     } else {
       setState(() => _isLoading = true);
-      QuerySnapshot result = await _firestoreInstance.collection("users").where("uniqueId", isEqualTo: idController.text).get();
+      QuerySnapshot result = await _firestoreInstance.collection("users").where("uniqueId", isEqualTo: idController.text).limit(1).get();
       approve(result);
     }
   }
@@ -69,6 +69,7 @@ class _MyTransferPageState extends State<MyTransferPage> {
     Person senderUser;
     Person receiverUser;
 
+    // Get Receiver Info
     if (result != null && result.size != 0) {
       result.docs.forEach((res) {
         receiverUser = new Person.fromDocumentSnapshot(res);
@@ -81,7 +82,7 @@ class _MyTransferPageState extends State<MyTransferPage> {
 
       // Get Sender Info
       result = null;
-      result = await _firestoreInstance.collection("users").where("userId", isEqualTo: loginUser.uid).get();
+      result = await _firestoreInstance.collection("users").where("userId", isEqualTo: loginUser.uid).limit(1).get();
       if (result != null  && result.size != 0) {
         result.docs.forEach((res) {
           senderUser = new Person.fromDocumentSnapshot(res);

@@ -145,7 +145,6 @@ class MyConfig {
 /*
   PROBLEMS
   - [Main] Search function
-  - [History] History time sorting problem / Name generator
   - [Overall] Card Text Overflow
   - [Overall] Keyboard Overflow
   - [History] Change tab while refreshing list get error message (not fatal ?)
@@ -162,5 +161,7 @@ class MyConfig {
   - [Detail] Fullscreen Images -> Working well ?
   - [Transfer] AlertDialog, Loading -> Need more test
   - [Main] Stream builder -> Done !!
+  //-- On 05/11 Morning
+  - [History] History time sorting problem / Name generator -> Fixed
 
 */

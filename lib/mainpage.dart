@@ -376,6 +376,28 @@ class _MyMainPageState extends State<MyMainPage> {
       );
     }
 
+    Widget buildHistoryCardName(int type, String id) {
+      String typeName = (type == 1) ? "ผู้ส่งมอบ : " : "ผู้รับมอบ : ";
+      if(type != null && id != null) {
+        return StreamBuilder<QuerySnapshot>(
+          stream: _firestoreInstance.collection("users").where("userId", isEqualTo: id).limit(1).snapshots(),
+          builder: (context, snapshot) {
+            String name = "", firstName = "", lastName = "";
+            if (snapshot.hasData) {
+              snapshot.data.docs.forEach((result) {
+                firstName = (result.data()['firstName'] != null) ? result.data()['firstName'] : "";
+                lastName = (result.data()['lastName'] != null) ? result.data()['lastName'] : "";
+              });
+            }
+            name = firstName + " " + lastName;
+            return Text(typeName + name, style: MyConfig.smallTextBlack);
+          },
+        );
+      } else {
+        return Text(typeName, style: MyConfig.smallTextBlack);
+      }
+    }
+
     Widget buildHistoryCard(History history) {
       String typeName = (history.type == 1) ? "ส่งมอบ" : "รับมอบ";
       return Card(
@@ -387,16 +409,9 @@ class _MyMainPageState extends State<MyMainPage> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Text(typeName, style: MyConfig.normalBoldTextBlack),
-              Text("รหัสใบรับรอง : " + history.certificateId,
-                  style: MyConfig.smallTextBlack),
-              (history.type == 1)
-                  ? Text("ผู้รับมอบ : " + history.receiverName,
-                      style: MyConfig.smallTextBlack)
-                  : SizedBox(),
-              (history.type == 2)
-                  ? Text("ผู้ส่งมอบ : " + history.senderName,
-                      style: MyConfig.smallTextBlack)
-                  : SizedBox(),
+              Text("รหัสใบรับรอง : " + history.certificateId, style: MyConfig.smallTextBlack),
+              (history.type == 1) ? buildHistoryCardName(history.type, history.receiverId) : SizedBox(),
+              (history.type == 2) ? buildHistoryCardName(history.type, history.senderId) : SizedBox(),
               Text("เวลา : " + MyConfig.timeText(history.timestamp), style: MyConfig.smallTextBlack),
             ],
           ),
