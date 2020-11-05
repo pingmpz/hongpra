@@ -76,20 +76,14 @@ class _MyMainPageState extends State<MyMainPage> {
   }
 
   void search() {
-    setState(() {
 
-    });
   }
 
   void reset() {
 
   }
 
-  void onPageChanged(int index) {
-    setState(() {
-      selectedPage = index;
-    });
-  }
+  void onPageChanged(int index) => setState(() => selectedPage = index);
 
   @override
   Widget build(BuildContext context) {
@@ -111,14 +105,9 @@ class _MyMainPageState extends State<MyMainPage> {
     double screenHeight = MediaQuery.of(context).size.height;
     //double desireWidth = (screenWidth < minWidth) ? screenWidth : minWidth;
     double desireHeight = (screenHeight < minHeight) ? screenHeight : minHeight;
-    double screenEdge = (screenWidth <= minWidth)
-        ? screenMinEdge
-        : min(screenWidth - minWidth, screenMaxEdge);
+    double screenEdge = (screenWidth <= minWidth) ? screenMinEdge : min(screenWidth - minWidth, screenMaxEdge);
 
-    int gridCount = minGridCount +
-        ((screenWidth < minWidth)
-            ? 0
-            : ((screenWidth - minWidth) / (minWidth / minGridCount)).floor());
+    int gridCount = minGridCount + ((screenWidth < minWidth) ? 0 : ((screenWidth - minWidth) / (minWidth / minGridCount)).floor());
 
     //-------------------------------------------------------------------------------------------------------- Widgets [ALL]
 
@@ -269,7 +258,6 @@ class _MyMainPageState extends State<MyMainPage> {
         },
       );
     }
-
     //-------------------------------------------------------------------------------------------------------- Page [0]
 
     Widget page_0 = Scaffold(
@@ -316,7 +304,6 @@ class _MyMainPageState extends State<MyMainPage> {
         ),
       ),
     );
-
     //-------------------------------------------------------------------------------------------------------- Widgets [PAGE : 2]
 
     Widget myTabBar = AppBar(

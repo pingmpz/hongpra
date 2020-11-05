@@ -144,7 +144,7 @@ class MyConfig {
 
 /*
   PROBLEMS
-  - [Main] Search function
+  - [Main] Search function !!!
   - [Overall] Card Text Overflow
   - [Overall] Keyboard Overflow
   - [History] Change tab while refreshing list get error message (not fatal ?)
@@ -154,13 +154,12 @@ class MyConfig {
   - [Setting] UI
   - [Splash] UI
   DONE
-  - [Home] 3* Card Text Overflow -> Work ?
+  - [Home] Card Text Overflow -> Work ?
   - [Confirm] At loading animation when confirm -> On fail ?
-  - [Detail] 4* ImageList not correct sorting. -> Corrected ?
+  - [Detail] ImageList not correct sorting. -> Corrected ?
   //-- On 04/11 Morning
   - [Detail] Fullscreen Images -> Working well ?
   - [Transfer] AlertDialog, Loading -> Need more test
-  - [Main] Stream builder -> Done !!
   //-- On 05/11 Morning
   - [History] History time sorting problem / Name generator -> Fixed
 
