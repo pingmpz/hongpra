@@ -4,8 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hongpra/myconfig.dart';
-import 'package:loading/indicator/ball_spin_fade_loader_indicator.dart';
-import 'package:loading/loading.dart';
 
 import 'Data/Amulet.dart';
 import 'Data/Certificate.dart';
@@ -233,10 +231,7 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SizedBox(height: desireHeight * 0.02),
-            Loading(
-                indicator: BallSpinFadeLoaderIndicator(),
-                size: 50.0,
-                color: MyConfig.themeColor1),
+            CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(MyConfig.themeColor1)),
             SizedBox(height: desireHeight * 0.02),
             Text('โปรดรอสักครู่ กำลังทำการส่งมอบ', style: MyConfig.normalBoldTextTheme1),
           ],

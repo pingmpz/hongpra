@@ -7,8 +7,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:hongpra/confirmpage.dart';
 import 'package:hongpra/myconfig.dart';
-import 'package:loading/indicator/ball_spin_fade_loader_indicator.dart';
-import 'package:loading/loading.dart';
 
 import 'Data/Amulet.dart';
 import 'Data/Certificate.dart';
@@ -282,10 +280,7 @@ class _MyTransferPageState extends State<MyTransferPage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SizedBox(height: desireHeight * 0.02),
-            Loading(
-                indicator: BallSpinFadeLoaderIndicator(),
-                size: 50.0,
-                color: MyConfig.themeColor1),
+            CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(MyConfig.themeColor1)),
             SizedBox(height: desireHeight * 0.02),
             Text('โปรดรอสักครู่ กำลังตรวจสอบผู้รับ', style: MyConfig.normalBoldTextTheme1),
           ],

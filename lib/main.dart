@@ -12,7 +12,7 @@ void main() async {
   await Firebase.initializeApp();
 
   //---
-  bool testing = true;
+  bool testing = false;
 
   if(testing) {
     runApp(DevicePreview(
@@ -39,10 +39,13 @@ class MyTestApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      builder: DevicePreview.appBuilder,
-      home: MySplashPage(),
+    return MediaQuery(
+      data: new MediaQueryData(),
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        builder: DevicePreview.appBuilder,
+        home: MySplashPage(),
+      ),
     );
   }
 }

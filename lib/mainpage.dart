@@ -263,7 +263,7 @@ class _MyMainPageState extends State<MyMainPage> {
     Widget page_0 = Scaffold(
       backgroundColor: MyConfig.themeColor2,
       appBar: mySearchBar,
-      body: amuletCardListBuilder(),
+      body: (loginUser != null) ? amuletCardListBuilder() : SizedBox(),
     );
 
     //-------------------------------------------------------------------------------------------------------- Page [1]
@@ -437,7 +437,7 @@ class _MyMainPageState extends State<MyMainPage> {
         children: [
           Scaffold(
             appBar: myTabBar,
-            body: Container(
+            body: (loginUser != null) ? Container(
               padding: EdgeInsets.only(top: screenEdge),
               color: MyConfig.themeColor2,
               child: TabBarView(
@@ -459,7 +459,7 @@ class _MyMainPageState extends State<MyMainPage> {
                   ),
                 ],
               ),
-            ),
+            ) : SizedBox(),
           ),
         ],
       ),

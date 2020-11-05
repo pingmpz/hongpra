@@ -28,7 +28,7 @@ dependencies:
   qr_flutter:
 #-- Loading Effect
   pull_to_refresh:
-  loading:
+#  loading:
   flutter_easyloading:
 #-- Others
   device_preview:
