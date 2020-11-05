@@ -10,13 +10,12 @@ class MySplashPage extends StatefulWidget {
 }
 
 class _MySplashPageState extends State<MySplashPage> {
-  bool testing = true;
 
   @override
   Widget build(BuildContext context) {
     return SplashScreen(
-        seconds: (testing) ? 0 : 5,
-        navigateAfterSeconds: MyMainPage(),
+        seconds: 5,
+        navigateAfterSeconds: new MyMainPage(),
         title: Text('ห้องพระ', style: MyConfig.logoText),
         backgroundColor: MyConfig.themeColor1,
         loaderColor: MyConfig.whiteColor,

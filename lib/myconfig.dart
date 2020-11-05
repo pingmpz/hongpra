@@ -147,8 +147,7 @@ class MyConfig {
   - [Main] Search function !!!
   - [Overall] Card Text Overflow
   - [Overall] Keyboard Overflow
-  - [History] Change tab while refreshing list get error message (not fatal ?)
-  - [Transfer] Multi-tap at text field get error message (other text field ?)
+  - [Splash] Error ??
   UNFINISHED
   - [Overall] Query optimization
   - [Setting] UI
@@ -157,10 +156,12 @@ class MyConfig {
   - [Home] Card Text Overflow -> Work ?
   - [Confirm] At loading animation when confirm -> On fail ?
   - [Detail] ImageList not correct sorting. -> Corrected ?
-  //-- On 04/11 Morning
+  //-- On 04/11
   - [Detail] Fullscreen Images -> Working well ?
   - [Transfer] AlertDialog, Loading -> Need more test
-  //-- On 05/11 Morning
+  //-- On 05/11
   - [History] History time sorting problem / Name generator -> Fixed
+  - [Overall] Multi-tap at text field get error message -> only on test (device preview)
+  - [History] Change tab while refreshing list -> no more refresh
 
 */
