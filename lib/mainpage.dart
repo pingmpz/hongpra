@@ -7,7 +7,6 @@ import 'package:hongpra/detailpage.dart';
 import 'package:hongpra/loginpage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:intl/intl.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
@@ -25,10 +24,6 @@ class _MyMainPageState extends State<MyMainPage> {
 
   //-- Controller
   final searchController = new TextEditingController();
-  RefreshController refreshAmuletListController =
-      new RefreshController(initialRefresh: false);
-  RefreshController refreshHistoryListController =
-      new RefreshController(initialRefresh: false);
   TabController tabController;
 
   //-- Widget -> Animation & Switch
@@ -55,8 +50,6 @@ class _MyMainPageState extends State<MyMainPage> {
   void dispose() {
     super.dispose();
     searchController.dispose();
-    refreshAmuletListController.dispose();
-    refreshHistoryListController.dispose();
     // tabController.dispose();
   }
 
@@ -83,7 +76,9 @@ class _MyMainPageState extends State<MyMainPage> {
   }
 
   void search() {
+    setState(() {
 
+    });
   }
 
   void reset() {
@@ -247,11 +242,7 @@ class _MyMainPageState extends State<MyMainPage> {
               ),
             ),
             onTap: () => {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => MyDetailPage(
-                          amuletCard.amulet, amuletCard.certificate)))
+              Navigator.push(context, MaterialPageRoute(builder: (context) => MyDetailPage(amuletCard.amulet, amuletCard.certificate)))
             },
           ),
         ),
@@ -262,9 +253,9 @@ class _MyMainPageState extends State<MyMainPage> {
       return StreamBuilder<QuerySnapshot>(
         stream: _firestoreInstance.collection("users").doc(loginUser.uid).collection("amulet").snapshots(),
         builder: (context, snapshot) {
-          return !snapshot.hasData
-              ? emptyAmuletList
-              : GridView.builder(
+          return (!snapshot.hasData)
+              ? Center(child: CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(MyConfig.themeColor1)))
+              : (snapshot.data.size == 0) ? emptyAmuletList : GridView.builder(
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: gridCount,
               childAspectRatio: gridRatio,
@@ -443,8 +434,8 @@ class _MyMainPageState extends State<MyMainPage> {
         stream: _firestoreInstance.collection("users").doc(loginUser.uid).collection("history").orderBy("date", descending: true).snapshots(),
         builder: (context, snapshot) {
           return !snapshot.hasData
-              ? emptyHistoryList(type)
-              : ListView(
+              ? Center(child: CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(MyConfig.themeColor1)))
+              : (snapshot.data.size == 0) ? emptyHistoryList(type) : ListView(
               children : buildHistoryCardList(type, snapshot.data),
               );
         },
