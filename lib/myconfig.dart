@@ -146,7 +146,6 @@ class MyConfig {
 
 /*
   PROBLEMS
-  - [Main] Search function !!!
   - [Overall] Card Text Overflow
   - [Overall] Keyboard Overflow
   - [Splash] Error ??
@@ -165,5 +164,7 @@ class MyConfig {
   - [History] History time sorting problem / Name generator -> Fixed
   - [Overall] Multi-tap at text field get error message -> only on test (device preview)
   - [History] Change tab while refreshing list -> no more refresh
+  //-- On 07/11
+  - [Main] Search function -> 80%
 
 */
