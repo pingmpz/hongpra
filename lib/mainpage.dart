@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 import 'dart:ui';
 
@@ -38,12 +39,17 @@ class _MyMainPageState extends State<MyMainPage> {
   Person currentUser = new Person.fromEmpty();
   List<AmuletCard> amuletCardList = new List<AmuletCard>();
 
+  //-- Search Stream
+  StreamController<String> streamController = StreamController<String>();
+  Stream stream;
+
   //-------------------------------------------------------------------------------------------------------- Functions
 
   @override
   void initState() {
     super.initState();
     getCurrentUser();
+    stream = streamController.stream;
   }
 
   @override
@@ -75,27 +81,17 @@ class _MyMainPageState extends State<MyMainPage> {
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyLoginPage()));
   }
 
-  void search(){
-    setState(() {
-      searching();
-    });
+  void search(String value){
+    streamController.add(value);
   }
 
-  void searching() {
+  void searching(AsyncSnapshot<String> search) {
     for(AmuletCard ele in amuletCardList) {
-      if(ele.amulet.name.toLowerCase().trim().contains(searchController.text.toLowerCase().trim()) == true
-          || ele.certificate.confirmBy.toLowerCase().trim().contains(searchController.text.toLowerCase().trim()) == true
-        ) ele.isShowing = true;
+      if(ele.amulet.name.toLowerCase().trim().contains(search.data.toLowerCase().trim()) == true
+          || ele.certificate.confirmBy.toLowerCase().trim().contains(search.data.toLowerCase().trim()) == true
+      ) ele.isShowing = true;
       else ele.isShowing = false;
     }
-  }
-
-  void reset() {
-    setState(() {
-      for(AmuletCard ele in amuletCardList) {
-        ele.isShowing = true;
-      }
-    });
   }
 
   void onPageChanged(int index) => setState(() => selectedPage = index);
@@ -173,14 +169,13 @@ class _MyMainPageState extends State<MyMainPage> {
                         hintText: "ค้นหา... ชื่อพระ/ชื่อผู้รับรอง",
                         hintStyle: MyConfig.normalTextGrey,
                       ),
-                      onChanged: (text) => search(),
+                      onChanged: (value) => search(value),
                     ),
                   );
                 } else {
-                  this.searchIcon =
-                      Icon(Icons.search, color: MyConfig.whiteColor);
+                  this.searchIcon = Icon(Icons.search, color: MyConfig.whiteColor);
                   this.searchTitle = Text("", style: MyConfig.normalTextBlack);
-                  reset();
+                  search("");
                 }
               });
             },
@@ -263,44 +258,32 @@ class _MyMainPageState extends State<MyMainPage> {
       return StreamBuilder<QuerySnapshot>(
         stream: _firestoreInstance.collection("users").doc(loginUser.uid).collection("amulet").snapshots(),
         builder: (context, snapshot) {
-          return (!snapshot.hasData)
-              ? Center(child: CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(MyConfig.themeColor1)))
-              : (snapshot.data.size == 0) ? emptyAmuletList : GridView.builder(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: gridCount,
-              childAspectRatio: gridRatio,
-            ),
-            itemCount: snapshot.data.docs.length,
-            itemBuilder: (context, index) {
-              DocumentSnapshot result = snapshot.data.docs[index];
-              return buildAmuletCard(AmuletCard.fromDocumentSnapshot(result));
-            },
-          );
-        },
-      );
-    }
-
-    Widget amuletCardListBuilder2() {
-      return StreamBuilder<QuerySnapshot>(
-        stream: _firestoreInstance.collection("users").doc(loginUser.uid).collection("amulet").snapshots(),
-        builder: (context, snapshot) {
           if(snapshot.hasData && snapshot.data.size != 0){
             amuletCardList = new List<AmuletCard>();
             snapshot.data.docs.forEach((element) => amuletCardList.add(new AmuletCard.fromDocumentSnapshot(element)));
-            searching();
           }
-          List<AmuletCard> showingList = amuletCardList.where((element) => element.isShowing == true).toList();
           return (!snapshot.hasData)
               ? Center(child: CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(MyConfig.themeColor1)))
-              : (snapshot.data.size == 0) ? emptyAmuletList : (showingList.length == 0) ? emptySearchAmuletList : GridView.builder(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: gridCount,
-              childAspectRatio: gridRatio,
-            ),
-            itemCount: showingList.length,
-            itemBuilder: (context, index) {
-              return buildAmuletCard(showingList[index]);
-            },
+              : (snapshot.data.size == 0) ? emptyAmuletList
+              : StreamBuilder<String>(
+              stream: stream,
+              initialData: "",
+              builder: (context, searchText){
+                if(amuletCardList.isNotEmpty){
+                  searching(searchText);
+                }
+                List<AmuletCard> showingList = amuletCardList.where((element) => element.isShowing == true).toList();
+                return (showingList.length == 0) ? emptySearchAmuletList : GridView.builder(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: gridCount,
+                    childAspectRatio: gridRatio,
+                  ),
+                  itemCount: showingList.length,
+                  itemBuilder: (context, index) {
+                    return buildAmuletCard(showingList[index]);
+                  },
+                );
+              }
           );
         },
       );
@@ -311,7 +294,7 @@ class _MyMainPageState extends State<MyMainPage> {
     Widget page_0 = Scaffold(
       backgroundColor: MyConfig.themeColor2,
       appBar: mySearchBar,
-      body: (loginUser != null) ? amuletCardListBuilder2() : SizedBox(),
+      body: (loginUser != null) ? amuletCardListBuilder() : SizedBox(),
     );
 
     //-------------------------------------------------------------------------------------------------------- Page [1]
