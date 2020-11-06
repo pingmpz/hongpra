@@ -36,7 +36,7 @@ class _MyMainPageState extends State<MyMainPage> {
 
   //-- Items
   Person currentUser = new Person.fromEmpty();
-
+  List<AmuletCard> amuletCardList = new List<AmuletCard>();
 
   //-------------------------------------------------------------------------------------------------------- Functions
 
@@ -75,12 +75,27 @@ class _MyMainPageState extends State<MyMainPage> {
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyLoginPage()));
   }
 
-  void search() {
+  void search(){
+    setState(() {
+      searching();
+    });
+  }
 
+  void searching() {
+    for(AmuletCard ele in amuletCardList) {
+      if(ele.amulet.name.toLowerCase().trim().contains(searchController.text.toLowerCase().trim()) == true
+          || ele.certificate.confirmBy.toLowerCase().trim().contains(searchController.text.toLowerCase().trim()) == true
+        ) ele.isShowing = true;
+      else ele.isShowing = false;
+    }
   }
 
   void reset() {
-
+    setState(() {
+      for(AmuletCard ele in amuletCardList) {
+        ele.isShowing = true;
+      }
+    });
   }
 
   void onPageChanged(int index) => setState(() => selectedPage = index);
@@ -93,7 +108,7 @@ class _MyMainPageState extends State<MyMainPage> {
     double screenMinEdge = 9.0;
     double screenMaxEdge = 18.0;
     double searchBarHeight = 45.0;
-    double searchBardEdge = 7.5;
+    double searchBarEdge = 7.5;
     double boxCurve = 18.0;
     double gridRatio = 2.5;
     int minGridCount = 1;
@@ -140,15 +155,14 @@ class _MyMainPageState extends State<MyMainPage> {
                     color: MyConfig.whiteColor,
                   );
                   this.searchTitle = Container(
-                    height: searchBarHeight - searchBardEdge,
+                    height: searchBarHeight - searchBarEdge,
                     child: TextField(
                       controller: searchController,
                       style: MyConfig.normalTextBlack,
                       decoration: InputDecoration(
                         filled: true,
                         fillColor: MyConfig.whiteColor,
-                        contentPadding: EdgeInsets.only(
-                            bottom: (searchBarHeight - searchBardEdge) / 2),
+                        contentPadding: EdgeInsets.only(bottom: searchBarEdge),
                         border: OutlineInputBorder(
                           borderRadius:
                               BorderRadius.all(Radius.circular(boxCurve)),
@@ -156,8 +170,8 @@ class _MyMainPageState extends State<MyMainPage> {
                         ),
                         prefixIcon:
                             Icon(Icons.search, color: MyConfig.blackColor),
-                        hintText: "ค้นหา",
-                        hintStyle: MyConfig.normalTextBlack,
+                        hintText: "ค้นหา... ชื่อพระ/ชื่อผู้รับรอง",
+                        hintStyle: MyConfig.normalTextGrey,
                       ),
                       onChanged: (text) => search(),
                     ),
@@ -178,6 +192,13 @@ class _MyMainPageState extends State<MyMainPage> {
     Widget emptyAmuletList = Container(
       child: Center(
         child: Text('คุณยังไม่มีพระในครอบครอง',
+            style: MyConfig.normalBoldTextTheme1),
+      ),
+    );
+
+    Widget emptySearchAmuletList = Container(
+      child: Center(
+        child: Text('ไม่พบพระที่ตรงกับคำค้นหา',
             style: MyConfig.normalBoldTextTheme1),
       ),
     );
@@ -258,12 +279,39 @@ class _MyMainPageState extends State<MyMainPage> {
         },
       );
     }
+
+    Widget amuletCardListBuilder2() {
+      return StreamBuilder<QuerySnapshot>(
+        stream: _firestoreInstance.collection("users").doc(loginUser.uid).collection("amulet").snapshots(),
+        builder: (context, snapshot) {
+          if(snapshot.hasData && snapshot.data.size != 0){
+            amuletCardList = new List<AmuletCard>();
+            snapshot.data.docs.forEach((element) => amuletCardList.add(new AmuletCard.fromDocumentSnapshot(element)));
+            searching();
+          }
+          List<AmuletCard> showingList = amuletCardList.where((element) => element.isShowing == true).toList();
+          return (!snapshot.hasData)
+              ? Center(child: CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(MyConfig.themeColor1)))
+              : (snapshot.data.size == 0) ? emptyAmuletList : (showingList.length == 0) ? emptySearchAmuletList : GridView.builder(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: gridCount,
+              childAspectRatio: gridRatio,
+            ),
+            itemCount: showingList.length,
+            itemBuilder: (context, index) {
+              return buildAmuletCard(showingList[index]);
+            },
+          );
+        },
+      );
+    }
+    
     //-------------------------------------------------------------------------------------------------------- Page [0]
 
     Widget page_0 = Scaffold(
       backgroundColor: MyConfig.themeColor2,
       appBar: mySearchBar,
-      body: (loginUser != null) ? amuletCardListBuilder() : SizedBox(),
+      body: (loginUser != null) ? amuletCardListBuilder2() : SizedBox(),
     );
 
     //-------------------------------------------------------------------------------------------------------- Page [1]

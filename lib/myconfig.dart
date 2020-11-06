@@ -31,6 +31,8 @@ class MyConfig {
       TextStyle(fontFamily: fontFamily1, fontSize: normalSize, color: redColor);
   static TextStyle normalTextTheme1 = TextStyle(
       fontFamily: fontFamily1, fontSize: normalSize, color: themeColor1);
+  static TextStyle normalTextGrey = TextStyle(
+      fontFamily: fontFamily1, fontSize: normalSize, color: greyColor);
 
   static TextStyle normalBoldTextBlack = TextStyle(
       fontFamily: fontFamily1,
