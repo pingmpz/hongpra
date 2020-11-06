@@ -40,7 +40,7 @@ class _MyMainPageState extends State<MyMainPage> {
   List<AmuletCard> amuletCardList = new List<AmuletCard>();
 
   //-- Search Stream
-  StreamController<String> streamController = StreamController<String>();
+  StreamController<String> streamController = StreamController<String>.broadcast();
   Stream stream;
 
   //-------------------------------------------------------------------------------------------------------- Functions
@@ -94,7 +94,14 @@ class _MyMainPageState extends State<MyMainPage> {
     }
   }
 
-  void onPageChanged(int index) => setState(() => selectedPage = index);
+  void onPageChanged(int index) {
+    setState(() {
+      if(selectedPage != index){
+        searchController.clear();
+      }
+      selectedPage = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
