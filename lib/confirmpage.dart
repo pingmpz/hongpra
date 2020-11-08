@@ -245,13 +245,17 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Icon(
+            (true) ? Icon(
               Icons.check_circle_outline,
               color: MyConfig.greenColor,
               size: 60.0,
-            ),
+            ) : Icon(
+                Icons.clear_outlined,
+                color: MyConfig.redColor,
+                size: 60.0,
+              ),
             SizedBox(height: desireHeight * 0.02),
-            Text('ส่งมอบสำเร็จ กลับสู่หน้าหลัก', style: MyConfig.normalBoldTextGreen),
+            (true) ? Text('ส่งมอบสำเร็จ กลับสู่หน้าหลัก', style: MyConfig.normalBoldTextGreen) : Text('ส่งมอบไม่สำเร็จ', style: MyConfig.normalBoldTextRed),
         ]
         ),
       ),

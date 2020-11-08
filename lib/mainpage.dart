@@ -27,13 +27,13 @@ class _MyMainPageState extends State<MyMainPage> {
   final searchController = new TextEditingController();
   TabController tabController;
 
-  //-- Widget -> Animation & Switch
-  Widget searchTitle = Text("", style: MyConfig.normalTextBlack);
-  Icon searchIcon = new Icon(Icons.search, color: MyConfig.whiteColor);
-
   //-- Firebase
   User loginUser;
   final _firestoreInstance = FirebaseFirestore.instance;
+
+  //-- Widget -> Animation & Switch
+  Widget searchTitle = Text("", style: MyConfig.normalTextBlack);
+  Icon searchIcon = new Icon(Icons.search, color: MyConfig.whiteColor);
 
   //-- Items
   Person currentUser = new Person.fromEmpty();
@@ -81,24 +81,17 @@ class _MyMainPageState extends State<MyMainPage> {
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyLoginPage()));
   }
 
-  void search(String value){
-    streamController.add(value);
-  }
+  void search(String value) => streamController.add(value);
 
   void searching(AsyncSnapshot<String> search) {
-    for(AmuletCard ele in amuletCardList) {
-      if(ele.amulet.name.toLowerCase().trim().contains(search.data.toLowerCase().trim()) == true
-          || ele.certificate.confirmBy.toLowerCase().trim().contains(search.data.toLowerCase().trim()) == true
-      ) ele.isShowing = true;
-      else ele.isShowing = false;
+    bool isContain(String text1, String text2) => text1.toLowerCase().trim().contains(text2.toLowerCase().trim());
+
+    for (AmuletCard ele in amuletCardList) {
+      ele.isShowing = (isContain(ele.amulet.name, search.data) || isContain(ele.certificate.confirmBy, search.data));
     }
   }
 
-  void onPageChanged(int index) {
-    setState(() {
-      selectedPage = index;
-    });
-  }
+  void onPageChanged(int index) => setState(() => selectedPage = index );
 
   @override
   Widget build(BuildContext context) {
@@ -120,7 +113,9 @@ class _MyMainPageState extends State<MyMainPage> {
     double screenHeight = MediaQuery.of(context).size.height;
     //double desireWidth = (screenWidth < minWidth) ? screenWidth : minWidth;
     double desireHeight = (screenHeight < minHeight) ? screenHeight : minHeight;
-    double screenEdge = (screenWidth <= minWidth) ? screenMinEdge : min(screenWidth - minWidth, screenMaxEdge);
+    double screenEdge = (screenWidth <= minWidth)
+        ? screenMinEdge
+        : min(screenWidth - minWidth, screenMaxEdge);
 
     int gridCount = minGridCount + ((screenWidth < minWidth) ? 0 : ((screenWidth - minWidth) / (minWidth / minGridCount)).floor());
 
@@ -165,11 +160,11 @@ class _MyMainPageState extends State<MyMainPage> {
                         contentPadding: EdgeInsets.only(bottom: searchBarEdge),
                         border: OutlineInputBorder(
                           borderRadius:
-                              BorderRadius.all(Radius.circular(boxCurve)),
+                          BorderRadius.all(Radius.circular(boxCurve)),
                           borderSide: BorderSide.none,
                         ),
                         prefixIcon:
-                            Icon(Icons.search, color: MyConfig.blackColor),
+                        Icon(Icons.search, color: MyConfig.blackColor),
                         hintText: "ค้นหา... ชื่อพระ/ชื่อผู้รับรอง",
                         hintStyle: MyConfig.normalTextGrey,
                       ),
@@ -221,7 +216,7 @@ class _MyMainPageState extends State<MyMainPage> {
                       child: (amuletCard.amulet.images[0] != "")
                           ? Image.network(amuletCard.amulet.images[0])
                           : Image(
-                          image: AssetImage("assets/images/notfound.png")),
+                              image: AssetImage("assets/images/notfound.png")),
                     ),
                   ),
                   Expanded(
@@ -251,7 +246,11 @@ class _MyMainPageState extends State<MyMainPage> {
               ),
             ),
             onTap: () => {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => MyDetailPage(amuletCard.amulet, amuletCard.certificate)))
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => MyDetailPage(
+                          amuletCard.amulet, amuletCard.certificate)))
             },
           ),
         ),
@@ -262,37 +261,36 @@ class _MyMainPageState extends State<MyMainPage> {
       return StreamBuilder<QuerySnapshot>(
         stream: _firestoreInstance.collection("users").doc(loginUser.uid).collection("amulet").snapshots(),
         builder: (context, snapshot) {
-          if(snapshot.hasData && snapshot.data.size != 0){
+          if (snapshot.hasData && snapshot.data.size != 0) {
             amuletCardList = new List<AmuletCard>();
             snapshot.data.docs.forEach((element) => amuletCardList.add(new AmuletCard.fromDocumentSnapshot(element)));
           }
           return (!snapshot.hasData)
               ? Center(child: CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(MyConfig.themeColor1)))
               : (snapshot.data.size == 0) ? emptyAmuletList
-              : StreamBuilder<String>(
-              stream: stream,
-              initialData: searchController.text,
-              builder: (context, searchText){
-                if(amuletCardList.isNotEmpty){
-                  searching(searchText);
-                }
-                List<AmuletCard> showingList = amuletCardList.where((element) => element.isShowing == true).toList();
-                return (showingList.length == 0) ? emptySearchAmuletList : GridView.builder(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: gridCount,
-                    childAspectRatio: gridRatio,
-                  ),
-                  itemCount: showingList.length,
-                  itemBuilder: (context, index) {
-                    return buildAmuletCard(showingList[index]);
-                  },
-                );
-              }
-          );
+                  : StreamBuilder<String>(
+                      stream: stream,
+                      initialData: searchController.text,
+                      builder: (context, searchText) {
+                        if (amuletCardList.isNotEmpty) searching(searchText);
+                        List<AmuletCard> showingList = amuletCardList.where((element) => element.isShowing == true).toList();
+                        return (showingList.length == 0)
+                            ? emptySearchAmuletList
+                            : GridView.builder(
+                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: gridCount,
+                                    childAspectRatio: gridRatio,
+                                  ),
+                                itemCount: showingList.length,
+                                itemBuilder: (context, index) {
+                                    return buildAmuletCard(showingList[index]);
+                                },
+                              );
+                      });
         },
       );
     }
-    
+
     //-------------------------------------------------------------------------------------------------------- Page [0]
 
     Widget page_0 = Scaffold(
@@ -391,15 +389,23 @@ class _MyMainPageState extends State<MyMainPage> {
 
     Widget buildHistoryCardName(int type, String id) {
       String typeName = (type == 1) ? "ผู้ส่งมอบ : " : "ผู้รับมอบ : ";
-      if(type != null && id != null) {
+      if (type != null && id != null) {
         return StreamBuilder<QuerySnapshot>(
-          stream: _firestoreInstance.collection("users").where("userId", isEqualTo: id).limit(1).snapshots(),
+          stream: _firestoreInstance
+              .collection("users")
+              .where("userId", isEqualTo: id)
+              .limit(1)
+              .snapshots(),
           builder: (context, snapshot) {
             String name = "", firstName = "", lastName = "";
             if (snapshot.hasData) {
               snapshot.data.docs.forEach((result) {
-                firstName = (result.data()['firstName'] != null) ? result.data()['firstName'] : "";
-                lastName = (result.data()['lastName'] != null) ? result.data()['lastName'] : "";
+                firstName = (result.data()['firstName'] != null)
+                    ? result.data()['firstName']
+                    : "";
+                lastName = (result.data()['lastName'] != null)
+                    ? result.data()['lastName']
+                    : "";
               });
             }
             name = firstName + " " + lastName;
@@ -422,10 +428,16 @@ class _MyMainPageState extends State<MyMainPage> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Text(typeName, style: MyConfig.normalBoldTextBlack),
-              Text("รหัสใบรับรอง : " + history.certificateId, style: MyConfig.smallTextBlack),
-              (history.type == 1) ? buildHistoryCardName(history.type, history.receiverId) : SizedBox(),
-              (history.type == 2) ? buildHistoryCardName(history.type, history.senderId) : SizedBox(),
-              Text("เวลา : " + MyConfig.timeText(history.timestamp), style: MyConfig.smallTextBlack),
+              Text("รหัสใบรับรอง : " + history.certificateId,
+                  style: MyConfig.smallTextBlack),
+              (history.type == 1)
+                  ? buildHistoryCardName(history.type, history.receiverId)
+                  : SizedBox(),
+              (history.type == 2)
+                  ? buildHistoryCardName(history.type, history.senderId)
+                  : SizedBox(),
+              Text("เวลา : " + MyConfig.timeText(history.timestamp),
+                  style: MyConfig.smallTextBlack),
             ],
           ),
         ),
@@ -434,13 +446,16 @@ class _MyMainPageState extends State<MyMainPage> {
 
     List<Widget> buildHistoryCardList(int type, QuerySnapshot snapshot) {
       List<Widget> resultList = new List<Widget>();
-      String selectedDate = DateFormat('dd-MM-yyyy').format(new DateTime.now().subtract(Duration(hours: 999999)));
+      String selectedDate = DateFormat('dd-MM-yyyy')
+          .format(new DateTime.now().subtract(Duration(hours: 999999)));
       for (int i = 0; i < snapshot.size; i++) {
-        History showingHistory = new History.fromDocumentSnapshot(snapshot.docs[i]);
-        if(type != 0 && showingHistory.type != type) {
+        History showingHistory =
+            new History.fromDocumentSnapshot(snapshot.docs[i]);
+        if (type != 0 && showingHistory.type != type) {
           continue;
         } else {
-          String showingDate = DateFormat('dd-MM-yyyy').format(showingHistory.timestamp);
+          String showingDate =
+              DateFormat('dd-MM-yyyy').format(showingHistory.timestamp);
           if (selectedDate != showingDate) {
             selectedDate = showingDate;
             resultList.add(buildHistoryHeader(showingHistory.timestamp));
@@ -453,13 +468,23 @@ class _MyMainPageState extends State<MyMainPage> {
 
     Widget historyCardListBuilder(int type) {
       return StreamBuilder<QuerySnapshot>(
-        stream: _firestoreInstance.collection("users").doc(loginUser.uid).collection("history").orderBy("date", descending: true).snapshots(),
+        stream: _firestoreInstance
+            .collection("users")
+            .doc(loginUser.uid)
+            .collection("history")
+            .orderBy("date", descending: true)
+            .snapshots(),
         builder: (context, snapshot) {
           return !snapshot.hasData
-              ? Center(child: CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(MyConfig.themeColor1)))
-              : (snapshot.data.size == 0) ? emptyHistoryList(type) : ListView(
-              children : buildHistoryCardList(type, snapshot.data),
-              );
+              ? Center(
+                  child: CircularProgressIndicator(
+                      valueColor: new AlwaysStoppedAnimation<Color>(
+                          MyConfig.themeColor1)))
+              : (snapshot.data.size == 0)
+                  ? emptyHistoryList(type)
+                  : ListView(
+                      children: buildHistoryCardList(type, snapshot.data),
+                    );
         },
       );
     }
@@ -472,29 +497,31 @@ class _MyMainPageState extends State<MyMainPage> {
         children: [
           Scaffold(
             appBar: myTabBar,
-            body: (loginUser != null) ? Container(
-              padding: EdgeInsets.only(top: screenEdge),
-              color: MyConfig.themeColor2,
-              child: TabBarView(
-                children: [
-                  Container(
-                    height: screenHeight,
+            body: (loginUser != null)
+                ? Container(
+                    padding: EdgeInsets.only(top: screenEdge),
                     color: MyConfig.themeColor2,
-                    child: historyCardListBuilder(0),
-                  ),
-                  Container(
-                    height: screenHeight,
-                    color: MyConfig.themeColor2,
-                    child: historyCardListBuilder(1),
-                  ),
-                  Container(
-                    height: screenHeight,
-                    color: MyConfig.themeColor2,
-                    child: historyCardListBuilder(2),
-                  ),
-                ],
-              ),
-            ) : SizedBox(),
+                    child: TabBarView(
+                      children: [
+                        Container(
+                          height: screenHeight,
+                          color: MyConfig.themeColor2,
+                          child: historyCardListBuilder(0),
+                        ),
+                        Container(
+                          height: screenHeight,
+                          color: MyConfig.themeColor2,
+                          child: historyCardListBuilder(1),
+                        ),
+                        Container(
+                          height: screenHeight,
+                          color: MyConfig.themeColor2,
+                          child: historyCardListBuilder(2),
+                        ),
+                      ],
+                    ),
+                  )
+                : SizedBox(),
           ),
         ],
       ),
