@@ -96,9 +96,6 @@ class _MyMainPageState extends State<MyMainPage> {
 
   void onPageChanged(int index) {
     setState(() {
-      if(selectedPage != index){
-        searchController.clear();
-      }
       selectedPage = index;
     });
   }
@@ -274,7 +271,7 @@ class _MyMainPageState extends State<MyMainPage> {
               : (snapshot.data.size == 0) ? emptyAmuletList
               : StreamBuilder<String>(
               stream: stream,
-              initialData: "",
+              initialData: searchController.text,
               builder: (context, searchText){
                 if(amuletCardList.isNotEmpty){
                   searching(searchText);
