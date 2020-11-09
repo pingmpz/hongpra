@@ -31,6 +31,8 @@ class MyConfig {
       TextStyle(fontFamily: fontFamily1, fontSize: normalSize, color: redColor);
   static TextStyle normalTextTheme1 = TextStyle(
       fontFamily: fontFamily1, fontSize: normalSize, color: themeColor1);
+  static TextStyle normalTextGrey = TextStyle(
+      fontFamily: fontFamily1, fontSize: normalSize, color: greyColor);
 
   static TextStyle normalBoldTextBlack = TextStyle(
       fontFamily: fontFamily1,
@@ -129,29 +131,32 @@ class MyConfig {
     int day = dateTime.day;
     int month = dateTime.month;
     int year = dateTime.year + 543;
-    String result =
-        day.toString() + " " + monthName[month - 1] + " " + year.toString();
+    String result = day.toString() + " " + monthName[month - 1] + " " + year.toString();
+    return result;
+  }
+
+  static String timeText(DateTime dateTime) {
+    if (dateTime == null) return "";
+    String hourText = (dateTime.hour < 10) ? "0" + dateTime.hour.toString() : dateTime.hour.toString();
+    String minuteText = (dateTime.minute < 10) ? "0" + dateTime.minute.toString() : dateTime.minute.toString();
+    String result = hourText + "." + minuteText;
     return result;
   }
 }
 
 /*
   PROBLEMS
-  - [History] 5* History time sorting problem.
-  - [Detail] 4* ImageList not correct sorting.
-  - [History] 3* Emulator not showing correct time (real device show correct time)
-  - [Overall] 3* Card Text Overflow
-  - [Overall] 3* Keyboard Overflow
-  - [History] 2* Change tab while refreshing list get error message (not fatal ?)
-  - [Detail] 1* Fullscreen Images -> change lib
+  - [Overall] Card Text Overflow
+  - [Overall] Keyboard Overflow
+  - [Splash] Error ??
+  - [Detail/Confirm] Card Text Overflow
   UNFINISHED
   - [Overall] Query optimization
   - [Setting] UI
   - [Splash] UI
+  - [Confirm] At loading animation when confirm -> On fail ? -> Connection lost
+  - [Main] Static search box
   DONE
-  - [Detail] Fullscreen Images slidable
-  - [Setting] Add setting page [with logout button]
-  - [Home] 3* Card Text Overflow -> Work ?
-  - [Confirm] At loading animation when confirm -> On fail ?
-  - [APP] Add splash screen -> Only show animation
+  - [Detail] ImageList not correct sorting. -> Corrected ?
+  //-- On 07/11
 */

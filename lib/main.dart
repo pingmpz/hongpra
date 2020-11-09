@@ -2,7 +2,7 @@ import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:hongpra/splashpage.dart';
+import 'package:hongpra/mainpage.dart';
 
 void main() async {
   SystemChrome.setSystemUIOverlayStyle(
@@ -12,17 +12,10 @@ void main() async {
   await Firebase.initializeApp();
 
   //---
-  bool _testing = false;
+  bool testing = true;
 
-  if (_testing) {
-    runApp(
-      DevicePreview(
-        builder: (context) => MyTestApp(),
-      ),
-    );
-  } else {
-    runApp(MyApp());
-  }
+  if (testing) runApp(DevicePreview(builder: (context) => MyTestApp()));
+  else runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -30,7 +23,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: MySplashPage(),
+      home: MyMainPage(),
     );
   }
 }
@@ -41,7 +34,7 @@ class MyTestApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       builder: DevicePreview.appBuilder,
-      home: MySplashPage(),
+      home: MyMainPage(),
     );
   }
 }

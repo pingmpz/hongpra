@@ -4,14 +4,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hongpra/myconfig.dart';
-import 'package:loading/indicator/ball_spin_fade_loader_indicator.dart';
-import 'package:loading/loading.dart';
 
 import 'Data/Amulet.dart';
 import 'Data/Certificate.dart';
 import 'Data/Person.dart';
-
-import 'mainpage.dart';
 
 class MyConfirmPage extends StatefulWidget {
   final Person senderUser;
@@ -235,10 +231,7 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SizedBox(height: desireHeight * 0.02),
-            Loading(
-                indicator: BallSpinFadeLoaderIndicator(),
-                size: 50.0,
-                color: MyConfig.themeColor1),
+            CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(MyConfig.themeColor1)),
             SizedBox(height: desireHeight * 0.02),
             Text('โปรดรอสักครู่ กำลังทำการส่งมอบ', style: MyConfig.normalBoldTextTheme1),
           ],
@@ -252,13 +245,17 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Icon(
+            (true) ? Icon(
               Icons.check_circle_outline,
               color: MyConfig.greenColor,
               size: 60.0,
-            ),
+            ) : Icon(
+                Icons.clear_outlined,
+                color: MyConfig.redColor,
+                size: 60.0,
+              ),
             SizedBox(height: desireHeight * 0.02),
-            Text('ส่งมอบสำเร็จ กลับสู่หน้าหลัก', style: MyConfig.normalBoldTextGreen),
+            (true) ? Text('ส่งมอบสำเร็จ กลับสู่หน้าหลัก', style: MyConfig.normalBoldTextGreen) : Text('ส่งมอบไม่สำเร็จ', style: MyConfig.normalBoldTextRed),
         ]
         ),
       ),

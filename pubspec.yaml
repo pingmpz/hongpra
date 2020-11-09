@@ -28,12 +28,13 @@ dependencies:
   qr_flutter:
 #-- Loading Effect
   pull_to_refresh:
-  loading:
+#  loading:
   flutter_easyloading:
 #-- Others
   device_preview:
 #  scroll_app_bar:
   page_transition:
+#  flutter_search_bar:
 
 
 

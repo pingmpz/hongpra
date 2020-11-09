@@ -31,70 +31,68 @@ class _MyTransferPageState extends State<MyTransferPage> {
 
   //-- Item
   String scanner = "";
+  bool _isLoading = false;
 
   //-------------------------------------------------------------------------------------------------------- Functions
 
   void scan() async {
-    scanner = await FlutterBarcodeScanner.scanBarcode(
-        "#" + MyConfig.colorTheme1, "Cancel", true, ScanMode.QR);
-    approve(2, scanner);
+    scanner = await FlutterBarcodeScanner.scanBarcode("#" + MyConfig.colorTheme1, "Cancel", true, ScanMode.QR);
+    if(scanner == "-1"){
+      return;
+    } else if(scanner != null && scanner != "" && scanner.isNotEmpty){
+      setState(() => _isLoading = true);
+      QuerySnapshot result = await _firestoreInstance.collection("users").where("userId", isEqualTo: scanner).limit(1).get();
+      approve(result);
+    } else {
+      setState(() => _isLoading = false);
+      buildAlertDialog('เกิดข้อผิดพลาด', 'ไม่พบบัญชีผู้ใช้งาน');
+    }
   }
 
-  void prepare() {
+  void confirmId() async {
     if (idController.text.isEmpty) {
+      setState(() => _isLoading = false);
       buildAlertDialog('เกิดข้อผิดพลาด', 'โปรดระบุ UID ของผู้รับ');
-    } else if (idController.text.length < 12) {
+    } else if (idController.text.length != 12) {
+      setState(() => _isLoading = false);
       buildAlertDialog('เกิดข้อผิดพลาด', 'ไม่พบบัญชีผู้ใช้งาน');
     } else {
-      approve(1, idController.text);
+      setState(() => _isLoading = true);
+      QuerySnapshot result = await _firestoreInstance.collection("users").where("uniqueId", isEqualTo: idController.text).limit(1).get();
+      approve(result);
     }
   }
 
-  void approve(int type, String id) async {
+  void approve(QuerySnapshot result) async {
     Person senderUser;
     Person receiverUser;
-    QuerySnapshot result;
 
     // Get Receiver Info
-    if (type == 1) {
-      //-- Check By uniqueId
-      result = await _firestoreInstance.collection("users").where("uniqueId", isEqualTo: id).get();
-    } else if (type == 2) {
-      //-- Check By userId
-      result = await _firestoreInstance.collection("users").where("userId", isEqualTo: id).get();
-    }
-    if (result != null) {
+    if (result != null && result.size != 0) {
       result.docs.forEach((res) {
-        receiverUser = new Person(
-          (res.data()['userId'] != null) ? res.data()['userId'] : "",
-          (res.data()['firstName'] != null) ? res.data()['firstName'] : "",
-          (res.data()['lastName'] != null) ? res.data()['lastName'] : "",
-          (res.data()['uniqueId'] != null) ? res.data()['uniqueId'] : "",
-        );
+        receiverUser = new Person.fromDocumentSnapshot(res);
       });
       if (receiverUser.id == loginUser.uid) {
+        setState(() => _isLoading = false);
         buildAlertDialog('เกิดข้อผิดพลาด', 'ไม่สามารถส่งมอบให้ตัวเองได้');
         return;
       }
 
       // Get Sender Info
       result = null;
-      result = await _firestoreInstance.collection("users").where("userId", isEqualTo: loginUser.uid).get();
-      if (result != null) {
+      result = await _firestoreInstance.collection("users").where("userId", isEqualTo: loginUser.uid).limit(1).get();
+      if (result != null  && result.size != 0) {
         result.docs.forEach((res) {
-          senderUser = new Person(
-            (res.data()['userId'] != null) ? res.data()['userId'] : "",
-            (res.data()['firstName'] != null) ? res.data()['firstName'] : "",
-            (res.data()['lastName'] != null) ? res.data()['lastName'] : "",
-            (res.data()['uniqueId'] != null) ? res.data()['uniqueId'] : "",
-          );
+          senderUser = new Person.fromDocumentSnapshot(res);
         });
-
+        setState(() => _isLoading = false);
         Navigator.push(context, MaterialPageRoute(builder: (context) => MyConfirmPage(senderUser, receiverUser, widget.amulet, widget.certificate)));
       } else {
+        setState(() => _isLoading = false);
         buildAlertDialog('เกิดข้อผิดพลาด', 'ระบบขัดข้อง');
       }
     } else {
+      setState(() => _isLoading = false);
       buildAlertDialog('เกิดข้อผิดพลาด', 'ไม่พบบัญชีผู้ใช้งาน');
     }
   }
@@ -163,7 +161,7 @@ class _MyTransferPageState extends State<MyTransferPage> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
-          Align(
+          (_isLoading) ? SizedBox() : Align(
             alignment: Alignment.centerLeft,
             child: Container(
               child: IconButton(
@@ -188,7 +186,7 @@ class _MyTransferPageState extends State<MyTransferPage> {
         minWidth: buttonWidth,
         height: buttonHeight,
         child: RaisedButton(
-          onPressed: () => prepare(),
+          onPressed: () => confirmId(),
           color: MyConfig.themeColor1,
           child: Text('ยืนยัน', style: MyConfig.buttonText),
         ),
@@ -275,6 +273,21 @@ class _MyTransferPageState extends State<MyTransferPage> {
       ),
     );
 
+    Widget loadingEffect = Container(
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(height: desireHeight * 0.02),
+            CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(MyConfig.themeColor1)),
+            SizedBox(height: desireHeight * 0.02),
+            Text('โปรดรอสักครู่ กำลังตรวจสอบผู้รับ', style: MyConfig.normalBoldTextTheme1),
+          ],
+        ),
+      ),
+    );
+
     //-------------------------------------------------------------------------------------------------------- Page
 
     return Scaffold(
@@ -289,7 +302,7 @@ class _MyTransferPageState extends State<MyTransferPage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            detailBox,
+            (_isLoading) ? loadingEffect : detailBox,
           ],
         ),
       ),
