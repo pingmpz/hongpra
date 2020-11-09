@@ -5,24 +5,24 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:hongpra/splashpage.dart';
 
 void main() async {
-
-  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: Colors.transparent));
+  SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(statusBarColor: Colors.transparent));
 
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
   //---
-  bool _testing = true;
+  bool _testing = false;
 
-  if(_testing) {
-    runApp(DevicePreview(
-      builder: (context) => MyTestApp(),
-    ),
+  if (_testing) {
+    runApp(
+      DevicePreview(
+        builder: (context) => MyTestApp(),
+      ),
     );
   } else {
     runApp(MyApp());
   }
-
 }
 
 class MyApp extends StatelessWidget {
