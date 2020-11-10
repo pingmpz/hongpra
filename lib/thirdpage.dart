@@ -92,8 +92,7 @@ class _MyThirdPageState extends State<MyThirdPage> {
         margin: EdgeInsets.zero,
         child: Padding(
           padding: EdgeInsets.all(cardInnerEdge * 3),
-          child: Text(MyConfig.dateText(dateTime),
-              style: MyConfig.normalTextBlack),
+          child: Text(MyConfig.dateText(dateTime), style: MyConfig.normalTextBlack),
         ),
       );
     }
@@ -102,21 +101,13 @@ class _MyThirdPageState extends State<MyThirdPage> {
       String typeName = (type == 1) ? "ผู้ส่งมอบ : " : "ผู้รับมอบ : ";
       if (type != null && id != null) {
         return StreamBuilder<QuerySnapshot>(
-          stream: _firestoreInstance
-              .collection("users")
-              .where("userId", isEqualTo: id)
-              .limit(1)
-              .snapshots(),
+          stream: _firestoreInstance.collection("users").where("userId", isEqualTo: id).limit(1).snapshots(),
           builder: (context, snapshot) {
             String name = "", firstName = "", lastName = "";
             if (snapshot.hasData) {
               snapshot.data.docs.forEach((result) {
-                firstName = (result.data()['firstName'] != null)
-                    ? result.data()['firstName']
-                    : "";
-                lastName = (result.data()['lastName'] != null)
-                    ? result.data()['lastName']
-                    : "";
+                firstName = (result.data()['firstName'] != null) ? result.data()['firstName'] : "";
+                lastName = (result.data()['lastName'] != null) ? result.data()['lastName'] : "";
               });
             }
             name = firstName + " " + lastName;
@@ -139,16 +130,10 @@ class _MyThirdPageState extends State<MyThirdPage> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Text(typeName, style: MyConfig.normalBoldTextBlack),
-              Text("รหัสใบรับรอง : " + history.certificateId,
-                  style: MyConfig.smallTextBlack),
-              (history.type == 1)
-                  ? buildHistoryCardName(history.type, history.receiverId)
-                  : SizedBox(),
-              (history.type == 2)
-                  ? buildHistoryCardName(history.type, history.senderId)
-                  : SizedBox(),
-              Text("เวลา : " + MyConfig.timeText(history.timestamp),
-                  style: MyConfig.smallTextBlack),
+              Text("รหัสใบรับรอง : " + history.certificateId, style: MyConfig.smallTextBlack),
+              (history.type == 1) ? buildHistoryCardName(history.type, history.receiverId) : SizedBox(),
+              (history.type == 2) ? buildHistoryCardName(history.type, history.senderId) : SizedBox(),
+              Text("เวลา : " + MyConfig.timeText(history.timestamp), style: MyConfig.smallTextBlack),
             ],
           ),
         ),
@@ -157,19 +142,18 @@ class _MyThirdPageState extends State<MyThirdPage> {
 
     List<Widget> buildHistoryCardList(int type, QuerySnapshot snapshot) {
       List<Widget> resultList = new List<Widget>();
-      String selectedDate = DateFormat('dd-MM-yyyy')
-          .format(new DateTime.now().subtract(Duration(hours: 999999)));
+      String selectedDate = DateFormat('dd-MM-yyyy').format(new DateTime.now().subtract(Duration(hours: 999999)));
       for (int i = 0; i < snapshot.size; i++) {
-        History showingHistory =
-        new History.fromDocumentSnapshot(snapshot.docs[i]);
+        History showingHistory = new History.fromDocumentSnapshot(snapshot.docs[i]);
         if (type != 0 && showingHistory.type != type) {
           continue;
         } else {
-          String showingDate =
-          DateFormat('dd-MM-yyyy').format(showingHistory.timestamp);
-          if (selectedDate != showingDate) {
-            selectedDate = showingDate;
-            resultList.add(buildHistoryHeader(showingHistory.timestamp));
+          if(showingHistory.timestamp != null) { //-- for error protection when adding history (server time delay?)
+            String showingDate = DateFormat('dd-MM-yyyy').format(showingHistory.timestamp);
+            if (selectedDate != showingDate) {
+              selectedDate = showingDate;
+              resultList.add(buildHistoryHeader(showingHistory.timestamp));
+            }
           }
           resultList.add(buildHistoryCard(showingHistory));
         }
@@ -179,23 +163,11 @@ class _MyThirdPageState extends State<MyThirdPage> {
 
     Widget historyCardListBuilder(int type) {
       return StreamBuilder<QuerySnapshot>(
-        stream: _firestoreInstance
-            .collection("users")
-            .doc(loginUser.uid)
-            .collection("history")
-            .orderBy("date", descending: true)
-            .snapshots(),
+        stream: _firestoreInstance.collection("users").doc(loginUser.uid).collection("history").orderBy("date", descending: true).snapshots(),
         builder: (context, snapshot) {
-          return !snapshot.hasData
-              ? Center(
-              child: CircularProgressIndicator(
-                  valueColor: new AlwaysStoppedAnimation<Color>(
-                      MyConfig.themeColor1)))
-              : (snapshot.data.size == 0)
-              ? emptyHistoryList(type)
-              : ListView(
-            children: buildHistoryCardList(type, snapshot.data),
-          );
+          return !snapshot.hasData ? Center(child: CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(MyConfig.themeColor1)))
+              : (snapshot.data.size == 0) ? emptyHistoryList(type)
+              : ListView(children: buildHistoryCardList(type, snapshot.data));
         },
       );
     }

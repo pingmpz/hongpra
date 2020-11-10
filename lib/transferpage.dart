@@ -41,11 +41,13 @@ class _MyTransferPageState extends State<MyTransferPage> {
       return;
     } else if(scanner != null && scanner != "" && scanner.isNotEmpty){
       setState(() => _isLoading = true);
+      print('### START ###');
       QuerySnapshot result = await _firestoreInstance.collection("users").where("userId", isEqualTo: scanner).limit(1).get();
       approve(result);
     } else {
       setState(() => _isLoading = false);
       buildAlertDialog('เกิดข้อผิดพลาด', 'ไม่พบบัญชีผู้ใช้งาน');
+      print('### END with Error ###');
     }
   }
 
@@ -53,11 +55,14 @@ class _MyTransferPageState extends State<MyTransferPage> {
     if (idController.text.isEmpty) {
       setState(() => _isLoading = false);
       buildAlertDialog('เกิดข้อผิดพลาด', 'โปรดระบุ UID ของผู้รับ');
+      print('### END with Error ###');
     } else if (idController.text.length != 12) {
       setState(() => _isLoading = false);
       buildAlertDialog('เกิดข้อผิดพลาด', 'ไม่พบบัญชีผู้ใช้งาน');
+      print('### END with Error ###');
     } else {
       setState(() => _isLoading = true);
+      print('### START ###');
       QuerySnapshot result = await _firestoreInstance.collection("users").where("uniqueId", isEqualTo: idController.text).limit(1).get();
       approve(result);
     }
@@ -75,8 +80,10 @@ class _MyTransferPageState extends State<MyTransferPage> {
       if (receiverUser.id == loginUser.uid) {
         setState(() => _isLoading = false);
         buildAlertDialog('เกิดข้อผิดพลาด', 'ไม่สามารถส่งมอบให้ตัวเองได้');
+        print('### END with Error ###');
         return;
       }
+      print('# (1/2) Get receiver info');
 
       // Get Sender Info
       result = null;
@@ -85,15 +92,19 @@ class _MyTransferPageState extends State<MyTransferPage> {
         result.docs.forEach((res) {
           senderUser = new Person.fromDocumentSnapshot(res);
         });
+        print('# (2/2) Get sender info');
+        print('### END with Success ###');
         setState(() => _isLoading = false);
         Navigator.push(context, MaterialPageRoute(builder: (context) => MyConfirmPage(senderUser, receiverUser, widget.amulet, widget.certificate)));
       } else {
         setState(() => _isLoading = false);
         buildAlertDialog('เกิดข้อผิดพลาด', 'ระบบขัดข้อง');
+        print('### END with Error ###');
       }
     } else {
       setState(() => _isLoading = false);
       buildAlertDialog('เกิดข้อผิดพลาด', 'ไม่พบบัญชีผู้ใช้งาน');
+      print('### END with Error ###');
     }
   }
 

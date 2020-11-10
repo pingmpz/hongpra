@@ -41,25 +41,20 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
     setState(() {
       _isLoading = true;
     });
+    print('### START UPDATE ###');
 
     //-- Create History of Sender
-    await _firestoreInstance
-        .collection("users")
-        .doc(loginUser.uid)
-        .collection("history")
-        .add({
+    await _firestoreInstance.collection("users").doc(loginUser.uid).collection("history").add({
       "certificateId": widget.certificate.id,
       "date": FieldValue.serverTimestamp(),
       "receiverId": widget.receiverUser.id,
       "senderId": widget.senderUser.id,
       "type": 1
     });
+    print('# (1/5) Created history to sender');
 
     //-- Create History of Receiver
-    await _firestoreInstance
-        .collection("users")
-        .doc(widget.receiverUser.id)
-        .collection("history")
+    await _firestoreInstance.collection("users").doc(widget.receiverUser.id).collection("history")
         .add({
       "certificateId": widget.certificate.id,
       "date": FieldValue.serverTimestamp(),
@@ -67,30 +62,19 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
       "senderId": widget.senderUser.id,
       "type": 2
     });
+    print('# (2/5) Created history to receiver');
 
-    DocumentSnapshot resultAmulet = await _firestoreInstance
-        .collection("users")
-        .doc(loginUser.uid)
-        .collection("amulet")
-        .doc(widget.amulet.id)
-        .get();
+    DocumentSnapshot resultAmulet = await _firestoreInstance.collection("users").doc(loginUser.uid).collection("amulet").doc(widget.amulet.id).get();
+    print('# (3/5) Get amulet info');
 
     //-- Add Amulet to Receiver
-    await _firestoreInstance
-        .collection("users")
-        .doc(widget.receiverUser.id)
-        .collection("amulet")
-        .doc(widget.amulet.id)
-        .set(resultAmulet.data());
+    await _firestoreInstance.collection("users").doc(widget.receiverUser.id).collection("amulet").doc(widget.amulet.id).set(resultAmulet.data());
+    print('# (4/5) Added amulet to receiver');
 
     //-- Remove Amulet of Sender
-    await _firestoreInstance
-        .collection("users")
-        .doc(loginUser.uid)
-        .collection("amulet")
-        .doc(widget.amulet.id)
-        .delete()
-        .then((value) => print("Delete Successful!!"));
+    await _firestoreInstance.collection("users").doc(loginUser.uid).collection("amulet").doc(widget.amulet.id).delete();
+    print('# (5/5) Removed amulet from sender');
+    print('### END UPDATE ###');
 
     setState(() {
       _isLoading = false;
