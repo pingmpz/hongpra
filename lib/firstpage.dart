@@ -18,10 +18,10 @@ class MyFirstPage extends StatefulWidget {
 }
 
 class _MyFirstPageState extends State<MyFirstPage> {
-  //-- Search Controller
+  //-- Controller
   final searchController = new TextEditingController();
-  StreamController<String> searchStreamController = StreamController<String>.broadcast();
-  Stream searchStream;
+  StreamController<String> streamController = StreamController<String>.broadcast();
+  Stream stream;
   bool _isClear = true;
 
   //-- Firebase
@@ -34,7 +34,7 @@ class _MyFirstPageState extends State<MyFirstPage> {
   @override
   void initState() {
     super.initState();
-    searchStream = searchStreamController.stream;
+    stream = streamController.stream;
     loginUser = widget.loginUser;
   }
 
@@ -45,7 +45,7 @@ class _MyFirstPageState extends State<MyFirstPage> {
   }
 
   void search(String value) {
-    searchStreamController.add(value);
+    streamController.add(value);
     if(!_isClear && value.length > 0) return;
     else setState(() => _isClear = (value.length == 0) ? true : false);
   }
@@ -60,7 +60,7 @@ class _MyFirstPageState extends State<MyFirstPage> {
 
   void reset(){
     searchController.clear();
-    searchStreamController.add(searchController.text);
+    streamController.add(searchController.text);
     setState(() {
       _isClear = true;
     });
@@ -210,7 +210,7 @@ class _MyFirstPageState extends State<MyFirstPage> {
               ? Center(child: CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(MyConfig.themeColor1)))
               : (snapshot.data.size == 0) ? emptyAmuletList
               : StreamBuilder<String>(
-              stream: searchStream,
+              stream: stream,
               initialData: searchController.text,
               builder: (context, searchText) {
                 if (amuletCardList.isNotEmpty) searching(searchText);
