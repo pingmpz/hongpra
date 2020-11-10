@@ -18,17 +18,11 @@ class MyFirstPage extends StatefulWidget {
 }
 
 class _MyFirstPageState extends State<MyFirstPage> {
-  //-- Controller
+  //-- Search Controller
   final searchController = new TextEditingController();
-
-  //-- Widget -> Animation & Switch
-  Widget searchTitle = Text("", style: MyConfig.normalTextBlack);
-  Icon searchIcon = new Icon(Icons.search, color: MyConfig.whiteColor);
-
-
-  //-- Search Stream
-  StreamController<String> streamController = StreamController<String>.broadcast();
-  Stream stream;
+  StreamController<String> searchStreamController = StreamController<String>.broadcast();
+  Stream searchStream;
+  bool _isClear = true;
 
   //-- Firebase
   User loginUser;
@@ -40,7 +34,7 @@ class _MyFirstPageState extends State<MyFirstPage> {
   @override
   void initState() {
     super.initState();
-    stream = streamController.stream;
+    searchStream = searchStreamController.stream;
     loginUser = widget.loginUser;
   }
 
@@ -50,7 +44,11 @@ class _MyFirstPageState extends State<MyFirstPage> {
     searchController.dispose();
   }
 
-  void search(String value) => streamController.add(value);
+  void search(String value) {
+    searchStreamController.add(value);
+    if(!_isClear && value.length > 0) return;
+    else setState(() => _isClear = (value.length == 0) ? true : false);
+  }
 
   void searching(AsyncSnapshot<String> search) {
     bool isContain(String text1, String text2) => text1.toLowerCase().trim().contains(text2.toLowerCase().trim());
@@ -58,6 +56,14 @@ class _MyFirstPageState extends State<MyFirstPage> {
     for (AmuletCard ele in amuletCardList) {
       ele.isShowing = (isContain(ele.amulet.name, search.data) || isContain(ele.certificate.confirmBy, search.data));
     }
+  }
+
+  void reset(){
+    searchController.clear();
+    searchStreamController.add(searchController.text);
+    setState(() {
+      _isClear = true;
+    });
   }
 
 
@@ -91,49 +97,31 @@ class _MyFirstPageState extends State<MyFirstPage> {
         elevation: 0.0,
         backgroundColor: MyConfig.themeColor1,
         automaticallyImplyLeading: false,
-        title: searchTitle,
-        actions: <Widget>[
-          IconButton(
-            icon: searchIcon,
-            onPressed: () {
-              setState(() {
-                searchController.clear();
-                if (this.searchIcon.icon == Icons.search) {
-                  this.searchIcon = Icon(
-                    Icons.close,
-                    color: MyConfig.whiteColor,
-                  );
-                  this.searchTitle = Container(
-                    height: searchBarHeight - searchBarEdge,
-                    child: TextField(
-                      controller: searchController,
-                      style: MyConfig.normalTextBlack,
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: MyConfig.whiteColor,
-                        contentPadding: EdgeInsets.only(bottom: searchBarEdge),
-                        border: OutlineInputBorder(
-                          borderRadius:
-                          BorderRadius.all(Radius.circular(boxCurve)),
-                          borderSide: BorderSide.none,
-                        ),
-                        prefixIcon:
-                        Icon(Icons.search, color: MyConfig.blackColor),
-                        hintText: "ค้นหา... ชื่อพระ/ชื่อผู้รับรอง",
-                        hintStyle: MyConfig.normalTextGrey,
-                      ),
-                      onChanged: (value) => search(value),
-                    ),
-                  );
-                } else {
-                  this.searchIcon = Icon(Icons.search, color: MyConfig.whiteColor);
-                  this.searchTitle = Text("", style: MyConfig.normalTextBlack);
-                  search("");
-                }
-              });
-            },
+        title: Container(
+          height: searchBarHeight - searchBarEdge,
+          child: TextField(
+            controller: searchController,
+            style: MyConfig.normalTextBlack,
+            decoration: InputDecoration(
+              contentPadding: EdgeInsets.only(bottom: searchBarEdge),
+              filled: true,
+              fillColor: MyConfig.whiteColor,
+              hintText: "ค้นหา... ชื่อพระ/ชื่อผู้รับรอง",
+              hintStyle: MyConfig.normalTextGrey,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.all(Radius.circular(boxCurve)),
+                borderSide: BorderSide.none,
+              ),
+              prefixIcon: Icon(Icons.search, color: MyConfig.blackColor),
+              suffixIcon: (_isClear) ? SizedBox() : IconButton(
+                icon: Icon(Icons.clear),
+                color: MyConfig.greyColor,
+                onPressed: () => reset(),
+              ),
+            ),
+            onChanged: (value) => search(value),
           ),
-        ],
+        ),
       ),
     );
 
@@ -222,7 +210,7 @@ class _MyFirstPageState extends State<MyFirstPage> {
               ? Center(child: CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(MyConfig.themeColor1)))
               : (snapshot.data.size == 0) ? emptyAmuletList
               : StreamBuilder<String>(
-              stream: stream,
+              stream: searchStream,
               initialData: searchController.text,
               builder: (context, searchText) {
                 if (amuletCardList.isNotEmpty) searching(searchText);

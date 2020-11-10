@@ -155,8 +155,8 @@ class MyConfig {
   - [Setting] UI
   - [Splash] UI
   - [Confirm] At loading animation when confirm -> On fail ? -> Connection lost
-  - [Main] Static search box
   DONE
+  - [Main] Static search box
+  OBS
   - [Detail] ImageList not correct sorting. -> Corrected ?
-  //-- On 07/11
 */
