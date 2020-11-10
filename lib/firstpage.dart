@@ -50,7 +50,7 @@ class _MyFirstPageState extends State<MyFirstPage> {
     else setState(() => _isClear = (value.length == 0) ? true : false);
   }
 
-  void searching(AsyncSnapshot<String> search) {
+  void filter(AsyncSnapshot<String> search) {
     bool isContain(String text1, String text2) => text1.toLowerCase().trim().contains(text2.toLowerCase().trim());
 
     for (AmuletCard ele in amuletCardList) {
@@ -61,9 +61,7 @@ class _MyFirstPageState extends State<MyFirstPage> {
   void reset(){
     searchController.clear();
     streamController.add(searchController.text);
-    setState(() {
-      _isClear = true;
-    });
+    setState(() => _isClear = true);
   }
 
 
@@ -125,19 +123,9 @@ class _MyFirstPageState extends State<MyFirstPage> {
       ),
     );
 
-    Widget emptyAmuletList = Container(
-      child: Center(
-        child: Text('คุณยังไม่มีพระในครอบครอง',
-            style: MyConfig.normalBoldTextTheme1),
-      ),
-    );
+    Widget emptyAmuletList = Container(child: Center(child: Text('คุณยังไม่มีพระในครอบครอง', style: MyConfig.normalBoldTextTheme1)));
 
-    Widget emptySearchAmuletList = Container(
-      child: Center(
-        child: Text('ไม่พบพระที่ตรงกับคำค้นหา',
-            style: MyConfig.normalBoldTextTheme1),
-      ),
-    );
+    Widget emptySearchAmuletList = Container(child: Center(child: Text('ไม่พบพระที่ตรงกับคำค้นหา', style: MyConfig.normalBoldTextTheme1)));
 
     Widget buildAmuletCard(AmuletCard amuletCard) {
       return Container(
@@ -168,18 +156,10 @@ class _MyFirstPageState extends State<MyFirstPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Text(amuletCard.amulet.name,
-                              style: MyConfig.normalBoldTextBlack),
-                          Text("ประเภท : " + amuletCard.amulet.categories,
-                              style: MyConfig.smallTextBlack),
-                          Text(
-                              "วันที่รับรอง : " +
-                                  MyConfig.dateText(
-                                      amuletCard.certificate.confirmDate),
-                              style: MyConfig.smallTextBlack),
-                          Text(
-                              "รับรองโดย : " + amuletCard.certificate.confirmBy,
-                              style: MyConfig.smallTextBlack),
+                          Text(amuletCard.amulet.name, style: MyConfig.normalBoldTextBlack),
+                          Text("ประเภท : " + amuletCard.amulet.categories, style: MyConfig.smallTextBlack),
+                          Text("วันที่รับรอง : " + MyConfig.dateText(amuletCard.certificate.confirmDate), style: MyConfig.smallTextBlack),
+                          Text("รับรองโดย : " + amuletCard.certificate.confirmBy, style: MyConfig.smallTextBlack),
                         ],
                       ),
                     ),
@@ -187,12 +167,7 @@ class _MyFirstPageState extends State<MyFirstPage> {
                 ],
               ),
             ),
-            onTap: () => {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => MyDetailPage(amuletCard.amulet, amuletCard.certificate)))
-            },
+            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => MyDetailPage(amuletCard.amulet, amuletCard.certificate))),
           ),
         ),
       );
@@ -213,19 +188,16 @@ class _MyFirstPageState extends State<MyFirstPage> {
               stream: stream,
               initialData: searchController.text,
               builder: (context, searchText) {
-                if (amuletCardList.isNotEmpty) searching(searchText);
+                if (amuletCardList.isNotEmpty) filter(searchText);
                 List<AmuletCard> showingList = amuletCardList.where((element) => element.isShowing == true).toList();
-                return (showingList.length == 0)
-                    ? emptySearchAmuletList
+                return (showingList.length == 0) ? emptySearchAmuletList
                     : GridView.builder(
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: gridCount,
                     childAspectRatio: gridRatio,
                   ),
                   itemCount: showingList.length,
-                  itemBuilder: (context, index) {
-                    return buildAmuletCard(showingList[index]);
-                  },
+                  itemBuilder: (context, index) => buildAmuletCard(showingList[index]),
                 );
               });
         },
