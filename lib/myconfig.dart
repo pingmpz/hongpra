@@ -146,18 +146,16 @@ class MyConfig {
 
 /*
   PROBLEMS
-  - [Overall] Keyboard Overflow
+  - [Login] Keyboard Overflow (only for small device)
+  - [Register] Keyboard Overflow
   - [Splash] Error ??
+  - [History] On empty sublist (but not all), won't show empty text
   UNFINISHED
-  - [Overall] Query optimization
-  - [Setting] UI
-  - [Splash] UI
   - [Confirm] At loading animation when confirm -> On fail ? -> Connection lost
+  - [Overall] on fail query
   DONE
   - [Main] Static search box
   - [Detail/Confirm] Card Text Overflow -> Flex
   - [Main] Card Text Overflow -> Scroll
   - [History] Card Text Overflow -> Auto Flex
-  OBS
-  - [Detail] ImageList not correct sorting. -> Corrected ?
 */
