@@ -134,6 +134,14 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
       automaticallyImplyLeading: false,
     );
 
+    Widget buildHeaderText(String text) => Center(child: Text(text, style: MyConfig.normalBoldTextTheme1));
+
+    Widget buildTitleText(String text) => Expanded(flex:27,  child: Text(text, style: MyConfig.smallBoldTextBlack));
+
+    Widget buildDetailText(String text) => Expanded(flex:73,  child: Text(text, style: MyConfig.smallTextBlack));
+
+    Widget buildRow(String title, String detail) => Row(children: [buildTitleText(title), buildDetailText(detail)]);
+
     Widget detailBox = Container(
       child: Card(
         child: Padding(
@@ -142,39 +150,12 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Center(
-                  child:
-                      Text("ข้อมูลการส่งมอบ", style: MyConfig.normalBoldTextTheme1)),
+              buildHeaderText("ข้อมูลการส่งมอบ"),
               SizedBox(height: columnSpace),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('วันที่', style: MyConfig.smallBoldTextBlack),
-                  Text(MyConfig.dateText(DateTime.now()),
-                      style: MyConfig.smallTextBlack),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('ผู้ส่ง', style: MyConfig.smallBoldTextBlack),
-                  Text(widget.senderUser.getFullName(), style: MyConfig.smallTextBlack),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('ผู้รับ', style: MyConfig.smallBoldTextBlack),
-                  Text(widget.receiverUser.getFullName(), style: MyConfig.smallTextBlack),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('รหัสใบรับรอง', style: MyConfig.smallBoldTextBlack),
-                  Text(widget.certificate.id, style: MyConfig.smallTextBlack),
-                ],
-              ),
+              buildRow('วันที่', MyConfig.dateText(DateTime.now())),
+              buildRow('ผู้ส่งมอบ', widget.senderUser.getFullName()),
+              buildRow('ผู้รับมอบ', widget.receiverUser.getFullName()),
+              buildRow('รหัสใบรับรอง', widget.certificate.id),
             ],
           ),
         ),

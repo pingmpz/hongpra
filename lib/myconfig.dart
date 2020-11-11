@@ -149,7 +149,6 @@ class MyConfig {
   - [Overall] Card Text Overflow
   - [Overall] Keyboard Overflow
   - [Splash] Error ??
-  - [Detail/Confirm] Card Text Overflow
   UNFINISHED
   - [Overall] Query optimization
   - [Setting] UI
@@ -157,6 +156,7 @@ class MyConfig {
   - [Confirm] At loading animation when confirm -> On fail ? -> Connection lost
   DONE
   - [Main] Static search box
+  - [Detail/Confirm] Card Text Overflow
   OBS
   - [Detail] ImageList not correct sorting. -> Corrected ?
 */
