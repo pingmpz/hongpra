@@ -146,7 +146,6 @@ class MyConfig {
 
 /*
   PROBLEMS
-  - [Overall] Card Text Overflow
   - [Overall] Keyboard Overflow
   - [Splash] Error ??
   UNFINISHED
@@ -156,7 +155,9 @@ class MyConfig {
   - [Confirm] At loading animation when confirm -> On fail ? -> Connection lost
   DONE
   - [Main] Static search box
-  - [Detail/Confirm] Card Text Overflow
+  - [Detail/Confirm] Card Text Overflow -> Flex
+  - [Main] Card Text Overflow -> Scroll
+  - [History] Card Text Overflow -> Auto Flex
   OBS
   - [Detail] ImageList not correct sorting. -> Corrected ?
 */
