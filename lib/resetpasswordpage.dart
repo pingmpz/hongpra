@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:hongpra/loginpage.dart';
 import 'package:hongpra/myconfig.dart';
 
 class MyResetPasswordPage extends StatefulWidget {
@@ -22,6 +23,8 @@ class _MyResetPasswordPageState extends State<MyResetPasswordPage> {
   resetPassword() {
     String email = emailController.text.trim();
     _auth.sendPasswordResetEmail(email: email);
+
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyLoginPage()));
   }
 
   void back(){

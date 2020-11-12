@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:hongpra/myconfig.dart';
 import 'package:hongpra/mainpage.dart';
 import 'package:hongpra/registerpage.dart';
+import 'package:hongpra/resetpasswordpage.dart';
 
 class MyLoginPage extends StatefulWidget {
   @override
@@ -69,6 +70,10 @@ class _MyLoginPageState extends State<MyLoginPage> {
           break;
       }
     }
+  }
+
+  void resetpassword(){
+    Navigator.push(context, MaterialPageRoute(builder: (context) => MyResetPasswordPage()));
   }
 
   void register(){
