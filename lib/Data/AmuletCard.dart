@@ -21,6 +21,7 @@ class AmuletCard {
       (snapshot.data()['amuletImages'] != null) ? snapshot.data()['amuletImages'].toList().cast<String>() : [],
     );
     this.certificate = new Certificate(
+      (snapshot.id != null) ? snapshot.id : "",
       (snapshot.data()['id'] != null) ? snapshot.data()['id'] : "",
       (snapshot.data()['certificateImage'] != null) ? snapshot.data()['certificateImage'] : "",
       (snapshot.data()['confirmBy'] != null) ? snapshot.data()['confirmBy'] : "",
