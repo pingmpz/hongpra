@@ -53,7 +53,9 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
     print('# (1/2) Created history to sender');
 
     //-- Update Certificate
-
+    await _firestoreInstance.collection("certificates").doc(widget.certificate.docId).update({
+      "userId": widget.receiverUser.id,
+    });
     print('# (2/2) Get amulet info');
     print('### END UPDATE ###');
 
