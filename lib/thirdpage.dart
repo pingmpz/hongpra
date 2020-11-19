@@ -161,13 +161,15 @@ class _MyThirdPageState extends State<MyThirdPage> {
       return resultList;
     }
 
-    Widget historyCardListBuilder(int type) {
-      // Stream stream1 = _firestoreInstance.collection("histories").where("senderId", isEqualTo: loginUser.uid).orderBy("date", descending: true).snapshots();
-      // Stream stream2 = _firestoreInstance.collection("histories").where("receiverId", isEqualTo: loginUser.uid).orderBy("date", descending: true).snapshots();
+    Stream<QuerySnapshot> getData() {
       Stream stream1 = _firestoreInstance.collection("histories").where("senderId", isEqualTo: loginUser.uid).snapshots();
-      Stream stream2 = _firestoreInstance.collection("histories").where("receiverId", isEqualTo: loginUser.uid).snapshots();
+      Stream stream2 = _firestoreInstance.collection("histories").orderBy("date", descending: true).snapshots();
+      return StreamGroup.merge([stream1, stream2]);
+    }
+
+    Widget historyCardListBuilder(int type) {
       return StreamBuilder<QuerySnapshot>(
-        stream: stream1,
+        stream: getData(),
         builder: (context, snapshot) {
           return !snapshot.hasData ? Center(child: CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(MyConfig.themeColor1)))
               : (snapshot.data.size == 0) ? emptyHistoryList(type)
