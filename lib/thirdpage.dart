@@ -1,4 +1,6 @@
 import 'dart:math';
+import 'dart:async' show Stream;
+import 'package:async/async.dart' show StreamGroup;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -100,15 +102,13 @@ class _MyThirdPageState extends State<MyThirdPage> {
     Widget buildHistoryCardName(int type, String id) {
       String typeName = (type == 1) ? "ผู้ส่งมอบ : " : "ผู้รับมอบ : ";
       if (type != null && id != null) {
-        return StreamBuilder<QuerySnapshot>(
-          stream: _firestoreInstance.collection("users").where("userId", isEqualTo: id).limit(1).snapshots(),
+        return StreamBuilder<DocumentSnapshot>(
+          stream: _firestoreInstance.collection("users").doc(id).snapshots(),
           builder: (context, snapshot) {
             String name = "", firstName = "", lastName = "";
             if (snapshot.hasData) {
-              snapshot.data.docs.forEach((result) {
-                firstName = (result.data()['firstName'] != null) ? result.data()['firstName'] : "";
-                lastName = (result.data()['lastName'] != null) ? result.data()['lastName'] : "";
-              });
+              firstName = (snapshot.data['firstName'] != null) ? snapshot.data['firstName'] : "";
+              lastName = (snapshot.data['lastName'] != null) ? snapshot.data['lastName'] : "";
             }
             name = firstName + " " + lastName;
             return Text(typeName + name, style: MyConfig.smallTextBlack);
@@ -144,7 +144,7 @@ class _MyThirdPageState extends State<MyThirdPage> {
       List<Widget> resultList = new List<Widget>();
       String selectedDate = DateFormat('dd-MM-yyyy').format(new DateTime.now().subtract(Duration(hours: 999999)));
       for (int i = 0; i < snapshot.size; i++) {
-        History showingHistory = new History.fromDocumentSnapshot(snapshot.docs[i]);
+        History showingHistory = new History.fromDocumentSnapshot(snapshot.docs[i], loginUser.uid);
         if (type != 0 && showingHistory.type != type) {
           continue;
         } else {
@@ -162,8 +162,12 @@ class _MyThirdPageState extends State<MyThirdPage> {
     }
 
     Widget historyCardListBuilder(int type) {
+      // Stream stream1 = _firestoreInstance.collection("histories").where("senderId", isEqualTo: loginUser.uid).orderBy("date", descending: true).snapshots();
+      // Stream stream2 = _firestoreInstance.collection("histories").where("receiverId", isEqualTo: loginUser.uid).orderBy("date", descending: true).snapshots();
+      Stream stream1 = _firestoreInstance.collection("histories").where("senderId", isEqualTo: loginUser.uid).snapshots();
+      Stream stream2 = _firestoreInstance.collection("histories").where("receiverId", isEqualTo: loginUser.uid).snapshots();
       return StreamBuilder<QuerySnapshot>(
-        stream: _firestoreInstance.collection("users").doc(loginUser.uid).collection("history").orderBy("date", descending: true).snapshots(),
+        stream: stream1,
         builder: (context, snapshot) {
           return !snapshot.hasData ? Center(child: CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(MyConfig.themeColor1)))
               : (snapshot.data.size == 0) ? emptyHistoryList(type)

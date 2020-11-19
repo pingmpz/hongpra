@@ -9,7 +9,7 @@ class Person {
   Person(this.id, this.firstName, this.lastName, this.uniqueId);
 
   Person.fromDocumentSnapshot(DocumentSnapshot snapshot){
-    this.id = (snapshot.data()['userId'] != null) ? snapshot.data()['userId'] : "";
+    this.id = (snapshot.id != null) ? snapshot.id : "";
     this.firstName = (snapshot.data()['firstName'] != null) ? snapshot.data()['firstName'] : "";
     this.lastName = (snapshot.data()['lastName'] != null) ? snapshot.data()['lastName'] : "";
     this.uniqueId = (snapshot.data()['uniqueId'] != null) ? snapshot.data()['uniqueId'] : "";

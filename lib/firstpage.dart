@@ -3,11 +3,9 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:hongpra/Data/Certificate.dart';
 import 'package:hongpra/detailpage.dart';
 import 'package:hongpra/myconfig.dart';
-
-import 'Data/AmuletCard.dart';
-
 
 class MyFirstPage extends StatefulWidget {
   final User loginUser;
@@ -29,7 +27,7 @@ class _MyFirstPageState extends State<MyFirstPage> {
   final _firestoreInstance = FirebaseFirestore.instance;
 
   //-- Items
-  List<AmuletCard> amuletCardList = new List<AmuletCard>();
+  List<Certificate> certificateCardList = new List<Certificate>();
 
   @override
   void initState() {
@@ -53,8 +51,8 @@ class _MyFirstPageState extends State<MyFirstPage> {
   void filter(AsyncSnapshot<String> search) {
     bool isContain(String text1, String text2) => text1.toLowerCase().trim().contains(text2.toLowerCase().trim());
 
-    for (AmuletCard ele in amuletCardList) {
-      ele.isShowing = (isContain(ele.amulet.name, search.data) || isContain(ele.certificate.confirmBy, search.data));
+    for (Certificate ele in certificateCardList) {
+      ele.isShowing = (isContain(ele.name, search.data) || isContain(ele.confirmBy, search.data));
     }
   }
 
@@ -127,7 +125,7 @@ class _MyFirstPageState extends State<MyFirstPage> {
 
     Widget emptySearchAmuletList = Container(child: Center(child: Text('ไม่พบพระที่ตรงกับคำค้นหา', style: MyConfig.normalBoldTextTheme1)));
 
-    Widget buildAmuletCard(AmuletCard amuletCard) {
+    Widget buildCertificateCard(Certificate certificateCard) {
       return Container(
         margin: EdgeInsets.all(cardInnerEdge),
         child: Card(
@@ -143,8 +141,8 @@ class _MyFirstPageState extends State<MyFirstPage> {
                     flex: 3,
                     child: Container(
                       margin: EdgeInsets.all(cardInnerEdge),
-                      child: (amuletCard.amulet.images.isNotEmpty)
-                          ? Image.network(amuletCard.amulet.images[0])
+                      child: (certificateCard.amuletImages.isNotEmpty)
+                          ? Image.network(certificateCard.amuletImages[0])
                           : Image(image: AssetImage("assets/images/notfound.png")),
                     ),
                   ),
@@ -155,10 +153,10 @@ class _MyFirstPageState extends State<MyFirstPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Text(amuletCard.amulet.name, style: MyConfig.normalBoldTextBlack),
-                          Text("ประเภท : " + amuletCard.amulet.category, style: MyConfig.smallTextBlack),
-                          Text("วันที่รับรอง : " + MyConfig.dateText(amuletCard.certificate.confirmDate), style: MyConfig.smallTextBlack),
-                          Text("รับรองโดย : " + amuletCard.certificate.confirmBy, style: MyConfig.smallTextBlack),
+                          Text(certificateCard.name, style: MyConfig.normalBoldTextBlack),
+                          Text("ประเภท : " + certificateCard.category, style: MyConfig.smallTextBlack),
+                          Text("วันที่รับรอง : " + MyConfig.dateText(certificateCard.confirmDate), style: MyConfig.smallTextBlack),
+                          Text("รับรองโดย : " + certificateCard.confirmBy, style: MyConfig.smallTextBlack),
                         ],
                       ),
                     ),
@@ -166,19 +164,19 @@ class _MyFirstPageState extends State<MyFirstPage> {
                 ],
               ),
             ),
-            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => MyDetailPage(amuletCard.amulet, amuletCard.certificate))),
+            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => MyDetailPage(certificateCard))),
           ),
         ),
       );
     }
 
-    Widget amuletCardListBuilder() {
+    Widget certificateCardListBuilder() {
       return StreamBuilder<QuerySnapshot>(
         stream: _firestoreInstance.collection("certificates").where("userId", isEqualTo: loginUser.uid).snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasData && snapshot.data.size != 0) {
-            amuletCardList = new List<AmuletCard>();
-            snapshot.data.docs.forEach((element) => amuletCardList.add(new AmuletCard.fromDocumentSnapshot(element)));
+            certificateCardList = new List<Certificate>();
+            snapshot.data.docs.forEach((element) => certificateCardList.add(new Certificate.fromDocumentSnapshot(element)));
           }
           return (!snapshot.hasData)
               ? Center(child: CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(MyConfig.themeColor1)))
@@ -187,8 +185,8 @@ class _MyFirstPageState extends State<MyFirstPage> {
               stream: stream,
               initialData: searchController.text,
               builder: (context, searchText) {
-                if (amuletCardList.isNotEmpty) filter(searchText);
-                List<AmuletCard> showingList = amuletCardList.where((element) => element.isShowing == true).toList();
+                if (certificateCardList.isNotEmpty) filter(searchText);
+                List<Certificate> showingList = certificateCardList.where((element) => element.isShowing == true).toList();
                 return (showingList.length == 0) ? emptySearchAmuletList
                     : GridView.builder(
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -196,7 +194,7 @@ class _MyFirstPageState extends State<MyFirstPage> {
                     childAspectRatio: gridRatio,
                   ),
                   itemCount: showingList.length,
-                  itemBuilder: (context, index) => buildAmuletCard(showingList[index]),
+                  itemBuilder: (context, index) => buildCertificateCard(showingList[index]),
                 );
               });
         },
@@ -206,7 +204,7 @@ class _MyFirstPageState extends State<MyFirstPage> {
     return Scaffold(
       backgroundColor: MyConfig.themeColor2,
       appBar: mySearchBar,
-      body: (loginUser != null) ? amuletCardListBuilder() : SizedBox(),
+      body: (loginUser != null) ? certificateCardListBuilder() : SizedBox(),
     );
   }
 }

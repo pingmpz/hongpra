@@ -11,12 +11,12 @@ class History {
 
   History(this.type, this.certificateId, this.receiverId, this.receiverName, this.senderId, this.senderName, this.timestamp);
 
-  History.fromDocumentSnapshot(DocumentSnapshot snapshot){
-    this.type = (snapshot.data()['type'] != null) ? snapshot.data()['type'] : -1;
+  History.fromDocumentSnapshot(DocumentSnapshot snapshot, String userId){
     this. certificateId = (snapshot.data()['certificateId'] != null) ? snapshot.data()['certificateId'] : "";
     this.receiverId = (snapshot.data()['receiverId'] != null) ? snapshot.data()['receiverId'] : "";
     this.senderId = (snapshot.data()['senderId'] != null) ? snapshot.data()['senderId'] : "";
     this.timestamp = (snapshot.data()['date'] != null) ? snapshot.data()['date'].toDate() : null;
+    this.type = (this.senderId == userId) ? 1 : 2;
   }
 
   History.fromDocumentSnapshotWithName(DocumentSnapshot snapshot, this.receiverName, this.senderName){

@@ -8,14 +8,12 @@ import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:hongpra/confirmpage.dart';
 import 'package:hongpra/myconfig.dart';
 
-import 'Data/Amulet.dart';
 import 'Data/Certificate.dart';
 import 'Data/Person.dart';
 
 class MyTransferPage extends StatefulWidget {
-  final Amulet amulet;
   final Certificate certificate;
-  const MyTransferPage(this.amulet, this.certificate);
+  const MyTransferPage(this.certificate);
 
   @override
   _MyTransferPageState createState() => _MyTransferPageState();
@@ -71,6 +69,7 @@ class _MyTransferPageState extends State<MyTransferPage> {
       QuerySnapshot result = await _firestoreInstance.collection("users").where("uniqueId", isEqualTo: idController.text).limit(1).get();
       if (result != null && result.size != 0) {
         result.docs.forEach((res) {
+          print("########################################" + res.data().toString());
           receiverUser = new Person.fromDocumentSnapshot(res);
         });
         if (receiverUser.id == loginUser.uid) {
@@ -92,7 +91,7 @@ class _MyTransferPageState extends State<MyTransferPage> {
       if (result != null) {
         senderUser = new Person.fromDocumentSnapshot(result);
         setState(() => _isLoading = false);
-        Navigator.push(context, MaterialPageRoute(builder: (context) => MyConfirmPage(senderUser, receiverUser, widget.amulet, widget.certificate)));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => MyConfirmPage(senderUser, receiverUser, widget.certificate)));
       } else {
         setState(() => _isLoading = false);
         buildAlertDialog('เกิดข้อผิดพลาด', 'ระบบขัดข้อง');

@@ -5,16 +5,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hongpra/myconfig.dart';
 
-import 'Data/Amulet.dart';
 import 'Data/Certificate.dart';
 import 'Data/Person.dart';
 
 class MyConfirmPage extends StatefulWidget {
   final Person senderUser;
   final Person receiverUser;
-  final Amulet amulet;
   final Certificate certificate;
-  const MyConfirmPage(this.senderUser, this.receiverUser, this.amulet, this.certificate);
+  const MyConfirmPage(this.senderUser, this.receiverUser, this.certificate);
 
   @override
   _MyConfirmPageState createState() => _MyConfirmPageState();
@@ -50,13 +48,11 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
       "receiverId": widget.receiverUser.id,
       "senderId": widget.senderUser.id,
     });
-    print('# (1/2) Created history to sender');
+    print('# (1/2) Created History');
 
     //-- Update Certificate
-    await _firestoreInstance.collection("certificates").doc(widget.certificate.docId).update({
-      "userId": widget.receiverUser.id,
-    });
-    print('# (2/2) Get amulet info');
+    await _firestoreInstance.collection("certificates").doc(widget.certificate.docId).update({"userId": widget.receiverUser.id});
+    print('# (3/3) Updated Certificate');
     print('### END UPDATE ###');
 
     setState(() {
