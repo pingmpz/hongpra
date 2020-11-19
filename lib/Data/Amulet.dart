@@ -1,17 +1,9 @@
 class Amulet {
-  String id;
-  List<String> images;
   String name;
-  String categories;
+  String category;
   String texture;
   String info;
+  List<String> images;
 
-  Amulet(
-      this.id,
-      this.images,
-      this.name,
-      this.categories,
-      this.texture,
-      this.info,
-      );
+  Amulet(this.name, this.category, this.texture, this.info, this.images);
 }

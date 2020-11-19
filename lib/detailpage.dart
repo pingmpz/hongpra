@@ -240,7 +240,7 @@ class _MyDetailPageState extends State<MyDetailPage> {
               buildHeaderText("ข้อมูลพระ"),
               SizedBox(height: columnSpace),
               buildRow("ชื่อพระ", widget.amulet.name),
-              buildRow("พิมพ์พระ", widget.amulet.categories),
+              buildRow("พิมพ์พระ", widget.amulet.category),
               buildRow("เนื้อพระ", widget.amulet.texture),
               buildRow("รายละเอียด", widget.amulet.info),
             ],

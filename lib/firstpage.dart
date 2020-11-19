@@ -143,10 +143,9 @@ class _MyFirstPageState extends State<MyFirstPage> {
                     flex: 3,
                     child: Container(
                       margin: EdgeInsets.all(cardInnerEdge),
-                      child: (amuletCard.amulet.images[0] != "")
+                      child: (amuletCard.amulet.images.isNotEmpty)
                           ? Image.network(amuletCard.amulet.images[0])
-                          : Image(
-                          image: AssetImage("assets/images/notfound.png")),
+                          : Image(image: AssetImage("assets/images/notfound.png")),
                     ),
                   ),
                   Expanded(
@@ -157,7 +156,7 @@ class _MyFirstPageState extends State<MyFirstPage> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Text(amuletCard.amulet.name, style: MyConfig.normalBoldTextBlack),
-                          Text("ประเภท : " + amuletCard.amulet.categories, style: MyConfig.smallTextBlack),
+                          Text("ประเภท : " + amuletCard.amulet.category, style: MyConfig.smallTextBlack),
                           Text("วันที่รับรอง : " + MyConfig.dateText(amuletCard.certificate.confirmDate), style: MyConfig.smallTextBlack),
                           Text("รับรองโดย : " + amuletCard.certificate.confirmBy, style: MyConfig.smallTextBlack),
                         ],
@@ -175,7 +174,7 @@ class _MyFirstPageState extends State<MyFirstPage> {
 
     Widget amuletCardListBuilder() {
       return StreamBuilder<QuerySnapshot>(
-        stream: _firestoreInstance.collection("users").doc(loginUser.uid).collection("amulet").snapshots(),
+        stream: _firestoreInstance.collection("certificates").where("userId", isEqualTo: loginUser.uid).snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasData && snapshot.data.size != 0) {
             amuletCardList = new List<AmuletCard>();
