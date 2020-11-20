@@ -100,7 +100,7 @@ class _MyThirdPageState extends State<MyThirdPage> {
     }
 
     Widget buildHistoryCardName(int type, String id) {
-      String typeName = (type == 1) ? "ผู้ส่งมอบ : " : "ผู้รับมอบ : ";
+      String typeName = (type == 2) ? "ผู้ส่งมอบ : " : "ผู้รับมอบ : ";
       if (type != null && id != null) {
         return StreamBuilder<DocumentSnapshot>(
           stream: _firestoreInstance.collection("users").doc(id).snapshots(),
@@ -144,7 +144,7 @@ class _MyThirdPageState extends State<MyThirdPage> {
       List<Widget> resultList = new List<Widget>();
       String selectedDate = DateFormat('dd-MM-yyyy').format(new DateTime.now().subtract(Duration(hours: 999999)));
       for (int i = 0; i < snapshot.size; i++) {
-        History showingHistory = new History.fromDocumentSnapshot(snapshot.docs[i], loginUser.uid);
+        History showingHistory = new History.fromDocumentSnapshot(snapshot.docs[i]);
         if (type != 0 && showingHistory.type != type) {
           continue;
         } else {
@@ -161,13 +161,25 @@ class _MyThirdPageState extends State<MyThirdPage> {
       return resultList;
     }
 
-    Stream<QuerySnapshot> getData() {
-      Stream stream1 = _firestoreInstance.collection("histories").where("senderId", isEqualTo: loginUser.uid).snapshots();
-      Stream stream2 = _firestoreInstance.collection("histories").orderBy("date", descending: true).snapshots();
-      return StreamGroup.merge([stream1, stream2]);
+    Widget historyCardListBuilder(int type) {
+      return StreamBuilder<QuerySnapshot>(
+        stream: _firestoreInstance.collection("histories").where("userId", isEqualTo: loginUser.uid).snapshots(),
+        builder: (context, snapshot) {
+          return !snapshot.hasData ? Center(child: CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(MyConfig.themeColor1)))
+              : (snapshot.data.size == 0) ? emptyHistoryList(type)
+              : ListView(children: buildHistoryCardList(type, snapshot.data));
+        },
+      );
     }
 
-    Widget historyCardListBuilder(int type) {
+    Widget historyCardListBuilder2(int type) {
+      // Stream stream1 = _firestoreInstance.collection("histories").where("senderId", isEqualTo: loginUser.uid).snapshots();
+      // Stream stream2 = _firestoreInstance.collection("histories").where("receiverId", isEqualTo: loginUser.uid).snapshots();
+      Stream<QuerySnapshot> getData() {
+        Stream stream1 = _firestoreInstance.collection("histories").where("senderId", isEqualTo: loginUser.uid).snapshots();
+        Stream stream2 = _firestoreInstance.collection("histories").where("receiverId", isEqualTo: loginUser.uid).snapshots();
+        return StreamGroup.merge([stream1, stream2]);
+      }
       return StreamBuilder<QuerySnapshot>(
         stream: getData(),
         builder: (context, snapshot) {

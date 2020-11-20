@@ -41,14 +41,25 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
     });
     print('### START UPDATE ###');
 
-    //-- Create History
+    //-- Create History of Sender
     await _firestoreInstance.collection("histories").add({
       "certificateId": widget.certificate.id,
       "date": FieldValue.serverTimestamp(),
       "receiverId": widget.receiverUser.id,
       "senderId": widget.senderUser.id,
+      "userId": widget.senderUser.id,
     });
-    print('# (1/2) Created History');
+    print('# (1/3) Created History of Sender');
+
+    //-- Create History of Sender
+    await _firestoreInstance.collection("histories").add({
+      "certificateId": widget.certificate.id,
+      "date": FieldValue.serverTimestamp(),
+      "receiverId": widget.receiverUser.id,
+      "senderId": widget.senderUser.id,
+      "userId": widget.receiverUser.id,
+    });
+    print('# (2/3) Created History of Receiver');
 
     //-- Update Certificate
     await _firestoreInstance.collection("certificates").doc(widget.certificate.docId).update({"userId": widget.receiverUser.id});
