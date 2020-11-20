@@ -1,6 +1,4 @@
 import 'dart:math';
-import 'dart:async' show Stream;
-import 'package:async/async.dart' show StreamGroup;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -142,9 +140,17 @@ class _MyThirdPageState extends State<MyThirdPage> {
 
     List<Widget> buildHistoryCardList(int type, QuerySnapshot snapshot) {
       List<Widget> resultList = new List<Widget>();
+      List<History> tempList = new List<History>();
+      snapshot.docs.forEach((element) => tempList.add(new History.fromDocumentSnapshot(element)));
+      //-- IF NO ORDER BY -> CUSTOM SORTING
+      Comparator<History> comparator = (a, b) => a.timestamp.compareTo(b.timestamp);
+      tempList.sort(comparator);
+      tempList = tempList.reversed.toList();
+      // tempList.forEach((element) => print(element.timestamp));
+      //-- END IF
       String selectedDate = DateFormat('dd-MM-yyyy').format(new DateTime.now().subtract(Duration(hours: 999999)));
-      for (int i = 0; i < snapshot.size; i++) {
-        History showingHistory = new History.fromDocumentSnapshot(snapshot.docs[i]);
+      for (int i = 0; i < tempList.length; i++) {
+        History showingHistory = tempList[i];
         if (type != 0 && showingHistory.type != type) {
           continue;
         } else {
@@ -163,7 +169,7 @@ class _MyThirdPageState extends State<MyThirdPage> {
 
     Widget historyCardListBuilder(int type) {
       return StreamBuilder<QuerySnapshot>(
-        stream: _firestoreInstance.collection("histories").where("userId", isEqualTo: loginUser.uid).orderBy("date", descending: true).snapshots(),
+        stream: _firestoreInstance.collection("histories").where("userId", isEqualTo: loginUser.uid).snapshots(),
         builder: (context, snapshot) {
           return !snapshot.hasData ? Center(child: CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(MyConfig.themeColor1)))
               : (snapshot.data.size == 0) ? emptyHistoryList(type)
