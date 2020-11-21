@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:hongpra/Data/Certificate.dart';
 import 'package:hongpra/myconfig.dart';
 
 
@@ -23,6 +24,7 @@ class _MyCheckCertificatePage extends State<MyCheckCertificatePage> {
 
   //-- Item
   bool _isLoading = false;
+  Certificate certificateInfo;
 
   //-------------------------------------------------------------------------------------------------------- Functions
 
@@ -34,7 +36,20 @@ class _MyCheckCertificatePage extends State<MyCheckCertificatePage> {
       setState(() => _isLoading = false);
       buildAlertDialog('เกิดข้อผิดพลาด', 'ไม่พบใบรับรอง');
     } else{
-
+      print('### START QUERY ###');
+      // Get Certificate Info
+      setState(() => _isLoading = true);
+      QuerySnapshot result = await _firestoreInstance.collection("certificates").where("id", isEqualTo: idController.text).limit(1).get();
+      if (result != null && result.size != 0) {
+        result.docs.forEach((res) {
+          print(res.data()['id']);
+          print(res.data()['userId']);
+          certificateInfo = new Certificate.fromDocumentSnapshot(res);
+        });
+      } else {
+        setState(() => _isLoading = false);
+        buildAlertDialog('เกิดข้อผิดพลาด', 'ไม่พบบใบรับรอง');
+      }
     }
   }
 
