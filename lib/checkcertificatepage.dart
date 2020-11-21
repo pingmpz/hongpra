@@ -32,9 +32,8 @@ class _MyCheckCertificatePage extends State<MyCheckCertificatePage> {
       buildAlertDialog('เกิดข้อผิดพลาด', 'โปรดระบุ ID ของใบรับรอง');
     } else if (idController.text.length != 9) {
       setState(() => _isLoading = false);
-      buildAlertDialog('เกิดข้อผิดพลาด', 'ไม่พบบใบรับรอง');
+      buildAlertDialog('เกิดข้อผิดพลาด', 'ไม่พบใบรับรอง');
     } else{
-
 
     }
   }
@@ -180,7 +179,7 @@ class _MyCheckCertificatePage extends State<MyCheckCertificatePage> {
             SizedBox(height: desireHeight * 0.02),
             CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(MyConfig.themeColor1)),
             SizedBox(height: desireHeight * 0.02),
-            Text('โปรดรอสักครู่ กำลังตรวจสอบผใบรับรอง', style: MyConfig.normalBoldTextTheme1),
+            Text('โปรดรอสักครู่ กำลังตรวจสอบใบรับรอง', style: MyConfig.normalBoldTextTheme1),
           ],
         ),
       ),
