@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:hongpra/checkcertificatepage.dart';
 import 'package:hongpra/loginpage.dart';
 import 'package:hongpra/myconfig.dart';
 
@@ -21,6 +22,10 @@ class _MyFourthPageState extends State<MyFourthPage> {
   void initState() {
     super.initState();
     loginUser = widget.loginUser;
+  }
+
+  void checkCertificate(){
+    Navigator.push(context, MaterialPageRoute(builder: (context) => MyCheckCertificatePage()));
   }
 
   void signOut() {
@@ -44,6 +49,29 @@ class _MyFourthPageState extends State<MyFourthPage> {
     // double desireHeight = (screenHeight < minHeight) ? screenHeight : minHeight;
     double screenEdge = (screenWidth <= minWidth) ? screenMinEdge : min(screenWidth - minWidth, screenMaxEdge);
 
+    Widget checkCertificateButton = Center(
+      child: ButtonTheme(
+        minWidth: loginButtonWidth,
+        height: loginButtonHeight,
+        child: RaisedButton(
+          onPressed: () => checkCertificate(),
+          color: MyConfig.redColor,
+          child: Text('ตรวจสอบใบรับรอง', style: MyConfig.buttonText),
+        ),
+      ),
+    );
+
+    Widget logoutButton = Center(
+      child: ButtonTheme(
+        minWidth: loginButtonWidth,
+        height: loginButtonHeight,
+        child: RaisedButton(
+          onPressed: () => signOut(),
+          color: MyConfig.redColor,
+          child: Text('ออกจากระบบ', style: MyConfig.buttonText),
+        ),
+      ),
+    );
 
     return Container(
       color: MyConfig.themeColor2,
@@ -55,15 +83,8 @@ class _MyFourthPageState extends State<MyFourthPage> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              ButtonTheme(
-                minWidth: loginButtonWidth,
-                height: loginButtonHeight,
-                child: RaisedButton(
-                  onPressed: () => signOut(),
-                  color: MyConfig.redColor,
-                  child: Text('ออกจากระบบ', style: MyConfig.buttonText),
-                ),
-              ),
+              checkCertificateButton,
+              logoutButton,
             ],
           ),
         ),
