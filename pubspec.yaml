@@ -22,6 +22,7 @@ dependencies:
   photo_view:
   carousel_slider:
   carousel_pro:
+  flutter_launcher_icons:
 #  full_screen_image:
 #-- QR Code
   flutter_barcode_scanner:
@@ -47,10 +48,9 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/images/logo.png
-    - assets/images/amulet1.jpg
-    - assets/images/certificate1.jpg
     - assets/images/notfound.png
+    - assets/images/logo-0.jpg
+    - assets/images/logo-1.jpg
 
   fonts:
     - family: Srisakdi
@@ -65,3 +65,7 @@ flutter:
       - asset: fonts/Prompt/Prompt-Regular.ttf
       - asset: fonts/Prompt/Prompt-Bold.ttf
 
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/logo-0.jpg"

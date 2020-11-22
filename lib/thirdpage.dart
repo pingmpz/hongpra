@@ -53,7 +53,7 @@ class _MyThirdPageState extends State<MyThirdPage> {
     Widget myTabBar = AppBar(
       elevation: 0.0,
       backgroundColor: MyConfig.themeColor2,
-      title: Text('ประวัติกิจกรรม', style: MyConfig.largeBoldTextBlack),
+      title: Center(child: Text('ประวัติกิจกรรม', style: MyConfig.largeBoldTextBlack)),
       bottom: TabBar(
         controller: tabController,
         labelColor: MyConfig.blackColor,
