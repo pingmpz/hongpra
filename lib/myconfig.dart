@@ -102,7 +102,7 @@ class MyConfig {
 
   static TextStyle logoText = TextStyle(
       fontFamily: fontFamily2,
-      fontSize: 86,
+      fontSize: 50,
       color: whiteColor,
       fontWeight: bold);
   static TextStyle appBarTitleText = TextStyle(

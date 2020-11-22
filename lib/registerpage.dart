@@ -296,7 +296,7 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
     Widget footerBar = Container(
       height: footerHeight,
       color: MyConfig.blackColor,
-      child: Center(child: Text('@HongPra.com 2020, All right Reserved.', style: MyConfig.normalTextWhite),
+      child: Center(child: Text('@ultimateamulet.com 2020, All right Reserved.', style: MyConfig.normalTextWhite),
       ),
     );
 
