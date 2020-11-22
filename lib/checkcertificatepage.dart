@@ -57,7 +57,7 @@ class _MyCheckCertificatePage extends State<MyCheckCertificatePage> {
         });
       } else {
         setState(() => _isLoading = false);
-        buildAlertDialog('เกิดข้อผิดพลาด', 'ไม่พบบใบรับรอง');
+        buildAlertDialog('เกิดข้อผิดพลาด', 'ไม่พบใบรับรอง');
       }
     }
   }

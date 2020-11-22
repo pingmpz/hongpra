@@ -22,7 +22,6 @@ dependencies:
   photo_view:
   carousel_slider:
   carousel_pro:
-  flutter_launcher_icons:
 #  full_screen_image:
 #-- QR Code
   flutter_barcode_scanner:
@@ -42,6 +41,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons:
 
 flutter:
 
