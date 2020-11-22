@@ -153,9 +153,4 @@ class MyConfig {
   UNFINISHED
   - [Confirm] At loading animation when confirm -> On fail ? -> Connection lost
   - [Overall] on fail query
-  DONE
-  - [Main] Static search box
-  - [Detail/Confirm] Card Text Overflow -> Flex
-  - [Main] Card Text Overflow -> Scroll
-  - [History] Card Text Overflow -> Auto Flex
 */
