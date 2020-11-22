@@ -22,13 +22,35 @@ class _MyResetPasswordPageState extends State<MyResetPasswordPage> {
 
   resetPassword() {
     String email = emailController.text.trim();
+    //-- check email exist
     _auth.sendPasswordResetEmail(email: email);
-
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyLoginPage()));
+    buildAlertDialog("ดำเนินการเรียบร้อย", "โปรดตรวจอีเมลของท่าน");
   }
 
   void back(){
     Navigator.pop(context);
+  }
+
+  void buildAlertDialog(String title, String content) {
+    Widget okButton = FlatButton(
+      child: Text("ยืนยัน", style: MyConfig.linkText),
+      onPressed: () {
+        Navigator.of(context).popUntil((route) => route.isFirst);
+      },
+    );
+
+    Widget result = AlertDialog(
+      title: Center(child: Text(title, style: MyConfig.normalBoldTextTheme1)),
+      content: Text(content, style: MyConfig.normalTextBlack),
+      actions: [okButton],
+    );
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return result;
+      },
+    );
   }
 
   @override
@@ -101,7 +123,7 @@ class _MyResetPasswordPageState extends State<MyResetPasswordPage> {
         height: resetPasswordButtonHeight,
         child: RaisedButton(
           onPressed: () => resetPassword(),
-          color: MyConfig.redColor,
+          color: MyConfig.blackColor,
           child: Text('ยืนยันอีเมล์', style: MyConfig.buttonText),
         ),
       ),
@@ -122,7 +144,7 @@ class _MyResetPasswordPageState extends State<MyResetPasswordPage> {
       body: Center(
         child: Container(
           width: desireWidth,
-          height: desireHeight,
+          height: (desireHeight / 2.5),
           margin: EdgeInsets.all(screenEdge),
           padding: EdgeInsets.symmetric(
               horizontal: boxEdgeWidth, vertical: boxEdgeHeight),
@@ -131,6 +153,7 @@ class _MyResetPasswordPageState extends State<MyResetPasswordPage> {
             color: MyConfig.whiteColor,
           ),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[

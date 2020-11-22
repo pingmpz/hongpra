@@ -2,9 +2,12 @@ import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hongpra/Data/Certificate.dart';
 import 'package:hongpra/myconfig.dart';
+
+import 'Data/Person.dart';
 
 
 class MyCheckCertificatePage extends StatefulWidget {
@@ -24,14 +27,15 @@ class _MyCheckCertificatePage extends State<MyCheckCertificatePage> {
 
   //-- Item
   bool _isLoading = false;
-  Certificate certificateInfo;
+  Certificate certificate;
+  Person certificateOwner;
 
   //-------------------------------------------------------------------------------------------------------- Functions
 
   void confirmCertificateId() async {
     if (idController.text.isEmpty) {
       setState(() => _isLoading = false);
-      buildAlertDialog('เกิดข้อผิดพลาด', 'โปรดระบุ ID ของใบรับรอง');
+      buildAlertDialog('เกิดข้อผิดพลาด', 'โปรดระบุรหัสใบรับรอง');
     } else if (idController.text.length != 9) {
       setState(() => _isLoading = false);
       buildAlertDialog('เกิดข้อผิดพลาด', 'ไม่พบใบรับรอง');
@@ -41,10 +45,15 @@ class _MyCheckCertificatePage extends State<MyCheckCertificatePage> {
       setState(() => _isLoading = true);
       QuerySnapshot result = await _firestoreInstance.collection("certificates").where("id", isEqualTo: idController.text).limit(1).get();
       if (result != null && result.size != 0) {
-        result.docs.forEach((res) {
+        result.docs.forEach((res) async {
           print(res.data()['id']);
           print(res.data()['userId']);
-          certificateInfo = new Certificate.fromDocumentSnapshot(res);
+          certificate = new Certificate.fromDocumentSnapshot(res);
+          DocumentSnapshot result2 = await _firestoreInstance.collection("users").doc(res.data()['userId']).get();
+          certificateOwner = new Person.fromDocumentSnapshot(result2);
+          setState(() => _isLoading = false);
+          buildSuccessAlertDialog();
+          return;
         });
       } else {
         setState(() => _isLoading = false);
@@ -64,9 +73,62 @@ class _MyCheckCertificatePage extends State<MyCheckCertificatePage> {
     Widget result = AlertDialog(
       title: Center(child: Text(title, style: MyConfig.normalBoldTextTheme1)),
       content: Text(content, style: MyConfig.normalTextBlack),
-      actions: [
-        okButton,
-      ],
+      actions: [okButton],
+    );
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return result;
+      },
+    );
+  }
+
+  void buildSuccessAlertDialog() {
+    Widget okButton = FlatButton(
+      child: Text("ยืนยัน", style: MyConfig.linkText),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    );
+
+    Widget buildHeaderText(String text) => Center(child: Text(text, style: MyConfig.normalBoldTextTheme1));
+
+    Widget buildTitleText(String text) => Expanded(child: Text(text, style: MyConfig.smallBoldTextBlack));
+    Widget buildDetailText(String text) => Expanded(child: Text(text, style: MyConfig.smallTextBlack));
+    Widget buildRowTitle(String title) => Row(children: [buildTitleText(title)]);
+    Widget buildRowDetail(String detail) => Row(children: [buildDetailText(detail)]);
+    Widget rowSpaceOutter = SizedBox(height: 10);
+    Widget rowSpaceInner = SizedBox(height: 2);
+
+    Widget result = AlertDialog(
+      title: Center(child: Text('ตรวจพบใบรับรอง', style: MyConfig.normalBoldTextTheme1)),
+      content: Container(
+
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            buildRowTitle('รหัสใบรับรอง'),
+            rowSpaceInner,
+            buildRowDetail(certificate.id),
+            rowSpaceOutter,
+            buildRowTitle('ชื่อพระ'),
+            rowSpaceInner,
+            buildRowDetail(certificate.name),
+            rowSpaceOutter,
+            buildRowTitle('ผู้ครอบครอง'),
+            rowSpaceInner,
+            buildRowDetail(certificateOwner.getFullName()),
+            rowSpaceOutter,
+            buildRowTitle('วันที่รับรอบ'),
+            rowSpaceInner,
+            buildRowDetail(MyConfig.dateText(certificate.confirmDate)),
+          ],
+        ),
+      ),
+      actions: [okButton],
     );
 
     showDialog(

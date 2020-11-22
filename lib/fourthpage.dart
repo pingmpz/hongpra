@@ -46,7 +46,7 @@ class _MyFourthPageState extends State<MyFourthPage> {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     //double desireWidth = (screenWidth < minWidth) ? screenWidth : minWidth;
-    // double desireHeight = (screenHeight < minHeight) ? screenHeight : minHeight;
+    //double desireHeight = (screenHeight < minHeight) ? screenHeight : minHeight;
     double screenEdge = (screenWidth <= minWidth) ? screenMinEdge : min(screenWidth - minWidth, screenMaxEdge);
 
     Widget checkCertificateButton = Center(
@@ -55,8 +55,16 @@ class _MyFourthPageState extends State<MyFourthPage> {
         height: loginButtonHeight,
         child: RaisedButton(
           onPressed: () => checkCertificate(),
-          color: MyConfig.redColor,
-          child: Text('ตรวจสอบใบรับรอง', style: MyConfig.buttonText),
+          color: MyConfig.blackColor,
+          child: RichText(
+              text: TextSpan(
+                style: MyConfig.buttonText,
+                children: [
+                  WidgetSpan(child: Icon(Icons.search, color: MyConfig.whiteColor, size: 20)),
+                  TextSpan(text: ' ตรวจสอบใบรับรอง', style: MyConfig.buttonText),
+                ],
+              ),
+          ),
         ),
       ),
     );
@@ -80,7 +88,7 @@ class _MyFourthPageState extends State<MyFourthPage> {
         margin: EdgeInsets.all(screenEdge),
         child: Center(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               checkCertificateButton,
