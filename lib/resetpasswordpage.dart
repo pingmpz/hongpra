@@ -22,8 +22,12 @@ class _MyResetPasswordPageState extends State<MyResetPasswordPage> {
   resetPassword() {
     String email = emailController.text.trim();
     //-- check email exist
-    _auth.sendPasswordResetEmail(email: email);
-    buildAlertDialog("ดำเนินการเรียบร้อย", "โปรดตรวจอีเมลของท่าน");
+    _auth.sendPasswordResetEmail(email: email).then((user) {
+      buildAlertDialog("ดำเนินการเรียบร้อย", "โปรดตรวจอีเมลของท่าน");
+    }).catchError((error){
+      print(error.message);
+      buildAlertDialog("ตรวจสอบล้มเหลว", 'ไม่พบบัญชีผู้ใช้งาน');
+    });
   }
 
   void back(){
