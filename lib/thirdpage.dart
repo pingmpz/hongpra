@@ -1,12 +1,13 @@
+//-- Flutter Materials
 import 'dart:math';
-
+import 'package:intl/intl.dart';
+import 'package:flutter/material.dart';
+//-- Firebase
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
+//-- Pages and Models
 import 'package:hongpra/myconfig.dart';
-import 'package:intl/intl.dart';
-
-import 'Data/History.dart';
+import 'package:hongpra/Model/History.dart';
 
 class MyThirdPage extends StatefulWidget {
   final User loginUser;
@@ -146,7 +147,6 @@ class _MyThirdPageState extends State<MyThirdPage> {
       Comparator<History> comparator = (a, b) => a.timestamp.compareTo(b.timestamp);
       tempList.sort(comparator);
       tempList = tempList.reversed.toList();
-      // tempList.forEach((element) => print(element.timestamp));
       //-- END IF
       String selectedDate = DateFormat('dd-MM-yyyy').format(new DateTime.now().subtract(Duration(hours: 999999)));
       for (int i = 0; i < tempList.length; i++) {

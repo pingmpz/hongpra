@@ -13,8 +13,8 @@ class MyConfig {
   static Color greenColor = Colors.green;
   static Color transparentColor = Colors.transparent;
 
-  static String fontFamily1 = 'Prompt';
   // EkkamaiNew , Prompt
+  static String fontFamily1 = 'Prompt';
   static String fontFamily2 = 'Srisakdi';
 
   static FontWeight bold = FontWeight.bold;
@@ -143,14 +143,3 @@ class MyConfig {
     return result;
   }
 }
-
-/*
-  PROBLEMS
-  - [Login] Keyboard Overflow (only for small device)
-  - [Register] Keyboard Overflow
-  - [Splash] Error ??
-  - [History] On empty sublist (but not all), won't show empty text
-  UNFINISHED
-  - [Confirm] At loading animation when confirm -> On fail ? -> Connection lost
-  - [Overall] on fail query
-*/

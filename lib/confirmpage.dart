@@ -1,12 +1,13 @@
+//-- Flutter Materials
 import 'dart:math';
-
+import 'package:flutter/material.dart';
+//-- Firebase
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
+//-- Pages and Models
 import 'package:hongpra/myconfig.dart';
-
-import 'Data/Certificate.dart';
-import 'Data/Person.dart';
+import 'package:hongpra/Model/Certificate.dart';
+import 'package:hongpra/Model/Person.dart';
 
 class MyConfirmPage extends StatefulWidget {
   final Person senderUser;
@@ -45,9 +46,9 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
     await _firestoreInstance.collection("histories").add({
       "certificateId": widget.certificate.id,
       "date": FieldValue.serverTimestamp(),
-      "receiverId": widget.receiverUser.id,
-      "senderId": widget.senderUser.id,
-      "userId": widget.senderUser.id,
+      "receiverId": widget.receiverUser.docId,
+      "senderId": widget.senderUser.docId,
+      "userId": widget.senderUser.docId,
     });
     print('# (1/3) Created History of Sender');
 
@@ -55,14 +56,14 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
     await _firestoreInstance.collection("histories").add({
       "certificateId": widget.certificate.id,
       "date": FieldValue.serverTimestamp(),
-      "receiverId": widget.receiverUser.id,
-      "senderId": widget.senderUser.id,
-      "userId": widget.receiverUser.id,
+      "receiverId": widget.receiverUser.docId,
+      "senderId": widget.senderUser.docId,
+      "userId": widget.receiverUser.docId,
     });
     print('# (2/3) Created History of Receiver');
 
     //-- Update Certificate
-    await _firestoreInstance.collection("certificates").doc(widget.certificate.docId).update({"userId": widget.receiverUser.id});
+    await _firestoreInstance.collection("certificates").doc(widget.certificate.docId).update({"userId": widget.receiverUser.docId});
     print('# (3/3) Updated Certificate');
     print('### END UPDATE ###');
 

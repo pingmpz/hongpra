@@ -1,12 +1,14 @@
+//-- Flutter Materials
 import 'dart:math';
-
+import 'package:flutter/material.dart';
+//-- Firebase
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
+//-- Pages and Models
 import 'package:hongpra/myconfig.dart';
+import 'package:hongpra/Model/Person.dart';
+//-- External Libraries
 import 'package:qr_flutter/qr_flutter.dart';
-
-import 'Data/Person.dart';
 
 class MySecondPage extends StatefulWidget {
   final User loginUser;
@@ -71,17 +73,12 @@ class _MySecondPageState extends State<MySecondPage> {
                       data: loginUser.uid,
                       version: QrVersions.auto,
                       size: min(300.0, 300.0 * (screenWidth / minWidth)),
-                    )
-                        : Image(
-                        image: AssetImage('assets/images/notfound.png')),
+                    ) : Image(image: AssetImage('assets/images/notfound.png')),
                   )),
               SizedBox(height: screenHeight * 0.005),
               Text('UID', style: MyConfig.largeBoldTextTheme1),
               SizedBox(height: screenHeight * 0.01),
-              Center(
-                  child: Text(currentUser.uniqueId,
-                      style: MyConfig.largeBoldTextBlack
-                          .copyWith(letterSpacing: 2))),
+              Center(child: Text(currentUser.uniqueId, style: MyConfig.largeBoldTextBlack.copyWith(letterSpacing: 2))),
             ],
           ),
         ),

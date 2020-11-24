@@ -1,10 +1,13 @@
+//-- Flutter Materials
 import 'dart:math';
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+//-- Firebase
+import 'package:firebase_auth/firebase_auth.dart';
+//-- Pages and Models
 import 'package:hongpra/checkcertificatepage.dart';
 import 'package:hongpra/loginpage.dart';
 import 'package:hongpra/myconfig.dart';
+
 
 class MyFourthPage extends StatefulWidget {
   final User loginUser;
@@ -40,8 +43,8 @@ class _MyFourthPageState extends State<MyFourthPage> {
     // double minHeight = 600.0;
     double screenMinEdge = 9.0;
     double screenMaxEdge = 18.0;
-    double loginButtonWidth = double.infinity;
-    double loginButtonHeight = 40.0;
+    double logoutButtonWidth = double.infinity;
+    double logoutButtonHeight = 40.0;
 
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
@@ -51,8 +54,8 @@ class _MyFourthPageState extends State<MyFourthPage> {
 
     Widget checkCertificateButton = Center(
       child: ButtonTheme(
-        minWidth: loginButtonWidth,
-        height: loginButtonHeight,
+        minWidth: logoutButtonWidth,
+        height: logoutButtonHeight,
         child: RaisedButton(
           onPressed: () => checkCertificate(),
           color: MyConfig.blackColor,
@@ -71,8 +74,8 @@ class _MyFourthPageState extends State<MyFourthPage> {
 
     Widget logoutButton = Center(
       child: ButtonTheme(
-        minWidth: loginButtonWidth,
-        height: loginButtonHeight,
+        minWidth: logoutButtonWidth,
+        height: logoutButtonHeight,
         child: RaisedButton(
           onPressed: () => signOut(),
           color: MyConfig.redColor,

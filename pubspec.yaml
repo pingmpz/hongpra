@@ -16,27 +16,13 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^0.1.3
-  splashscreen: any
-#----- Custom Libs
-#-- Images
   photo_view:
   carousel_slider:
   carousel_pro:
-#  full_screen_image:
-#-- QR Code
   flutter_barcode_scanner:
   qr_flutter:
-#-- Loading Effect
-  pull_to_refresh:
-#  loading:
-  flutter_easyloading:
-#-- Others
   device_preview:
-#  scroll_app_bar:
-  page_transition:
-#  flutter_search_bar:
-
-
+# page_transition:
 
 dev_dependencies:
   flutter_test:

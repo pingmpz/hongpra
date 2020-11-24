@@ -1,8 +1,10 @@
+//-- Flutter Materials
 import 'dart:math';
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+//-- Firebase
+import 'package:firebase_auth/firebase_auth.dart';
+//-- Pages and Models
 import 'package:hongpra/myconfig.dart';
 import 'package:hongpra/mainpage.dart';
 import 'package:hongpra/registerpage.dart';

@@ -1,14 +1,14 @@
+//-- Flutter Materials
 import 'dart:math';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:hongpra/Data/Certificate.dart';
+//-- Firebase
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+//-- Pages and Models
 import 'package:hongpra/myconfig.dart';
-
-import 'Data/Person.dart';
-
+import 'package:hongpra/Model/Certificate.dart';
+import 'package:hongpra/Model/Person.dart';
 
 class MyCheckCertificatePage extends StatefulWidget {
   const MyCheckCertificatePage();
@@ -92,8 +92,7 @@ class _MyCheckCertificatePage extends State<MyCheckCertificatePage> {
       },
     );
 
-    Widget buildHeaderText(String text) => Center(child: Text(text, style: MyConfig.normalBoldTextTheme1));
-
+    //Widget buildHeaderText(String text) => Center(child: Text(text, style: MyConfig.normalBoldTextTheme1));
     Widget buildTitleText(String text) => Expanded(child: Text(text, style: MyConfig.smallBoldTextBlack));
     Widget buildDetailText(String text) => Expanded(child: Text(text, style: MyConfig.smallTextBlack));
     Widget buildRowTitle(String title) => Row(children: [buildTitleText(title)]);

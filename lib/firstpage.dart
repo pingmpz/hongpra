@@ -1,11 +1,13 @@
+//-- Flutter Materials
 import 'dart:async';
-
+import 'package:flutter/material.dart';
+//-- Firebase
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
-import 'package:hongpra/Data/Certificate.dart';
+//-- Pages and Models
 import 'package:hongpra/detailpage.dart';
 import 'package:hongpra/myconfig.dart';
+import 'package:hongpra/Model/Certificate.dart';
 
 class MyFirstPage extends StatefulWidget {
   final User loginUser;
@@ -51,8 +53,8 @@ class _MyFirstPageState extends State<MyFirstPage> {
   void filter(AsyncSnapshot<String> search) {
     bool isContain(String text1, String text2) => text1.toLowerCase().trim().contains(text2.toLowerCase().trim());
 
-    for (Certificate ele in certificateCardList) {
-      ele.isShowing = (isContain(ele.name, search.data) || isContain(ele.confirmBy, search.data));
+    for (Certificate certificate in certificateCardList) {
+      certificate.isShowing = (isContain(certificate.name, search.data) || isContain(certificate.confirmBy, search.data));
     }
   }
 
@@ -61,7 +63,6 @@ class _MyFirstPageState extends State<MyFirstPage> {
     streamController.add(searchController.text);
     setState(() => _isClear = true);
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -76,8 +77,6 @@ class _MyFirstPageState extends State<MyFirstPage> {
     double gridRatio = 2.5;
     int minGridCount = 1;
     double cardInnerEdge = 2.5;
-    //double loginButtonWidth = double.infinity;
-    //double loginButtonHeight = 40.0;
 
     double screenWidth = MediaQuery.of(context).size.width;
     //double screenHeight = MediaQuery.of(context).size.height;

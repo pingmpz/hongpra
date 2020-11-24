@@ -1,15 +1,17 @@
+//-- Flutter Materials
 import 'dart:math';
-
-import 'package:carousel_slider/carousel_slider.dart';
-// import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:hongpra/myconfig.dart';
-import 'package:carousel_pro/carousel_pro.dart';
+//-- Firebase
+import 'package:firebase_auth/firebase_auth.dart';
+//-- Pages and Models
 import 'package:hongpra/transferpage.dart';
+import 'package:hongpra/myconfig.dart';
+import 'package:hongpra/Model/Certificate.dart';
+//-- External Libraries
+import 'package:carousel_pro/carousel_pro.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
-import 'Data/Certificate.dart';
 
 class MyDetailPage extends StatefulWidget {
   final Certificate certificate;
@@ -27,7 +29,6 @@ class _MyDetailPageState extends State<MyDetailPage> {
 
   //-- Firebase
   final loginUser = FirebaseAuth.instance.currentUser;
-  //final _firestoreInstance = FirebaseFirestore.instance;
 
   //-------------------------------------------------------------------------------------------------------- Functions
 
@@ -83,9 +84,7 @@ class _MyDetailPageState extends State<MyDetailPage> {
 
     // double desireWidth = (screenWidth < minWidth) ? screenWidth : minWidth;
     double desireHeight = (screenHeight < minHeight) ? screenHeight : minHeight;
-    double screenEdge = (screenWidth <= minWidth)
-        ? screenMinEdge
-        : min(screenWidth - minWidth, screenMaxEdge);
+    double screenEdge = (screenWidth <= minWidth) ? screenMinEdge : min(screenWidth - minWidth, screenMaxEdge);
     double carouselHeight = screenHeight * imageHeightRatio;
     double carouselWidth = screenWidth;
     double buttonWidth = screenWidth - (screenEdge * 4);

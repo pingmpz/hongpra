@@ -1,15 +1,17 @@
+//-- Flutter Materials
 import 'dart:math';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+//-- Firebase
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+//-- Pages and Models
 import 'package:hongpra/confirmpage.dart';
 import 'package:hongpra/myconfig.dart';
-
-import 'Data/Certificate.dart';
-import 'Data/Person.dart';
+import 'package:hongpra/Model/Person.dart';
+import 'package:hongpra/Model/Certificate.dart';
+//-- External Libraries
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 
 class MyTransferPage extends StatefulWidget {
   final Certificate certificate;
@@ -75,7 +77,7 @@ class _MyTransferPageState extends State<MyTransferPage> {
         result.docs.forEach((res) {
           receiverUser = new Person.fromDocumentSnapshot(res);
         });
-        if (receiverUser.id == loginUser.uid) {
+        if (receiverUser.docId == loginUser.uid) {
           print('### END QUERY (Fail) ###');
           setState(() => _isLoading = false);
           buildAlertDialog('เกิดข้อผิดพลาด', 'ไม่สามารถส่งมอบให้ตัวเองได้');

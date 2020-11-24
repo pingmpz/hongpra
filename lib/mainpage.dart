@@ -1,13 +1,15 @@
+//-- Flutter Materials
 import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:hongpra/firstpage.dart';
-import 'package:hongpra/fourthpage.dart';
+//-- Firebase
+import 'package:firebase_auth/firebase_auth.dart';
+//-- Pages and Models
 import 'package:hongpra/myconfig.dart';
 import 'package:hongpra/loginpage.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:hongpra/firstpage.dart';
 import 'package:hongpra/secondpage.dart';
 import 'package:hongpra/thirdpage.dart';
+import 'package:hongpra/fourthpage.dart';
 
 class MyMainPage extends StatefulWidget {
   @override
