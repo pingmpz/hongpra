@@ -5,16 +5,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hongpra/myconfig.dart';
 
-import 'Data/Amulet.dart';
 import 'Data/Certificate.dart';
 import 'Data/Person.dart';
 
 class MyConfirmPage extends StatefulWidget {
   final Person senderUser;
   final Person receiverUser;
-  final Amulet amulet;
   final Certificate certificate;
-  const MyConfirmPage(this.senderUser, this.receiverUser, this.amulet, this.certificate);
+  const MyConfirmPage(this.senderUser, this.receiverUser, this.certificate);
 
   @override
   _MyConfirmPageState createState() => _MyConfirmPageState();
@@ -41,56 +39,32 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
     setState(() {
       _isLoading = true;
     });
+    print('### START UPDATE ###');
 
     //-- Create History of Sender
-    await _firestoreInstance
-        .collection("users")
-        .doc(loginUser.uid)
-        .collection("history")
-        .add({
+    await _firestoreInstance.collection("histories").add({
       "certificateId": widget.certificate.id,
       "date": FieldValue.serverTimestamp(),
       "receiverId": widget.receiverUser.id,
       "senderId": widget.senderUser.id,
-      "type": 1
+      "userId": widget.senderUser.id,
     });
+    print('# (1/3) Created History of Sender');
 
-    //-- Create History of Receiver
-    await _firestoreInstance
-        .collection("users")
-        .doc(widget.receiverUser.id)
-        .collection("history")
-        .add({
+    //-- Create History of Sender
+    await _firestoreInstance.collection("histories").add({
       "certificateId": widget.certificate.id,
       "date": FieldValue.serverTimestamp(),
       "receiverId": widget.receiverUser.id,
       "senderId": widget.senderUser.id,
-      "type": 2
+      "userId": widget.receiverUser.id,
     });
+    print('# (2/3) Created History of Receiver');
 
-    DocumentSnapshot resultAmulet = await _firestoreInstance
-        .collection("users")
-        .doc(loginUser.uid)
-        .collection("amulet")
-        .doc(widget.amulet.id)
-        .get();
-
-    //-- Add Amulet to Receiver
-    await _firestoreInstance
-        .collection("users")
-        .doc(widget.receiverUser.id)
-        .collection("amulet")
-        .doc(widget.amulet.id)
-        .set(resultAmulet.data());
-
-    //-- Remove Amulet of Sender
-    await _firestoreInstance
-        .collection("users")
-        .doc(loginUser.uid)
-        .collection("amulet")
-        .doc(widget.amulet.id)
-        .delete()
-        .then((value) => print("Delete Successful!!"));
+    //-- Update Certificate
+    await _firestoreInstance.collection("certificates").doc(widget.certificate.docId).update({"userId": widget.receiverUser.id});
+    print('# (3/3) Updated Certificate');
+    print('### END UPDATE ###');
 
     setState(() {
       _isLoading = false;
@@ -150,6 +124,14 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
       automaticallyImplyLeading: false,
     );
 
+    Widget buildHeaderText(String text) => Center(child: Text(text, style: MyConfig.normalBoldTextTheme1));
+
+    Widget buildTitleText(String text) => Expanded(flex:27,  child: Text(text, style: MyConfig.smallBoldTextBlack));
+
+    Widget buildDetailText(String text) => Expanded(flex:73,  child: Text(text, style: MyConfig.smallTextBlack));
+
+    Widget buildRow(String title, String detail) => Row(children: [buildTitleText(title), buildDetailText(detail)]);
+
     Widget detailBox = Container(
       child: Card(
         child: Padding(
@@ -158,39 +140,12 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Center(
-                  child:
-                      Text("ข้อมูลการส่งมอบ", style: MyConfig.normalBoldTextTheme1)),
+              buildHeaderText("ข้อมูลการส่งมอบ"),
               SizedBox(height: columnSpace),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('วันที่', style: MyConfig.smallBoldTextBlack),
-                  Text(MyConfig.dateText(DateTime.now()),
-                      style: MyConfig.smallTextBlack),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('ผู้ส่ง', style: MyConfig.smallBoldTextBlack),
-                  Text(widget.senderUser.getFullName(), style: MyConfig.smallTextBlack),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('ผู้รับ', style: MyConfig.smallBoldTextBlack),
-                  Text(widget.receiverUser.getFullName(), style: MyConfig.smallTextBlack),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text('รหัสใบรับรอง', style: MyConfig.smallBoldTextBlack),
-                  Text(widget.certificate.id, style: MyConfig.smallTextBlack),
-                ],
-              ),
+              buildRow('วันที่', MyConfig.dateText(DateTime.now())),
+              buildRow('ผู้ส่งมอบ', widget.senderUser.getFullName()),
+              buildRow('ผู้รับมอบ', widget.receiverUser.getFullName()),
+              buildRow('รหัสใบรับรอง', widget.certificate.id),
             ],
           ),
         ),

@@ -53,7 +53,7 @@ class _MyThirdPageState extends State<MyThirdPage> {
     Widget myTabBar = AppBar(
       elevation: 0.0,
       backgroundColor: MyConfig.themeColor2,
-      title: Text('ประวัติกิจกรรม', style: MyConfig.largeBoldTextBlack),
+      title: Center(child: Text('ประวัติกิจกรรม', style: MyConfig.largeBoldTextBlack)),
       bottom: TabBar(
         controller: tabController,
         labelColor: MyConfig.blackColor,
@@ -92,32 +92,21 @@ class _MyThirdPageState extends State<MyThirdPage> {
         margin: EdgeInsets.zero,
         child: Padding(
           padding: EdgeInsets.all(cardInnerEdge * 3),
-          child: Text(MyConfig.dateText(dateTime),
-              style: MyConfig.normalTextBlack),
+          child: Text(MyConfig.dateText(dateTime), style: MyConfig.normalTextBlack),
         ),
       );
     }
 
     Widget buildHistoryCardName(int type, String id) {
-      String typeName = (type == 1) ? "ผู้ส่งมอบ : " : "ผู้รับมอบ : ";
+      String typeName = (type == 2) ? "ผู้ส่งมอบ : " : "ผู้รับมอบ : ";
       if (type != null && id != null) {
-        return StreamBuilder<QuerySnapshot>(
-          stream: _firestoreInstance
-              .collection("users")
-              .where("userId", isEqualTo: id)
-              .limit(1)
-              .snapshots(),
+        return StreamBuilder<DocumentSnapshot>(
+          stream: _firestoreInstance.collection("users").doc(id).snapshots(),
           builder: (context, snapshot) {
             String name = "", firstName = "", lastName = "";
             if (snapshot.hasData) {
-              snapshot.data.docs.forEach((result) {
-                firstName = (result.data()['firstName'] != null)
-                    ? result.data()['firstName']
-                    : "";
-                lastName = (result.data()['lastName'] != null)
-                    ? result.data()['lastName']
-                    : "";
-              });
+              firstName = (snapshot.data['firstName'] != null) ? snapshot.data['firstName'] : "";
+              lastName = (snapshot.data['lastName'] != null) ? snapshot.data['lastName'] : "";
             }
             name = firstName + " " + lastName;
             return Text(typeName + name, style: MyConfig.smallTextBlack);
@@ -139,16 +128,10 @@ class _MyThirdPageState extends State<MyThirdPage> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Text(typeName, style: MyConfig.normalBoldTextBlack),
-              Text("รหัสใบรับรอง : " + history.certificateId,
-                  style: MyConfig.smallTextBlack),
-              (history.type == 1)
-                  ? buildHistoryCardName(history.type, history.receiverId)
-                  : SizedBox(),
-              (history.type == 2)
-                  ? buildHistoryCardName(history.type, history.senderId)
-                  : SizedBox(),
-              Text("เวลา : " + MyConfig.timeText(history.timestamp),
-                  style: MyConfig.smallTextBlack),
+              Text("รหัสใบรับรอง : " + history.certificateId, style: MyConfig.smallTextBlack),
+              (history.type == 1) ? buildHistoryCardName(history.type, history.receiverId) : SizedBox(),
+              (history.type == 2) ? buildHistoryCardName(history.type, history.senderId) : SizedBox(),
+              Text("เวลา : " + MyConfig.timeText(history.timestamp), style: MyConfig.smallTextBlack),
             ],
           ),
         ),
@@ -157,19 +140,26 @@ class _MyThirdPageState extends State<MyThirdPage> {
 
     List<Widget> buildHistoryCardList(int type, QuerySnapshot snapshot) {
       List<Widget> resultList = new List<Widget>();
-      String selectedDate = DateFormat('dd-MM-yyyy')
-          .format(new DateTime.now().subtract(Duration(hours: 999999)));
-      for (int i = 0; i < snapshot.size; i++) {
-        History showingHistory =
-        new History.fromDocumentSnapshot(snapshot.docs[i]);
+      List<History> tempList = new List<History>();
+      snapshot.docs.forEach((element) => tempList.add(new History.fromDocumentSnapshot(element)));
+      //-- IF NO ORDER BY -> CUSTOM SORTING
+      Comparator<History> comparator = (a, b) => a.timestamp.compareTo(b.timestamp);
+      tempList.sort(comparator);
+      tempList = tempList.reversed.toList();
+      // tempList.forEach((element) => print(element.timestamp));
+      //-- END IF
+      String selectedDate = DateFormat('dd-MM-yyyy').format(new DateTime.now().subtract(Duration(hours: 999999)));
+      for (int i = 0; i < tempList.length; i++) {
+        History showingHistory = tempList[i];
         if (type != 0 && showingHistory.type != type) {
           continue;
         } else {
-          String showingDate =
-          DateFormat('dd-MM-yyyy').format(showingHistory.timestamp);
-          if (selectedDate != showingDate) {
-            selectedDate = showingDate;
-            resultList.add(buildHistoryHeader(showingHistory.timestamp));
+          if(showingHistory.timestamp != null) { //-- for error protection when adding history (server time delay?)
+            String showingDate = DateFormat('dd-MM-yyyy').format(showingHistory.timestamp);
+            if (selectedDate != showingDate) {
+              selectedDate = showingDate;
+              resultList.add(buildHistoryHeader(showingHistory.timestamp));
+            }
           }
           resultList.add(buildHistoryCard(showingHistory));
         }
@@ -179,23 +169,11 @@ class _MyThirdPageState extends State<MyThirdPage> {
 
     Widget historyCardListBuilder(int type) {
       return StreamBuilder<QuerySnapshot>(
-        stream: _firestoreInstance
-            .collection("users")
-            .doc(loginUser.uid)
-            .collection("history")
-            .orderBy("date", descending: true)
-            .snapshots(),
+        stream: _firestoreInstance.collection("histories").where("userId", isEqualTo: loginUser.uid).snapshots(),
         builder: (context, snapshot) {
-          return !snapshot.hasData
-              ? Center(
-              child: CircularProgressIndicator(
-                  valueColor: new AlwaysStoppedAnimation<Color>(
-                      MyConfig.themeColor1)))
-              : (snapshot.data.size == 0)
-              ? emptyHistoryList(type)
-              : ListView(
-            children: buildHistoryCardList(type, snapshot.data),
-          );
+          return !snapshot.hasData ? Center(child: CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(MyConfig.themeColor1)))
+              : (snapshot.data.size == 0) ? emptyHistoryList(type)
+              : ListView(children: buildHistoryCardList(type, snapshot.data));
         },
       );
     }

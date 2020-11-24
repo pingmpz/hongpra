@@ -41,16 +41,16 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons:
 
 flutter:
 
   uses-material-design: true
 
   assets:
-    - assets/images/logo.png
-    - assets/images/amulet1.jpg
-    - assets/images/certificate1.jpg
     - assets/images/notfound.png
+    - assets/images/logo-0.png
+    - assets/images/logo-1.jpg
 
   fonts:
     - family: Srisakdi
@@ -65,3 +65,7 @@ flutter:
       - asset: fonts/Prompt/Prompt-Regular.ttf
       - asset: fonts/Prompt/Prompt-Bold.ttf
 
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/logo-0.png"

@@ -102,7 +102,7 @@ class MyConfig {
 
   static TextStyle logoText = TextStyle(
       fontFamily: fontFamily2,
-      fontSize: 86,
+      fontSize: 50,
       color: whiteColor,
       fontWeight: bold);
   static TextStyle appBarTitleText = TextStyle(
@@ -146,17 +146,11 @@ class MyConfig {
 
 /*
   PROBLEMS
-  - [Overall] Card Text Overflow
-  - [Overall] Keyboard Overflow
+  - [Login] Keyboard Overflow (only for small device)
+  - [Register] Keyboard Overflow
   - [Splash] Error ??
-  - [Detail/Confirm] Card Text Overflow
+  - [History] On empty sublist (but not all), won't show empty text
   UNFINISHED
-  - [Overall] Query optimization
-  - [Setting] UI
-  - [Splash] UI
   - [Confirm] At loading animation when confirm -> On fail ? -> Connection lost
-  - [Main] Static search box
-  DONE
-  - [Detail] ImageList not correct sorting. -> Corrected ?
-  //-- On 07/11
+  - [Overall] on fail query
 */

@@ -2,7 +2,7 @@ import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:hongpra/mainpage.dart';
+import 'package:hongpra/splashpage.dart';
 
 void main() async {
   SystemChrome.setSystemUIOverlayStyle(
@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: MyMainPage(),
+      home: MySplashPage(),
     );
   }
 }
@@ -36,7 +36,7 @@ class MyTestApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       builder: DevicePreview.appBuilder,
-      home: MyMainPage(),
+      home: MySplashPage(),
     );
   }
 }

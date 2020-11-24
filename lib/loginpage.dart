@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:hongpra/myconfig.dart';
 import 'package:hongpra/mainpage.dart';
 import 'package:hongpra/registerpage.dart';
+import 'package:hongpra/resetpasswordpage.dart';
 
 class MyLoginPage extends StatefulWidget {
   @override
@@ -71,6 +72,10 @@ class _MyLoginPageState extends State<MyLoginPage> {
     }
   }
 
+  void resetpassword(){
+    Navigator.push(context, MaterialPageRoute(builder: (context) => MyResetPasswordPage()));
+  }
+
   void register(){
     Navigator.push(context, MaterialPageRoute(builder: (context) => MyRegisterPage()));
   }
@@ -126,8 +131,8 @@ class _MyLoginPageState extends State<MyLoginPage> {
 
     //-------------------------------------------------------------------------------------------------------- Widgets
 
-    Widget headerText = Center(child: Text('ห้องพระ', style: MyConfig.logoText));
-    Widget titleText = Center(child: Text('ยินดีต้อนรับสู่ ห้องพระ', style: MyConfig.largeBoldTextBlack));
+    Widget headerText = Center(child: Text('สุดยอดพระเครื่อง', style: MyConfig.logoText));
+    Widget titleText = Center(child: Text('ยินดีต้อนรับ', style: MyConfig.largeBoldTextBlack));
     Widget subtitleText = Center(child: Text('เข้าสู่ระบบเพื่อใช้งาน', style: MyConfig.smallTextGrey));
     Widget emailLabel = Text('อีเมล', style: MyConfig.normalTextBlack);
 
@@ -184,11 +189,18 @@ class _MyLoginPageState extends State<MyLoginPage> {
       ),
     );
 
+    Widget resetPasswordButton = Center(
+      child: FlatButton(
+        onPressed: () => resetpassword(),
+        child: Text('ลืมรหัสผ่าน', style: MyConfig.linkText),
+      ),
+    );
+
     Widget footerBar = Container(
       height: footerHeight,
       color: MyConfig.blackColor,
       child: Center(
-        child: Text('@HongPra.com 2020, All right Reserved.', style: MyConfig.normalTextWhite),
+        child: Text('@ultimateamulet.com 2020, All right Reserved.', style: MyConfig.normalTextWhite),
       ),
     );
 
@@ -207,7 +219,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               headerText,
-              SizedBox(height: desireHeight * 0.01),
+              SizedBox(height: desireHeight * 0.05),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: boxEdgeWidth, vertical: boxEdgeHeight),
                 decoration: BoxDecoration(
@@ -232,6 +244,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
                     SizedBox(height: desireHeight * 0.03),
                     loginButton,
                     SizedBox(height: desireHeight * 0.01),
+                    resetPasswordButton,
                     registerButton,
                   ],
                 ),

@@ -9,14 +9,11 @@ import 'package:carousel_pro/carousel_pro.dart';
 import 'package:hongpra/transferpage.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
-
-import 'Data/Amulet.dart';
 import 'Data/Certificate.dart';
 
 class MyDetailPage extends StatefulWidget {
-  final Amulet amulet;
   final Certificate certificate;
-  const MyDetailPage(this.amulet, this.certificate);
+  const MyDetailPage(this.certificate);
 
   @override
   _MyDetailPageState createState() => _MyDetailPageState();
@@ -43,8 +40,7 @@ class _MyDetailPageState extends State<MyDetailPage> {
     Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) =>
-                MyTransferPage(widget.amulet, widget.certificate)));
+            builder: (context) => MyTransferPage(widget.certificate)));
   }
 
   void back() {
@@ -52,8 +48,8 @@ class _MyDetailPageState extends State<MyDetailPage> {
   }
 
   void certificateFullScreen() {
-    if (widget.certificate.image != "")
-      enterFullScreenImage([widget.certificate.image], 0);
+    if (widget.certificate.certificateImage != "")
+      enterFullScreenImage([widget.certificate.certificateImage], 0);
   }
 
   void enterFullScreenImage(List<String> paths, int index) {
@@ -122,7 +118,7 @@ class _MyDetailPageState extends State<MyDetailPage> {
     );
 
     Widget amuletTitleText = Center(
-        child: Text(widget.amulet.name, style: MyConfig.largeBoldTextBlack));
+        child: Text(widget.certificate.name, style: MyConfig.largeBoldTextBlack));
 
     List<Widget> buildImages(List<String> paths) {
       return List<Widget>.generate(
@@ -143,13 +139,13 @@ class _MyDetailPageState extends State<MyDetailPage> {
         child: Card(
           child: Padding(
             padding: EdgeInsets.all(cardPadding),
-            child: (widget.amulet.images.isNotEmpty)
+            child: (widget.certificate.amuletImages.isNotEmpty)
                 ? Carousel(
                     dotSize: dotSize,
                     dotSpacing: dotSize * 3,
                     indicatorBgPadding: dotSize,
                     autoplay: false,
-                    images: buildImages(widget.amulet.images),
+                    images: buildImages(widget.certificate.amuletImages),
                   )
                 : Image(image: AssetImage("assets/images/notfound.png")),
           ),
@@ -159,11 +155,6 @@ class _MyDetailPageState extends State<MyDetailPage> {
 
 
     List<Widget> buildFullScreenImages(List<String> paths) {
-      //-- Old Version
-      // return List<Widget>.generate(
-      //   paths.length,
-      //       (index) => PhotoView(imageProvider: NetworkImage(paths[index])),
-      // );
       return [PhotoViewGallery.builder(
         scrollPhysics: const BouncingScrollPhysics(),
         builder: (BuildContext context, int index) {
@@ -226,6 +217,14 @@ class _MyDetailPageState extends State<MyDetailPage> {
       );
     }
 
+    Widget buildHeaderText(String text) => Center(child: Text(text, style: MyConfig.normalBoldTextTheme1));
+
+    Widget buildTitleText(String text) => Expanded(flex:27,  child: Text(text, style: MyConfig.smallBoldTextBlack));
+
+    Widget buildDetailText(String text) => Expanded(flex:73,  child: Text(text, style: MyConfig.smallTextBlack));
+
+    Widget buildRow(String title, String detail) => Row(children: [buildTitleText(title), buildDetailText(detail)]);
+
     Widget detailBox = Container(
       child: Card(
         child: Padding(
@@ -234,39 +233,12 @@ class _MyDetailPageState extends State<MyDetailPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Center(
-                  child:
-                      Text("ข้อมูลพระ", style: MyConfig.normalBoldTextTheme1)),
+              buildHeaderText("ข้อมูลพระ"),
               SizedBox(height: columnSpace),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text("ชื่อพระ", style: MyConfig.smallBoldTextBlack),
-                  Text(widget.amulet.name, style: MyConfig.smallTextBlack),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text("พิมพ์พระ", style: MyConfig.smallBoldTextBlack),
-                  Text(widget.amulet.categories,
-                      style: MyConfig.smallTextBlack),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text("เนื้อพระ", style: MyConfig.smallBoldTextBlack),
-                  Text(widget.amulet.texture, style: MyConfig.smallTextBlack),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text("รายละเอียด", style: MyConfig.smallBoldTextBlack),
-                  Text(widget.amulet.info, style: MyConfig.smallTextBlack),
-                ],
-              ),
+              buildRow("ชื่อพระ", widget.certificate.name),
+              buildRow("พิมพ์พระ", widget.certificate.category),
+              buildRow("เนื้อพระ", widget.certificate.texture),
+              buildRow("รายละเอียด", widget.certificate.info),
             ],
           ),
         ),
@@ -281,40 +253,18 @@ class _MyDetailPageState extends State<MyDetailPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Center(
-                  child: Text("ข้อมูลใบรับรอง",
-                      style: MyConfig.normalBoldTextTheme1)),
+              buildHeaderText("ข้อมูลใบรับรอง"),
               SizedBox(height: columnSpace),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text("รหัสใบรับรอง", style: MyConfig.smallBoldTextBlack),
-                  Text(widget.certificate.id, style: MyConfig.smallTextBlack),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text("วันที่รับรอง", style: MyConfig.smallBoldTextBlack),
-                  Text(MyConfig.dateText(widget.certificate.confirmDate),
-                      style: MyConfig.smallTextBlack),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text("รับรองโดย", style: MyConfig.smallBoldTextBlack),
-                  Text(widget.certificate.confirmBy,
-                      style: MyConfig.smallTextBlack),
-                ],
-              ),
+              buildRow("รหัสใบรับรอง", widget.certificate.id),
+              buildRow("วันที่รับรอง", MyConfig.dateText(widget.certificate.confirmDate)),
+              buildRow("รับรองโดย", widget.certificate.confirmBy),
               SizedBox(height: columnSpace),
               Center(
                 child: ButtonTheme(
                   minWidth: buttonWidth,
                   height: buttonHeight,
                   child: RaisedButton(
-                    color: (widget.certificate.image != "")
+                    color: (widget.certificate.certificateImage != "")
                         ? MyConfig.greenColor
                         : MyConfig.greyColor,
                     child: Text('ดูใบรับรอง', style: MyConfig.buttonText),

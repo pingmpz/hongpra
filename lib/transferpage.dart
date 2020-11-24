@@ -8,14 +8,12 @@ import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:hongpra/confirmpage.dart';
 import 'package:hongpra/myconfig.dart';
 
-import 'Data/Amulet.dart';
 import 'Data/Certificate.dart';
 import 'Data/Person.dart';
 
 class MyTransferPage extends StatefulWidget {
-  final Amulet amulet;
   final Certificate certificate;
-  const MyTransferPage(this.amulet, this.certificate);
+  const MyTransferPage(this.certificate);
 
   @override
   _MyTransferPageState createState() => _MyTransferPageState();
@@ -32,6 +30,8 @@ class _MyTransferPageState extends State<MyTransferPage> {
   //-- Item
   String scanner = "";
   bool _isLoading = false;
+  Person senderUser;
+  Person receiverUser;
 
   //-------------------------------------------------------------------------------------------------------- Functions
 
@@ -40,9 +40,19 @@ class _MyTransferPageState extends State<MyTransferPage> {
     if(scanner == "-1"){
       return;
     } else if(scanner != null && scanner != "" && scanner.isNotEmpty){
+      print('### START QUERY ###');
+      // Get Receiver Info
       setState(() => _isLoading = true);
-      QuerySnapshot result = await _firestoreInstance.collection("users").where("userId", isEqualTo: scanner).limit(1).get();
-      approve(result);
+      DocumentSnapshot result = await _firestoreInstance.collection("users").doc(scanner).get();
+      if (result != null) {
+        receiverUser = new Person.fromDocumentSnapshot(result);
+        print('# (1/2) Collected Receiver Info');
+        approve();
+      } else {
+        print('### END QUERY (Fail) ###');
+        setState(() => _isLoading = false);
+        buildAlertDialog('เกิดข้อผิดพลาด', 'ไม่พบบัญชีผู้ใช้งาน');
+      }
     } else {
       setState(() => _isLoading = false);
       buildAlertDialog('เกิดข้อผิดพลาด', 'ไม่พบบัญชีผู้ใช้งาน');
@@ -57,44 +67,44 @@ class _MyTransferPageState extends State<MyTransferPage> {
       setState(() => _isLoading = false);
       buildAlertDialog('เกิดข้อผิดพลาด', 'ไม่พบบัญชีผู้ใช้งาน');
     } else {
+      print('### START QUERY ###');
+      // Get Receiver Info
       setState(() => _isLoading = true);
       QuerySnapshot result = await _firestoreInstance.collection("users").where("uniqueId", isEqualTo: idController.text).limit(1).get();
-      approve(result);
+      if (result != null && result.size != 0) {
+        result.docs.forEach((res) {
+          receiverUser = new Person.fromDocumentSnapshot(res);
+        });
+        if (receiverUser.id == loginUser.uid) {
+          print('### END QUERY (Fail) ###');
+          setState(() => _isLoading = false);
+          buildAlertDialog('เกิดข้อผิดพลาด', 'ไม่สามารถส่งมอบให้ตัวเองได้');
+          return;
+        }
+        print('# (1/2) Collected Receiver Info');
+        approve();
+      } else {
+        print('### END QUERY (Fail) ###');
+        setState(() => _isLoading = false);
+        buildAlertDialog('เกิดข้อผิดพลาด', 'ไม่พบบัญชีผู้ใช้งาน');
+      }
     }
   }
 
-  void approve(QuerySnapshot result) async {
-    Person senderUser;
-    Person receiverUser;
-
-    // Get Receiver Info
-    if (result != null && result.size != 0) {
-      result.docs.forEach((res) {
-        receiverUser = new Person.fromDocumentSnapshot(res);
-      });
-      if (receiverUser.id == loginUser.uid) {
-        setState(() => _isLoading = false);
-        buildAlertDialog('เกิดข้อผิดพลาด', 'ไม่สามารถส่งมอบให้ตัวเองได้');
-        return;
-      }
-
+  void approve() async {
       // Get Sender Info
-      result = null;
-      result = await _firestoreInstance.collection("users").where("userId", isEqualTo: loginUser.uid).limit(1).get();
-      if (result != null  && result.size != 0) {
-        result.docs.forEach((res) {
-          senderUser = new Person.fromDocumentSnapshot(res);
-        });
+      DocumentSnapshot result = await _firestoreInstance.collection("users").doc(loginUser.uid).get();
+      if (result != null) {
+        senderUser = new Person.fromDocumentSnapshot(result);
+        print('# (2/2) Collected Sender Info');
+        print('### END QUERY (Success) ###');
         setState(() => _isLoading = false);
-        Navigator.push(context, MaterialPageRoute(builder: (context) => MyConfirmPage(senderUser, receiverUser, widget.amulet, widget.certificate)));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => MyConfirmPage(senderUser, receiverUser, widget.certificate)));
       } else {
+        print('### END QUERY (Fail) ###');
         setState(() => _isLoading = false);
         buildAlertDialog('เกิดข้อผิดพลาด', 'ระบบขัดข้อง');
       }
-    } else {
-      setState(() => _isLoading = false);
-      buildAlertDialog('เกิดข้อผิดพลาด', 'ไม่พบบัญชีผู้ใช้งาน');
-    }
   }
 
   void buildAlertDialog(String title, String content) {

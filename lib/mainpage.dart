@@ -56,7 +56,7 @@ class _MyMainPageState extends State<MyMainPage> {
       backgroundColor: MyConfig.themeColor1,
       elevation: 0.0,
       automaticallyImplyLeading: false,
-      title: Text('ห้องพระ', style: MyConfig.appBarTitleText),
+      title: Text('สุดยอดพระเครื่อง', style: MyConfig.appBarTitleText),
       centerTitle: true,
     );
 

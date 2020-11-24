@@ -9,14 +9,12 @@ class History {
   String senderName = "";
   DateTime timestamp;
 
-  History(this.type, this.certificateId, this.receiverId, this.receiverName, this.senderId, this.senderName, this.timestamp);
-
   History.fromDocumentSnapshot(DocumentSnapshot snapshot){
-    this.type = (snapshot.data()['type'] != null) ? snapshot.data()['type'] : -1;
     this. certificateId = (snapshot.data()['certificateId'] != null) ? snapshot.data()['certificateId'] : "";
     this.receiverId = (snapshot.data()['receiverId'] != null) ? snapshot.data()['receiverId'] : "";
     this.senderId = (snapshot.data()['senderId'] != null) ? snapshot.data()['senderId'] : "";
     this.timestamp = (snapshot.data()['date'] != null) ? snapshot.data()['date'].toDate() : null;
+    this.type = (snapshot.data()['userId'] != null && snapshot.data()['userId'] == this.senderId) ? 1 : 2;
   }
 
   History.fromDocumentSnapshotWithName(DocumentSnapshot snapshot, this.receiverName, this.senderName){
