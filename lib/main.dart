@@ -12,10 +12,12 @@ void main() async {
   await Firebase.initializeApp();
 
   //---
-  bool testing = true;
+  bool testing = false;
 
-  if (testing) runApp(DevicePreview(builder: (context) => MyTestApp()));
-  else runApp(MyApp());
+  if (testing)
+    runApp(DevicePreview(builder: (context) => MyTestApp()));
+  else
+    runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
