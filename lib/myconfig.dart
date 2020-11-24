@@ -96,8 +96,8 @@ class MyConfig {
       fontWeight: bold);
   static TextStyle linkText = TextStyle(
       fontFamily: fontFamily1,
-      fontSize: normalSize,
-      color: blackColor,
+      fontSize: 16,
+      color: themeColor1,
       fontWeight: bold);
 
   static TextStyle logoText = TextStyle(

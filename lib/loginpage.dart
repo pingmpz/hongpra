@@ -194,7 +194,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
     Widget resetPasswordButton = Center(
       child: FlatButton(
         onPressed: () => resetpassword(),
-        child: Text('ลืมรหัสผ่าน', style: MyConfig.linkText),
+        child: Text('ลืมรหัสผ่าน', style: MyConfig.normalBoldTextBlack),
       ),
     );
 

@@ -25,7 +25,7 @@ class _MyResetPasswordPageState extends State<MyResetPasswordPage> {
     String email = emailController.text.trim();
     //-- check email exist
     _auth.sendPasswordResetEmail(email: email).then((user) {
-      buildAlertDialog("ดำเนินการเรียบร้อย", "โปรดตรวจอีเมลของท่าน");
+      buildSuccessAlertDialog("ดำเนินการเรียบร้อย", "โปรดตรวจอีเมลของท่าน");
     }).catchError((error){
       print(error.message);
       buildAlertDialog("ตรวจสอบล้มเหลว", 'ไม่พบบัญชีผู้ใช้งาน');
@@ -37,6 +37,28 @@ class _MyResetPasswordPageState extends State<MyResetPasswordPage> {
   }
 
   void buildAlertDialog(String title, String content) {
+    Widget okButton = FlatButton(
+      child: Text("ยืนยัน", style: MyConfig.linkText),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    );
+
+    Widget result = AlertDialog(
+      title: Center(child: Text(title, style: MyConfig.normalBoldTextTheme1)),
+      content: Text(content, style: MyConfig.normalTextBlack),
+      actions: [okButton],
+    );
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return result;
+      },
+    );
+  }
+
+  void buildSuccessAlertDialog(String title, String content) {
     Widget okButton = FlatButton(
       child: Text("ยืนยัน", style: MyConfig.linkText),
       onPressed: () {
@@ -129,7 +151,7 @@ class _MyResetPasswordPageState extends State<MyResetPasswordPage> {
         child: RaisedButton(
           onPressed: () => resetPassword(),
           color: MyConfig.blackColor,
-          child: Text('ยืนยันอีเมล์', style: MyConfig.buttonText),
+          child: Text('ยืนยันอีเมล', style: MyConfig.buttonText),
         ),
       ),
     );
