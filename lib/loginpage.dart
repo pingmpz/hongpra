@@ -31,45 +31,56 @@ class _MyLoginPageState extends State<MyLoginPage> {
   }
 
   void signIn() async {
-    try {
-      var user = await _auth.signInWithEmailAndPassword(
-          email: emailController.text.trim(),
-          password: passwordController.text.trim());
-      if (user != null) {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyMainPage()));
-      }
-    } catch (e) {
-      print(e.code);
-      switch (e.code) {
-        case "wrong-password":
-          print("Wrong Password! Try again.Wrong email/password combination.");
-          buildAlertDialog("เข้าสู่ระบบล้มเหลว", 'อีเมลหรือรหัสผ่านไม่ถูกต้อง');
-          break;
-        case "invalid-email":
-          print("Email is not correct!, Try again");
-          buildAlertDialog("เข้าสู่ระบบล้มเหลว", 'ไม่พบบัญชีผู้ใช้งาน');
-          break;
-        case "user-not-found":
-          print("User not found! Register first!");
-          buildAlertDialog("เข้าสู่ระบบล้มเหลว", 'ไม่พบบัญชีผู้ใช้งาน');
-          break;
-        case "user-disabled":
-          print("User has been disabled!, Try again");
-          buildAlertDialog("เข้าสู่ระบบล้มเหลว", 'บัญชีนี้ถูกระงับ');
-          break;
-        case "too-many-requests":
-          print("Too many requests!, Please wait for a while");
-          buildAlertDialog("เข้าสู่ระบบล้มเหลว", "พยายามเข้าสู่ระบบมากเกินไป โปรดรอสักครู่ ก่อนทำการเข้าสู่ระบบอีกครั้ง");
-          break;
-        case "operation-not-allowed":
-          print(
-              "Operation not allowed!, Please enable it in the firebase console");
-          buildAlertDialog("เข้าสู่ระบบล้มเหลว", "ไม่สามารถใช่งานได้ในขณะนี้");
-          break;
-        default:
-          print("Unknown error");
-          buildAlertDialog("เข้าสู่ระบบล้มเหลว", "");
-          break;
+    if(emailController.text.trim() == ""){
+      buildAlertDialog("เข้าสู่ระบบล้มเหลว", "โปรดกรอกอีเมล");
+    } else if(passwordController.text.trim() == ""){
+      buildAlertDialog("เข้าสู่ระบบล้มเหลว", "โปรดกรอกรหัสผ่าน");
+    } else {
+      try {
+        var user = await _auth.signInWithEmailAndPassword(
+            email: emailController.text.trim(),
+            password: passwordController.text.trim());
+        if (user != null) {
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => MyMainPage()));
+        }
+      } catch (e) {
+        print(e.code);
+        switch (e.code) {
+          case "wrong-password":
+            print(
+                "Wrong Password! Try again.Wrong email/password combination.");
+            buildAlertDialog(
+                "เข้าสู่ระบบล้มเหลว", 'อีเมลหรือรหัสผ่านไม่ถูกต้อง');
+            break;
+          case "invalid-email":
+            print("Email is not correct!, Try again");
+            buildAlertDialog("เข้าสู่ระบบล้มเหลว", 'ไม่พบบัญชีผู้ใช้งาน');
+            break;
+          case "user-not-found":
+            print("User not found! Register first!");
+            buildAlertDialog("เข้าสู่ระบบล้มเหลว", 'ไม่พบบัญชีผู้ใช้งาน');
+            break;
+          case "user-disabled":
+            print("User has been disabled!, Try again");
+            buildAlertDialog("เข้าสู่ระบบล้มเหลว", 'บัญชีนี้ถูกระงับ');
+            break;
+          case "too-many-requests":
+            print("Too many requests!, Please wait for a while");
+            buildAlertDialog("เข้าสู่ระบบล้มเหลว",
+                "พยายามเข้าสู่ระบบมากเกินไป โปรดรอสักครู่ ก่อนทำการเข้าสู่ระบบอีกครั้ง");
+            break;
+          case "operation-not-allowed":
+            print(
+                "Operation not allowed!, Please enable it in the firebase console");
+            buildAlertDialog(
+                "เข้าสู่ระบบล้มเหลว", "ไม่สามารถใช่งานได้ในขณะนี้");
+            break;
+          default:
+            print("Unknown error");
+            buildAlertDialog("เข้าสู่ระบบล้มเหลว", "");
+            break;
+        }
       }
     }
   }

@@ -38,49 +38,52 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
     super.dispose();
   }
 
-  String validateEmail(String value) {
-    Pattern pattern = r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+  bool validateEmail(String value) {
+    Pattern pattern =
+        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
     RegExp regex = new RegExp(pattern);
-    if (!regex.hasMatch(value)) return 'Enter Valid Email';
-    else return null;
+    if (!regex.hasMatch(value))
+      return false;
+    else
+      return true;
   }
 
-  String validatePassword(String value) {
+  bool validatePassword(String value) {
     Pattern pattern = r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])$';
     RegExp regex = new RegExp(pattern);
-    if (value.isEmpty) {
-      return 'Please enter password';
-    } else {
-      if (!regex.hasMatch(value))
-        return 'Enter valid password';
-      else
-        return null;
-    }
-  }
-
-  String validateName(String value) {
-    if (value.length < 3)
-      return 'Name must be more than 2 characters';
+    if (!regex.hasMatch(value))
+      return false;
     else
-      return null;
+      return true;
   }
 
-  String createUniqueId(){
+  String createUniqueId() {
     String result = "";
     DateTime dateTime = new DateTime.now();
 
     //-- Layer 1
-    String day = (dateTime.day < 10) ? "0" + dateTime.day.toString() : dateTime.day.toString();
-    String month = (dateTime.month < 10) ? "0" + dateTime.month.toString() : dateTime.month.toString();
-    int yearText = int.parse((dateTime.toString()).substring(2,4));
-    String year = (yearText < 10) ? "0" + yearText.toString() : yearText.toString();
-    String hour = (dateTime.hour < 10) ? "0" + dateTime.hour.toString() : dateTime.hour.toString();
-    String min = (dateTime.minute < 10) ? "0" + dateTime.minute.toString() : dateTime.minute.toString();
-    String sec = (dateTime.second < 10) ? "0" + dateTime.second.toString() : dateTime.second.toString();
+    String day = (dateTime.day < 10)
+        ? "0" + dateTime.day.toString()
+        : dateTime.day.toString();
+    String month = (dateTime.month < 10)
+        ? "0" + dateTime.month.toString()
+        : dateTime.month.toString();
+    int yearText = int.parse((dateTime.toString()).substring(2, 4));
+    String year =
+        (yearText < 10) ? "0" + yearText.toString() : yearText.toString();
+    String hour = (dateTime.hour < 10)
+        ? "0" + dateTime.hour.toString()
+        : dateTime.hour.toString();
+    String min = (dateTime.minute < 10)
+        ? "0" + dateTime.minute.toString()
+        : dateTime.minute.toString();
+    String sec = (dateTime.second < 10)
+        ? "0" + dateTime.second.toString()
+        : dateTime.second.toString();
     result = day + month + year + hour + min + sec;
     //-- Layer 2 : SWAP
     List<String> resultList = result.split("");
-    for(int i = 0;i < resultList.length - 1;i += 2){
+    for (int i = 0; i < resultList.length - 1; i += 2) {
       String temp = resultList[i];
       resultList[i] = resultList[i + 1];
       resultList[i + 1] = temp;
@@ -89,7 +92,7 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
     //-- Layer 3 : SPLIT & MERGE
     String head = "";
     String tail = "";
-    for(int i = 0;i < resultList.length - 1;i += 2){
+    for (int i = 0; i < resultList.length - 1; i += 2) {
       head = head + result.substring(i, i + 1);
       tail = tail + result.substring(i + 1, i + 2);
     }
@@ -104,10 +107,23 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
     String firstName = firstNameController.text.trim();
     String lastName = lastNameController.text.trim();
 
-    validateEmail(email);
-    validatePassword(password);
-
-    if (password == confirmPassword && password.length >= 6) {
+    if (email == "") {
+      buildAlertDialog("สมัครสมาชิกล้มเหลว", "โปรดระบุอีเมล");
+    } else if (password == "") {
+      buildAlertDialog("สมัครสมาชิกล้มเหลว", "โปรดระบุรหัสผ่าน");
+    } else if (confirmPassword == "") {
+      buildAlertDialog("สมัครสมาชิกล้มเหลว", "โปรดระบุยืนยันรหัสผ่าน");
+    } else if (firstName == "") {
+      buildAlertDialog("สมัครสมาชิกล้มเหลว", "โปรดระบุชื่อ");
+    } else if (lastName == "") {
+      buildAlertDialog("สมัครสมาชิกล้มเหลว", "โปรดระบุนามสกุล");
+    } else if (!validateEmail(email)) {
+      buildAlertDialog("สมัครสมาชิกล้มเหลว", "รูปแบบอีเมลไม่ถูกต้อง");
+    } else if (!validatePassword(password)) {
+      buildAlertDialog("สมัครสมาชิกล้มเหลว", "รหัสผ่านต้องมีความยาวอย่างน้อย 6 ตัว ต้องเป็นตัวอักษรภาษาอังกฤษและต้องมีตัวเลขรวมอยู่ด้วยอย่างน้อย 1 ตัว");
+    } else if (password != confirmPassword) {
+      buildAlertDialog("สมัครสมาชิกล้มเหลว", "รหัสผ่านและยืนยันรหัสผ่านไม่ตรงกัน");
+    } else {
       _auth.createUserWithEmailAndPassword(email: email, password: password).then((user) {
         print("Register Success");
         String userId = user.user.uid;
@@ -119,16 +135,11 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
           'lastName': lastName,
           'uniqueId': uniqueId,
         });
-
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyLoginPage()));
       }).catchError((error) {
         print(error.message);
         buildAlertDialog("สมัครสมาชิกล้มเหลว", "เกิดปัญหาบ้างอย่าขึ้น กรุณาลองอีกครั้ง");
       });
-    } else {
-      print("Password and Confirm-password is not match.");
-      buildAlertDialog(
-          "สมัครสมาชิกล้มเหลว", "รหัสผ่านและยืนยันรหัสผ่านไม่ตรงกัน");
     }
   }
 
@@ -156,7 +167,7 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
     );
   }
 
-  void back(){
+  void back() {
     Navigator.pop(context);
   }
 
@@ -179,8 +190,12 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
     double screenHeight = MediaQuery.of(context).size.height;
     double desireWidth = (screenWidth < minWidth) ? screenWidth : minWidth;
     double desireHeight = (screenHeight < minHeight) ? screenHeight : minHeight;
-    double screenEdge = (screenWidth <= minWidth) ? screenMinEdge : min(screenWidth - minWidth, screenMaxEdge);
-    double textFieldEdge = (screenWidth < minWidth) ? screenWidth / minWidth * maxTextFieldEdge : maxTextFieldEdge;
+    double screenEdge = (screenWidth <= minWidth)
+        ? screenMinEdge
+        : min(screenWidth - minWidth, screenMaxEdge);
+    double textFieldEdge = (screenWidth < minWidth)
+        ? screenWidth / minWidth * maxTextFieldEdge
+        : maxTextFieldEdge;
 
     //-------------------------------------------------------------------------------------------------------- Widgets
 
@@ -238,7 +253,8 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
           border: OutlineInputBorder()),
     );
 
-    Widget rePasswordLabel = Text('ยืนยันรหัสผ่าน', style: MyConfig.normalTextBlack);
+    Widget rePasswordLabel =
+        Text('ยืนยันรหัสผ่าน', style: MyConfig.normalTextBlack);
 
     Widget rePasswordField = TextField(
       controller: confirmPasswordController,
@@ -298,7 +314,9 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
     Widget footerBar = Container(
       height: footerHeight,
       color: MyConfig.blackColor,
-      child: Center(child: Text('@ultimateamulet.com 2020, All right Reserved.', style: MyConfig.normalTextWhite),
+      child: Center(
+        child: Text('@ultimateamulet.com 2020, All right Reserved.',
+            style: MyConfig.normalTextWhite),
       ),
     );
 
