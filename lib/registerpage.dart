@@ -40,7 +40,7 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
 
   bool validateEmail(String value) {
     Pattern pattern =
-        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+";
     RegExp regex = new RegExp(pattern);
     if (!regex.hasMatch(value))
       return false;
@@ -49,7 +49,7 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
   }
 
   bool validatePassword(String value) {
-    Pattern pattern = r'^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])$';
+    Pattern pattern = r'^(?=.*?[a-z])(?=.*?[0-9]).{6,}$';
     RegExp regex = new RegExp(pattern);
     if (!regex.hasMatch(value))
       return false;
@@ -130,7 +130,6 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
         String uniqueId = createUniqueId();
 
         _firestoreInstance.collection('users').doc(userId).set({
-          'userId': userId,
           'firstName': firstName,
           'lastName': lastName,
           'uniqueId': uniqueId,
@@ -138,7 +137,7 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyLoginPage()));
       }).catchError((error) {
         print(error.message);
-        buildAlertDialog("สมัครสมาชิกล้มเหลว", "เกิดปัญหาบ้างอย่าขึ้น กรุณาลองอีกครั้ง");
+        buildAlertDialog("สมัครสมาชิกล้มเหลว", "มีบัญชีนี้ในระบบแล้ว");
       });
     }
   }
