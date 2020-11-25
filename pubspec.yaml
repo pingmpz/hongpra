@@ -19,6 +19,7 @@ dependencies:
   photo_view:
   carousel_slider:
   carousel_pro:
+  cached_network_image:
   flutter_barcode_scanner:
   qr_flutter:
   device_preview:

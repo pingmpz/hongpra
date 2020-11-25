@@ -8,6 +8,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hongpra/detailpage.dart';
 import 'package:hongpra/myconfig.dart';
 import 'package:hongpra/Model/Certificate.dart';
+//-- External Libraries
+import 'package:cached_network_image/cached_network_image.dart';
 
 class MyFirstPage extends StatefulWidget {
   final User loginUser;
@@ -141,7 +143,7 @@ class _MyFirstPageState extends State<MyFirstPage> {
                     child: Container(
                       margin: EdgeInsets.all(cardInnerEdge),
                       child: (certificateCard.amuletImages.isNotEmpty)
-                          ? Image.network(certificateCard.amuletImages[0])
+                          ? CachedNetworkImage(imageUrl: certificateCard.amuletImages[0])
                           : Image(image: AssetImage("assets/images/notfound.png")),
                     ),
                   ),

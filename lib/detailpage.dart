@@ -1,5 +1,6 @@
 //-- Flutter Materials
 import 'dart:math';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 //-- Firebase
 import 'package:firebase_auth/firebase_auth.dart';
@@ -12,6 +13,7 @@ import 'package:carousel_pro/carousel_pro.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class MyDetailPage extends StatefulWidget {
   final Certificate certificate;
@@ -124,7 +126,7 @@ class _MyDetailPageState extends State<MyDetailPage> {
         paths.length,
         (index) => GestureDetector(
           child: (paths[index].isNotEmpty)
-              ? Image.network(paths[index])
+              ? CachedNetworkImage(imageUrl: paths[index])
               : Image(image: AssetImage("assets/images/notfound.png")),
           onDoubleTap: () => enterFullScreenImage(paths, index),
         ),
