@@ -23,6 +23,9 @@ class _MyLoginPageState extends State<MyLoginPage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
+  //-- Item
+  bool _isLoading = false;
+
   //-------------------------------------------------------------------------------------------------------- Functions
 
   @override
@@ -37,15 +40,19 @@ class _MyLoginPageState extends State<MyLoginPage> {
       buildAlertDialog("เข้าสู่ระบบล้มเหลว", "โปรดกรอกรหัสผ่าน");
     } else {
       try {
+        setState(() => _isLoading = true);
+        if(_isLoading) {
+          buildLoadingDialog("กำลังเข้าสู่ระบบ", "");
+        }
         var user = await _auth.signInWithEmailAndPassword(
             email: emailController.text.trim(),
             password: passwordController.text.trim());
         if (user != null) {
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => MyMainPage()));
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyMainPage()));
         }
       } catch (e) {
         print(e.code);
+        setState(() => _isLoading = false);
         switch (e.code) {
           case "wrong-password":
             print(
@@ -107,6 +114,21 @@ class _MyLoginPageState extends State<MyLoginPage> {
       actions: [
         okButton,
       ],
+    );
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return result;
+      },
+    );
+  }
+
+
+  void buildLoadingDialog(String title, String content) {
+    Widget result = AlertDialog(
+      title: Center(child: Text(title, style: MyConfig.normalBoldTextTheme1)),
+      content: Text(content, style: MyConfig.normalTextBlack),
     );
 
     showDialog(
