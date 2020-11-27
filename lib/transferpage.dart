@@ -64,7 +64,7 @@ class _MyTransferPageState extends State<MyTransferPage> {
   void confirmId() async {
     if (idController.text.isEmpty) {
       setState(() => _isLoading = false);
-      buildAlertDialog('เกิดข้อผิดพลาด', 'โปรดระบุ UID ของผู้รับ');
+      buildAlertDialog('เกิดข้อผิดพลาด', 'โปรดระบุ หมายเลขสมาชิก ของผู้รับ');
     } else if (idController.text.length != 12) {
       setState(() => _isLoading = false);
       buildAlertDialog('เกิดข้อผิดพลาด', 'ไม่พบบัญชีผู้ใช้งาน');
@@ -218,7 +218,7 @@ class _MyTransferPageState extends State<MyTransferPage> {
       decoration: InputDecoration(
         isDense: true,
         contentPadding: EdgeInsets.all(textFieldEdge),
-        hintText: "ป้อน UID ของผู้รับ",
+        hintText: "ป้อน หมายเลขสมาชิก ของผู้รับ",
         filled: true,
         fillColor: MyConfig.whiteColor,
         border: OutlineInputBorder(),

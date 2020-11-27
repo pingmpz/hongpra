@@ -236,7 +236,7 @@ class _MyDetailPageState extends State<MyDetailPage> {
               buildHeaderText("ข้อมูลพระ"),
               SizedBox(height: columnSpace),
               buildRow("ชื่อพระ", widget.certificate.name),
-              buildRow("พิมพ์พระ", widget.certificate.category),
+              buildRow("ประเภท", widget.certificate.category),
               buildRow("เนื้อพระ", widget.certificate.texture),
               buildRow("รายละเอียด", widget.certificate.info),
             ],

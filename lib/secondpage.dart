@@ -76,7 +76,7 @@ class _MySecondPageState extends State<MySecondPage> {
                     ) : Image(image: AssetImage('assets/images/notfound.png')),
                   )),
               SizedBox(height: screenHeight * 0.005),
-              Text('UID', style: MyConfig.largeBoldTextTheme1),
+              Text('หมายเลขสมาชิก', style: MyConfig.largeBoldTextTheme1),
               SizedBox(height: screenHeight * 0.01),
               Center(child: Text(currentUser.uniqueId, style: MyConfig.largeBoldTextBlack.copyWith(letterSpacing: 2))),
             ],
