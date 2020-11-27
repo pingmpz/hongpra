@@ -39,11 +39,11 @@ class _MyLoginPageState extends State<MyLoginPage> {
     } else if(passwordController.text.trim() == ""){
       buildAlertDialog("เข้าสู่ระบบล้มเหลว", "โปรดกรอกรหัสผ่าน");
     } else {
+      setState(() => _isLoading = true);
+      if(_isLoading) {
+        buildLoadingDialog("กำลังเข้าสู่ระบบ", "");
+      }
       try {
-        setState(() => _isLoading = true);
-        if(_isLoading) {
-          buildLoadingDialog("กำลังเข้าสู่ระบบ", "");
-        }
         var user = await _auth.signInWithEmailAndPassword(
             email: emailController.text.trim(),
             password: passwordController.text.trim());
