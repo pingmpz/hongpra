@@ -3,21 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>273600327895-cbnu6ts7h028p44fvln9qakgc5q73e74.apps.googleusercontent.com</string>
+	<string>1052737792560-vbrtranr9ou4727v9g8thvojtam872vv.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.273600327895-cbnu6ts7h028p44fvln9qakgc5q73e74</string>
+	<string>com.googleusercontent.apps.1052737792560-vbrtranr9ou4727v9g8thvojtam872vv</string>
 	<key>API_KEY</key>
-	<string>AIzaSyCynFbetmvTaADfv363ksFQ9ziTj67y9LQ</string>
+	<string>AIzaSyBbt40kXZPgHoLYIrf6fIPuWvjJwk2tTIk</string>
 	<key>GCM_SENDER_ID</key>
-	<string>273600327895</string>
+	<string>1052737792560</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.example.hongpra</string>
+	<string>com.ultimateamulet.ultimateamuletapp</string>
 	<key>PROJECT_ID</key>
-	<string>hongpra-31f65</string>
+	<string>ultimatehongpra</string>
 	<key>STORAGE_BUCKET</key>
-	<string>hongpra-31f65.appspot.com</string>
+	<string>ultimatehongpra.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,8 +29,8 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:273600327895:ios:06e36fd4abb17a99b94092</string>
+	<string>1:1052737792560:ios:b2090dd5c221c3d9565bf5</string>
 	<key>DATABASE_URL</key>
-	<string>https://hongpra-31f65.firebaseio.com</string>
+	<string>https://ultimatehongpra.firebaseio.com</string>
 </dict>
 </plist>
