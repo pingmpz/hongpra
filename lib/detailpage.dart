@@ -159,7 +159,7 @@ class _MyDetailPageState extends State<MyDetailPage> {
         scrollPhysics: const BouncingScrollPhysics(),
         builder: (BuildContext context, int index) {
           return PhotoViewGalleryPageOptions(
-            imageProvider: NetworkImage(paths[index]),
+            imageProvider: CachedNetworkImageProvider(paths[index]),
             initialScale: PhotoViewComputedScale.contained * 0.8,
           );
         },

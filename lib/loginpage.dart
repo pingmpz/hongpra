@@ -23,9 +23,6 @@ class _MyLoginPageState extends State<MyLoginPage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
-  //-- Item
-  bool _isLoading = false;
-
   //-------------------------------------------------------------------------------------------------------- Functions
 
   @override
@@ -39,20 +36,18 @@ class _MyLoginPageState extends State<MyLoginPage> {
     } else if(passwordController.text.trim() == ""){
       buildAlertDialog("เข้าสู่ระบบล้มเหลว", "โปรดกรอกรหัสผ่าน");
     } else {
-      setState(() => _isLoading = true);
-      if(_isLoading) {
-        buildLoadingDialog("กำลังเข้าสู่ระบบ", "");
-      }
+      buildLoadingDialog("โปรดรอสักครู่");
       try {
         var user = await _auth.signInWithEmailAndPassword(
             email: emailController.text.trim(),
             password: passwordController.text.trim());
         if (user != null) {
+          Navigator.pop(context);
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyMainPage()));
         }
       } catch (e) {
+        Navigator.pop(context);
         print(e.code);
-        setState(() => _isLoading = false);
         switch (e.code) {
           case "wrong-password":
             print(
@@ -125,10 +120,15 @@ class _MyLoginPageState extends State<MyLoginPage> {
   }
 
 
-  void buildLoadingDialog(String title, String content) {
+  void buildLoadingDialog(String title) {
     Widget result = AlertDialog(
       title: Center(child: Text(title, style: MyConfig.normalBoldTextTheme1)),
-      content: Text(content, style: MyConfig.normalTextBlack),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(MyConfig.themeColor1)),
+        ],
+      ),
     );
 
     showDialog(

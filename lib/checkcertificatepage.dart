@@ -36,7 +36,7 @@ class _MyCheckCertificatePage extends State<MyCheckCertificatePage> {
     if (idController.text.isEmpty) {
       setState(() => _isLoading = false);
       buildAlertDialog('เกิดข้อผิดพลาด', 'โปรดระบุรหัสใบรับรอง');
-    } else if (idController.text.length != 9) {
+    } else if (idController.text.length != 10) {
       setState(() => _isLoading = false);
       buildAlertDialog('เกิดข้อผิดพลาด', 'ไม่พบใบรับรอง');
     } else{
@@ -209,14 +209,14 @@ class _MyCheckCertificatePage extends State<MyCheckCertificatePage> {
 
     Widget idTextField = TextField(
       controller: idController,
-      maxLength: 9,
+      maxLength: 10,
       textAlign: TextAlign.center,
       obscureText: false,
       style: MyConfig.normalTextBlack,
       decoration: InputDecoration(
         isDense: true,
         contentPadding: EdgeInsets.all(textFieldEdge),
-        hintText: "ป้อน ID ของใบรับรอง",
+        hintText: "ป้อนรหัสใบรับรอง",
         filled: true,
         fillColor: MyConfig.whiteColor,
         border: OutlineInputBorder(),

@@ -59,7 +59,7 @@ class _MyRegisterPageState extends State<MyRegisterPage> {
 
   String createUniqueId() {
     String result = "";
-    DateTime dateTime = new DateTime.now();
+    DateTime dateTime = new DateTime.now(); //-- new Date(firebase.firestore.Timestamp.now().toDate());
 
     //-- Layer 1
     String day = (dateTime.day < 10)
