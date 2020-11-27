@@ -237,7 +237,6 @@ class _MyDetailPageState extends State<MyDetailPage> {
               SizedBox(height: columnSpace),
               buildRow("ชื่อพระ", widget.certificate.name),
               buildRow("ประเภท", widget.certificate.category),
-              buildRow("เนื้อพระ", widget.certificate.texture),
               buildRow("รายละเอียด", widget.certificate.info),
             ],
           ),

@@ -4,7 +4,6 @@ class Certificate {
   String docId;
   String name;
   String category;
-  String texture;
   String info;
   List<String> amuletImages;
   String id;
@@ -17,7 +16,6 @@ class Certificate {
     docId = (doc.id != null) ? doc.id : "";
     name = (doc.data()['name'] != null) ? doc.data()['name'] : "";
     category = (doc.data()['category'] != null) ? doc.data()['category'] : "";
-    texture = (doc.data()['texture'] != null) ? doc.data()['texture'] : "";
     info = (doc.data()['info'] != null) ? doc.data()['info'] : "";
     amuletImages = (doc.data()['amuletImages'] != null) ? doc.data()['amuletImages'].toList().cast<String>() : [];
     id = (doc.data()['id'] != null) ? doc.data()['id'] : "";
