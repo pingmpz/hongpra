@@ -248,7 +248,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
         child: Container(
           width: desireWidth,
           height: screenHeight,
-          padding: EdgeInsets.symmetric(horizontal: screenEdge, vertical: 0.0),
+          padding: EdgeInsets.symmetric(horizontal: screenEdge),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,

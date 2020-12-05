@@ -41,11 +41,12 @@ class _MyTransferPageState extends State<MyTransferPage> {
     scanner = await FlutterBarcodeScanner.scanBarcode("#" + MyConfig.colorTheme1, "Cancel", true, ScanMode.QR);
     if(scanner == "-1"){
       return;
-    } else if(scanner != null && scanner != "" && scanner.isNotEmpty){
+    } else if(scanner != null && scanner != "" && scanner.isNotEmpty && scanner.length > 4 && scanner.substring(0,2) == "UA" && scanner.substring(scanner.length - 2,scanner.length) == "UA"){
       print('### START QUERY ###');
       // Get Receiver Info
       setState(() => _isLoading = true);
-      DocumentSnapshot result = await _firestoreInstance.collection("users").doc(scanner).get();
+      String scannerResult = scanner.substring(2, scanner.length - 2);
+      DocumentSnapshot result = await _firestoreInstance.collection("users").doc(scannerResult).get();
       if (result != null) {
         receiverUser = new Person.fromDocumentSnapshot(result);
         print('# (1/2) Collected Receiver Info');

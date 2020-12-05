@@ -34,7 +34,7 @@ class _MySplashPageState extends State<MySplashPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text('สุดยอดพระเครื่อง', style: MyConfig.SplashText),
+            Text('สุดยอดพระเครื่อง', style: MyConfig.splashText),
             SizedBox(height: screenHeight / 2),
             CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(MyConfig.themeColor2)),
           ],

@@ -106,7 +106,7 @@ class MyConfig {
       color: whiteColor,
       fontWeight: bold);
 
-  static TextStyle SplashText = TextStyle(
+  static TextStyle splashText = TextStyle(
       fontFamily: fontFamily2,
       fontSize: 50,
       color: whiteColor,
