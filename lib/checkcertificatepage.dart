@@ -93,15 +93,15 @@ class _MyCheckCertificatePage extends State<MyCheckCertificatePage> {
     );
 
     //Widget buildHeaderText(String text) => Center(child: Text(text, style: MyConfig.normalBoldTextTheme1));
-    Widget buildTitleText(String text) => Expanded(child: Text(text, style: MyConfig.smallBoldTextBlack));
-    Widget buildDetailText(String text) => Expanded(child: Text(text, style: MyConfig.smallTextBlack));
+    Widget buildTitleText(String text) => Expanded(child: Text(text, style: MyConfig.normalBoldTextBlack));
+    Widget buildDetailText(String text) => Expanded(child: Text(text, style: MyConfig.normalTextBlack));
     Widget buildRowTitle(String title) => Row(children: [buildTitleText(title)]);
     Widget buildRowDetail(String detail) => Row(children: [buildDetailText(detail)]);
     Widget rowSpaceOutter = SizedBox(height: 10);
     Widget rowSpaceInner = SizedBox(height: 2);
 
     Widget result = AlertDialog(
-      title: Center(child: Text('ตรวจพบใบรับรอง', style: MyConfig.normalBoldTextTheme1)),
+      title: Center(child: Text('ตรวจพบใบรับรอง', style: MyConfig.mediumBoldTextTheme1)),
       content: Container(
 
         child: Column(

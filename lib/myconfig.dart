@@ -21,6 +21,7 @@ class MyConfig {
 
   static double normalSize = 14;
   static double smallSize = 12;
+  static double mediumSize = 18;
   static double largeSize = 24;
 
   static TextStyle normalTextBlack = TextStyle(
@@ -54,7 +55,6 @@ class MyConfig {
       fontSize: normalSize,
       color: themeColor1,
       fontWeight: bold);
-
   static TextStyle normalBoldTextGreen = TextStyle(
       fontFamily: fontFamily1,
       fontSize: normalSize,
@@ -70,6 +70,12 @@ class MyConfig {
       fontFamily: fontFamily1,
       fontSize: smallSize,
       color: blackColor,
+      fontWeight: bold);
+
+  static TextStyle mediumBoldTextTheme1 = TextStyle(
+      fontFamily: fontFamily1,
+      fontSize: mediumSize,
+      color: themeColor1,
       fontWeight: bold);
 
   static TextStyle largeBoldTextBlack = TextStyle(

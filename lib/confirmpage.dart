@@ -125,11 +125,11 @@ class _MyConfirmPageState extends State<MyConfirmPage> {
       automaticallyImplyLeading: false,
     );
 
-    Widget buildHeaderText(String text) => Center(child: Text(text, style: MyConfig.normalBoldTextTheme1));
+    Widget buildHeaderText(String text) => Center(child: Text(text, style: MyConfig.mediumBoldTextTheme1));
 
-    Widget buildTitleText(String text) => Expanded(flex:27,  child: Text(text, style: MyConfig.smallBoldTextBlack));
+    Widget buildTitleText(String text) => Expanded(flex:27,  child: Text(text, style: MyConfig.normalBoldTextBlack));
 
-    Widget buildDetailText(String text) => Expanded(flex:73,  child: Text(text, style: MyConfig.smallTextBlack));
+    Widget buildDetailText(String text) => Expanded(flex:73,  child: Text(text, style: MyConfig.normalTextBlack));
 
     Widget buildRow(String title, String detail) => Row(children: [buildTitleText(title), buildDetailText(detail)]);
 
