@@ -291,39 +291,34 @@ class _MyDetailPageState extends State<MyDetailPage> {
 
     //-------------------------------------------------------------------------------------------------------- Page
 
-    return WillPopScope(
-      onWillPop: () async {
-        return false;
-      },
-      child: Stack(
-        children: [
-          Scaffold(
-            backgroundColor: MyConfig.themeColor2,
-            appBar: myAppBar,
-            body: SingleChildScrollView(
-              child: Container(
-                margin: EdgeInsets.all(screenEdge),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    amuletTitleText,
-                    SizedBox(height: desireHeight * 0.01),
-                    myCarousel,
-                    SizedBox(height: desireHeight * 0.01),
-                    detailBox,
-                    SizedBox(height: desireHeight * 0.01),
-                    detailBox2,
-                    SizedBox(height: desireHeight * 0.01),
-                    buttonBox,
-                  ],
-                ),
+    return Stack(
+      children: [
+        Scaffold(
+          backgroundColor: MyConfig.themeColor2,
+          appBar: myAppBar,
+          body: SingleChildScrollView(
+            child: Container(
+              margin: EdgeInsets.all(screenEdge),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  amuletTitleText,
+                  SizedBox(height: desireHeight * 0.01),
+                  myCarousel,
+                  SizedBox(height: desireHeight * 0.01),
+                  detailBox,
+                  SizedBox(height: desireHeight * 0.01),
+                  detailBox2,
+                  SizedBox(height: desireHeight * 0.01),
+                  buttonBox,
+                ],
               ),
             ),
           ),
-          if (_isImageShown) fullScreenImages(),
-        ],
-      ),
+        ),
+        if (_isImageShown) fullScreenImages(),
+      ],
     );
   }
 }
