@@ -70,7 +70,7 @@ class _MySecondPageState extends State<MySecondPage> {
                   child: Center(
                     child: (loginUser != null)
                         ? QrImage(
-                      data: ("UA" + loginUser.uid + "UA"),
+                      data: ("UA" + loginUser.uid),
                       version: QrVersions.auto,
                       size: min(300.0, 300.0 * (screenWidth / minWidth)),
                     ) : Image(image: AssetImage('assets/images/notfound.png')),
