@@ -7,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hongpra/checkcertificatepage.dart';
 import 'package:hongpra/loginpage.dart';
 import 'package:hongpra/myconfig.dart';
+import 'package:hongpra/resetpasswordpage2.dart';
 
 
 class MyFourthPage extends StatefulWidget {
@@ -29,6 +30,10 @@ class _MyFourthPageState extends State<MyFourthPage> {
 
   void checkCertificate(){
     Navigator.push(context, MaterialPageRoute(builder: (context) => MyCheckCertificatePage()));
+  }
+
+  void resetPassword(){
+    Navigator.push(context, MaterialPageRoute(builder: (context) => MyResetPasswordPage2()));
   }
 
   void signOut() {
@@ -72,6 +77,26 @@ class _MyFourthPageState extends State<MyFourthPage> {
       ),
     );
 
+    Widget resetPasswordButton = Center(
+      child: ButtonTheme(
+        minWidth: logoutButtonWidth,
+        height: logoutButtonHeight,
+        child: RaisedButton(
+          onPressed: () => resetPassword(),
+          color: MyConfig.blackColor,
+          child: RichText(
+            text: TextSpan(
+              style: MyConfig.buttonText,
+              children: [
+                WidgetSpan(child: Icon(Icons.refresh, color: MyConfig.whiteColor, size: 20)),
+                TextSpan(text: ' เปลี่ยนรหัสผ่าน', style: MyConfig.buttonText),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+
     Widget logoutButton = Center(
       child: ButtonTheme(
         minWidth: logoutButtonWidth,
@@ -94,7 +119,14 @@ class _MyFourthPageState extends State<MyFourthPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              checkCertificateButton,
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  checkCertificateButton,
+                  resetPasswordButton,
+                ],
+              ),
               logoutButton,
             ],
           ),
