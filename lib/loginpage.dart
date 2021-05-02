@@ -37,10 +37,13 @@ class _MyLoginPageState extends State<MyLoginPage> {
       buildAlertDialog("เข้าสู่ระบบล้มเหลว", "โปรดกรอกรหัสผ่าน");
     } else {
       buildLoadingDialog("โปรดรอสักครู่");
+      String id = emailController.text.trim();
+      String pass = passwordController.text.trim();
+      if(MyConfig.isNumeric(id)) id = id + "@hongpra.com";
       try {
         var user = await _auth.signInWithEmailAndPassword(
-            email: emailController.text.trim(),
-            password: passwordController.text.trim());
+            email: id,
+            password: pass);
         if (user != null) {
           Navigator.pop(context);
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyMainPage()));
@@ -169,7 +172,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
     Widget headerText = Center(child: Text('สุดยอดพระเครื่อง', style: MyConfig.logoText));
     Widget titleText = Center(child: Text('ยินดีต้อนรับ', style: MyConfig.largeBoldTextBlack));
     Widget subtitleText = Center(child: Text('เข้าสู่ระบบเพื่อใช้งาน', style: MyConfig.smallTextGrey));
-    Widget emailLabel = Text('อีเมล', style: MyConfig.normalTextBlack);
+    Widget emailLabel = Text('อีเมล/เบอร์โทรศัพท์', style: MyConfig.normalTextBlack);
 
     Widget emailTextField = TextField(
       controller: emailController,
@@ -178,7 +181,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
       decoration: InputDecoration(
         isDense: true,
         contentPadding: EdgeInsets.all(textFieldEdge),
-        hintText: "ป้อนอีเมลของคุณ",
+        hintText: "ป้อน อีเมล/เบอร์โทรศัพท์ ของคุณ",
         filled: true,
         fillColor: MyConfig.whiteColor,
         border: OutlineInputBorder(),
@@ -194,7 +197,7 @@ class _MyLoginPageState extends State<MyLoginPage> {
       decoration: InputDecoration(
         isDense: true,
         contentPadding: EdgeInsets.all(textFieldEdge),
-        hintText: "ป้อนรหัสผ่านของคุณ",
+        hintText: "ป้อน รหัสผ่าน ของคุณ",
         filled: true,
         fillColor: MyConfig.whiteColor,
         border: OutlineInputBorder(),

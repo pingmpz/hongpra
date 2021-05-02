@@ -130,6 +130,9 @@ class _MyResetPasswordPageState extends State<MyResetPasswordPage> {
 
     Widget emailLabel = Text('อีเมล', style: MyConfig.normalTextBlack);
 
+    Widget notiLabel =
+    Center(child: Text('กรณีเข้าสู่ระบบด้วยเบอร์โทรศัพท์กรุณาติดต่อแอดมิน', style: MyConfig.smallTextBlack));
+
     Widget emailTextField = TextField(
       controller: emailController,
       obscureText: false,
@@ -188,6 +191,7 @@ class _MyResetPasswordPageState extends State<MyResetPasswordPage> {
               SizedBox(height: desireHeight * 0.005),
               emailTextField,
               SizedBox(height: desireHeight * 0.01),
+              notiLabel,
               SizedBox(height: desireHeight * 0.03),
               resetPasswordButton,
             ],
