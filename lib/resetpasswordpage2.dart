@@ -34,6 +34,46 @@ class _MyResetPasswordPage2 extends State<MyResetPasswordPage2> {
 
   //-------------------------------------------------------------------------------------------------------- Functions
 
+  void resetPassword() {
+    if(oldPasswordController.text.trim() == "" || newPasswordController1.text.trim() == "" || newPasswordController2.text.trim() == ""){
+      buildAlertDialog("เปลี่ยนรหัสผ่านล้มเหลว", "โปรดกรอกข้อมูลให้ครบถ้วน");
+    }
+    //--
+    /*
+    check old password correct
+    check new password length
+    check new password rule (at least 1 eng and 1 number)
+    check new password match
+    confirmation dialog
+    change password
+    ? logout
+     */
+  }
+
+  void buildAlertDialog(String title, String content) {
+    Widget okButton = FlatButton(
+      child: Text("ยืนยัน", style: MyConfig.linkText),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    );
+
+    Widget result = AlertDialog(
+      title: Center(child: Text(title, style: MyConfig.normalBoldTextTheme1)),
+      content: Text(content, style: MyConfig.normalTextBlack),
+      actions: [
+        okButton,
+      ],
+    );
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return result;
+      },
+    );
+  }
+
   void back() {
     Navigator.pop(context);
   }
@@ -106,7 +146,7 @@ class _MyResetPasswordPage2 extends State<MyResetPasswordPage2> {
     Widget oldPasswordTextField = TextField(
       controller: oldPasswordController,
       textAlign: TextAlign.center,
-      obscureText: false,
+      obscureText: true,
       style: MyConfig.normalTextBlack,
       decoration: InputDecoration(
         isDense: true,
@@ -121,7 +161,7 @@ class _MyResetPasswordPage2 extends State<MyResetPasswordPage2> {
     Widget newPasswordTextField1 = TextField(
       controller: newPasswordController1,
       textAlign: TextAlign.center,
-      obscureText: false,
+      obscureText: true,
       style: MyConfig.normalTextBlack,
       decoration: InputDecoration(
         isDense: true,
@@ -136,7 +176,7 @@ class _MyResetPasswordPage2 extends State<MyResetPasswordPage2> {
     Widget newPasswordTextField2 = TextField(
       controller: newPasswordController2,
       textAlign: TextAlign.center,
-      obscureText: false,
+      obscureText: true,
       style: MyConfig.normalTextBlack,
       decoration: InputDecoration(
         isDense: true,
@@ -153,7 +193,7 @@ class _MyResetPasswordPage2 extends State<MyResetPasswordPage2> {
         minWidth: buttonWidth,
         height: buttonHeight,
         child: RaisedButton(
-          // onPressed: () => confirmCertificateId(),
+          onPressed: () => resetPassword(),
           color: MyConfig.themeColor1,
           child: Text('ยืนยัน', style: MyConfig.buttonText),
         ),
