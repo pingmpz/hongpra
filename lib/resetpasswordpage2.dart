@@ -34,21 +34,33 @@ class _MyResetPasswordPage2 extends State<MyResetPasswordPage2> {
 
   //-------------------------------------------------------------------------------------------------------- Functions
 
-  void resetPassword() {
-    if(oldPasswordController.text.trim() == "" || newPasswordController1.text.trim() == "" || newPasswordController2.text.trim() == ""){
+  void resetPasswordCheck() {
+    String oldPassword = oldPasswordController.text.trim();
+    String newPassword1 = newPasswordController1.text.trim();
+    String newPassword2 = newPasswordController2.text.trim();
+    RegExp regExp = new RegExp(r"^(?=.*\d)(?=.*[a-zA-Z])[a-zA-Z0-9]{6,}$");
+    if(oldPassword == "" || newPassword1 == "" || newPassword2 == ""){
       buildAlertDialog("เปลี่ยนรหัสผ่านล้มเหลว", "โปรดกรอกข้อมูลให้ครบถ้วน");
+    } else if(false){
+      //check old password correct
+    } else if(newPassword1.length < 6){
+      buildAlertDialog("เปลี่ยนรหัสผ่านล้มเหลว", "รหัสผ่านต้องมีความยาวไม่น้อยกว่า 6 ตัวอักษร");
+    } else if(!regExp.hasMatch(newPassword1)) {
+      buildAlertDialog("เปลี่ยนรหัสผ่านล้มเหลว", "รหัสผ่านต้องเป็นตัวอักษรภาษาอังกฤษและต้องมีตัวเลขรวมอยู่ด้วยอย่างน้อย 1 ตัว");
+    } else if(newPassword1 != newPassword2) {
+      buildAlertDialog("เปลี่ยนรหัสผ่านล้มเหลว", "ยืนยันรหัสผ่านไม่ถูกต้อง");
+    } else {
+      buildConfirmDialog("ยืนยันการเปลี่ยนรหัสผ่าน", "กรุณายืนยันการเปลี่ยนรหัสผ่าน");
     }
-    //--
-    /*
-    check old password correct
-    check new password length
-    check new password rule (at least 1 eng and 1 number)
-    check new password match
-    confirmation dialog
-    change password
-    ? logout
-     */
   }
+
+  void resetPassword() {
+    // reset password
+    buildAlertDialog("เปลี่ยนรหัสผ่านสำเร็จ", "");
+    // ? logout
+  }
+
+
 
   void buildAlertDialog(String title, String content) {
     Widget okButton = FlatButton(
@@ -63,6 +75,39 @@ class _MyResetPasswordPage2 extends State<MyResetPasswordPage2> {
       content: Text(content, style: MyConfig.normalTextBlack),
       actions: [
         okButton,
+      ],
+    );
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return result;
+      },
+    );
+  }
+
+  void buildConfirmDialog(String title, String content) {
+    Widget okButton = FlatButton(
+      child: Text("ยืนยัน", style: MyConfig.linkText),
+      onPressed: () {
+        Navigator.pop(context);
+        resetPassword();
+      },
+    );
+
+    Widget cancelButton = FlatButton(
+      child: Text("ยกเลิก", style: MyConfig.linkText),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    );
+
+    Widget result = AlertDialog(
+      title: Center(child: Text(title, style: MyConfig.normalBoldTextTheme1)),
+      content: Text(content, style: MyConfig.normalTextBlack),
+      actions: [
+        okButton,
+        cancelButton,
       ],
     );
 
@@ -193,7 +238,7 @@ class _MyResetPasswordPage2 extends State<MyResetPasswordPage2> {
         minWidth: buttonWidth,
         height: buttonHeight,
         child: RaisedButton(
-          onPressed: () => resetPassword(),
+          onPressed: () => resetPasswordCheck(),
           color: MyConfig.themeColor1,
           child: Text('ยืนยัน', style: MyConfig.buttonText),
         ),
@@ -235,21 +280,6 @@ class _MyResetPasswordPage2 extends State<MyResetPasswordPage2> {
       ),
     );
 
-    Widget loadingEffect = Container(
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SizedBox(height: desireHeight * 0.02),
-            CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(MyConfig.themeColor1)),
-            SizedBox(height: desireHeight * 0.02),
-            Text('โปรดรอสักครู่ กำลังตรวจสอบใบรับรอง', style: MyConfig.normalBoldTextTheme1),
-          ],
-        ),
-      ),
-    );
-
     //-------------------------------------------------------------------------------------------------------- Page
 
     return Scaffold(
@@ -264,7 +294,7 @@ class _MyResetPasswordPage2 extends State<MyResetPasswordPage2> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            (_isLoading) ? loadingEffect : detailBox,
+            detailBox,
           ],
         ),
       ),
