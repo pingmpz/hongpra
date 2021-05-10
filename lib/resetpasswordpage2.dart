@@ -42,7 +42,7 @@ class _MyResetPasswordPage2 extends State<MyResetPasswordPage2> {
     if(oldPassword == "" || newPassword1 == "" || newPassword2 == ""){
       buildAlertDialog("เปลี่ยนรหัสผ่านล้มเหลว", "โปรดกรอกข้อมูลให้ครบถ้วน");
     } else if(false){
-      //check old password correct
+      //check old password correct -----------***************************************************************
     } else if(newPassword1.length < 6){
       buildAlertDialog("เปลี่ยนรหัสผ่านล้มเหลว", "รหัสผ่านต้องมีความยาวไม่น้อยกว่า 6 ตัวอักษร");
     } else if(!regExp.hasMatch(newPassword1)) {
@@ -55,7 +55,7 @@ class _MyResetPasswordPage2 extends State<MyResetPasswordPage2> {
   }
 
   void resetPassword() {
-    // reset password
+    // reset password  -----------***************************************************************
     buildAlertDialog("เปลี่ยนรหัสผ่านสำเร็จ", "");
     // ? logout
   }
